@@ -170,7 +170,7 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
       : "b"((uintptr_t)sp - 16), "d"(entry), "a"(arg)
       : "memory"
 #else
-      "movel %%esp, %%ebx; movl %0, %%esp; movl %2, 4(%0); jmp *%1"
+      "movl %%esp, %%ebx; movl %0, %%esp; movl %2, 4(%0); jmp *%1"
       :
       : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg)
       : "memory"
@@ -186,7 +186,7 @@ static inline void stack_switch_ret()
       :
       :
 #else
-      "movq %%ebx, %%esp"
+      "movl %%ebx, %%esp"
       :
       :
       :
