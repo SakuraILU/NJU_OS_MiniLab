@@ -80,6 +80,7 @@ static __attribute__((destructor)) void co_free()
     remove(itr);
     itr = itr->pre;
   }
+  free(head);
 }
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
