@@ -147,6 +147,9 @@ void co_yield ()
       if (current->waiter != NULL)
         current->waiter->status = CO_RUNNING;
 
+      current = current->caller;
+      longjmp(current->context, SJ_RECOVERY);
+
       break;
     }
     case CO_RUNNING:
