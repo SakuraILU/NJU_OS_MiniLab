@@ -167,7 +167,7 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 #if __x86_64__
       "movq %%rsp, %%r12; movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
       :
-      : "b"((uintptr_t)sp - 16), "d"(entry), "a"(arg)
+      : "b"((uintptr_t)sp), "d"(entry), "a"(arg)
       : "memory"
 #else
       "movl %%esp, %%ebx; movl %0, %%esp; movl %2, 4(%0); jmp *%1"
