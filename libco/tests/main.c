@@ -1,152 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include "co-test.h"
+#include <setjmp.h>
+#include <stdbool.h>
+#include <time.h>
+#include "co.h"
+#define MAX_CO 100
+typedef unsigned char uint8_t;
+uint8_t *__stack;
+void *__stack_backup;
 
-int g_count = 0;
+#if defined(__i386__)
+#define SP "%%esp"
+#elif defined(__x86_64__)
+#define SP "%%rsp"
+#endif
 
-static void add_count()
+struct co
 {
-    g_count++;
+    bool st;
+    int num;
+    jmp_buf buf;
+    uint8_t stack[4096];
+    void *stack_backup;
+} __attribute__((aligned(16)));
+struct co coroutines[MAX_CO];
+struct co *current;
+func_t cu_func;
+void *cu_arg;
+int cunt;
+
+void co_init()
+{
+    cunt = 0;
+    coroutines[cunt].st = true;
+    coroutines[cunt].num = cunt;
+    srand(time(NULL));
 }
 
-static int get_count()
+struct co *co_start(const char *name, func_t func, void *arg)
 {
-    return g_count;
-}
-
-static void work_loop(void *arg)
-{
-    const char *s = (const char *)arg;
-    for (int i = 0; i < 2; ++i)
+    ++cunt;
+    coroutines[cunt].num = cunt;
+    coroutines[cunt].st = true;
+    cu_func = func;
+    cu_arg = arg;
+    int val = setjmp(coroutines[0].buf); // if we don't use it, will never return to this function.
+    if (!val)
     {
-        printf("%s %d \n", s, get_count());
-        add_count();
-        co_yield ();
+        __stack = coroutines[cunt].stack + sizeof(coroutines[cunt].stack);
+        asm volatile("mov " SP ", %0; mov %1, " SP
+                     : "=g"(__stack_backup)
+                     : "g"(__stack));
+        coroutines[cunt].stack_backup = __stack_backup;
+
+        current = &coroutines[cunt];
+        // printf("%d\n",cunt);
+        /*char * temp=(char *)cu_arg;
+        printf("%s\n", temp);*/
+        cu_func(cu_arg);
+        // printf("reach here\n");  //printf this sentence * cunt
+        current->st = 0; // current may change
+        int temp = current->num;
+        // printf("%d\n",temp);
+
+        current = &coroutines[0];
+        // longjmp(current->buf, 1);
+        __stack_backup = coroutines[temp].stack_backup;
+        asm volatile("mov %0," SP
+                     :
+                     : "g"(__stack_backup));
+        // printf("change esp\n");
+        longjmp(current->buf, 1);
     }
+    /*else
+      printf("return from co_yield\n");*/
+    return &coroutines[cunt];
 }
 
-static void work(void *arg)
+void co_yield ()
 {
-    work_loop(arg);
-}
-
-static void test_1()
-{
-
-    struct co *thd1 = co_start("thread-1", work, "X");
-    struct co *thd2 = co_start("thread-2", work, "Y");
-
-    co_wait(thd1);
-    co_wait(thd2);
-
-    //    printf("\n");
-}
-
-// -----------------------------------------------
-
-static int g_running = 1;
-
-static void do_produce(Queue *queue)
-{
-    assert(!q_is_full(queue));
-    Item *item = (Item *)malloc(sizeof(Item));
-    if (!item)
+    // printf("nmsl\n");
+    int val = setjmp(current->buf);
+    if (val == 0)
     {
-        fprintf(stderr, "New item failure\n");
+        int next = rand() % (cunt + 1);
+        while (next == current->num || !coroutines[next].st)
+        {
+            next = rand() % (cunt + 1);
+        }
+        // printf("%d\n", next);
+        current = &coroutines[next];
+        longjmp(current->buf, 1);
+    }
+    else
+    {
+        // printf("nmsl\n");       //now start this coroutines;
         return;
     }
-    item->data = (char *)malloc(10);
-    if (!item->data)
-    {
-        fprintf(stderr, "New data failure\n");
-        free(item);
-        return;
-    }
-    memset(item->data, 0, 10);
-    sprintf(item->data, "libco-%d", g_count++);
-    q_push(queue, item);
 }
 
-static void producer(void *arg)
+void co_wait(struct co *thd)
 {
-    Queue *queue = (Queue *)arg;
-    for (int i = 0; i < 100;)
-    {
-        if (!q_is_full(queue))
+    // printf("%d\n",cunt);
+    setjmp(current->buf);
+    if (thd->st)
+    { // still need to execute
+        int next = rand() % cunt + 1;
+        while (next == current->num || !coroutines[next].st)
         {
-            // co_yield();
-            do_produce(queue);
-            i += 1;
+            next = rand() % cunt + 1;
         }
-        co_yield ();
+        current = &coroutines[next];
+        longjmp(current->buf, 1);
     }
-}
-
-static void do_consume(Queue *queue)
-{
-    assert(!q_is_empty(queue));
-
-    Item *item = q_pop(queue);
-    if (item)
-    {
-        printf("%s  ", (char *)item->data);
-        free(item->data);
-        free(item);
-    }
-}
-
-static void consumer(void *arg)
-{
-    Queue *queue = (Queue *)arg;
-    while (g_running)
-    {
-        if (!q_is_empty(queue))
-        {
-            do_consume(queue);
-        }
-        co_yield ();
-    }
-}
-
-static void test_2()
-{
-
-    Queue *queue = q_new();
-
-    struct co *thd1 = co_start("producer-1", producer, queue);
-    struct co *thd2 = co_start("producer-2", producer, queue);
-    struct co *thd3 = co_start("consumer-1", consumer, queue);
-    struct co *thd4 = co_start("consumer-2", consumer, queue);
-
-    co_wait(thd1);
-    co_wait(thd2);
-
-    g_running = 0;
-
-    co_wait(thd3);
-    co_wait(thd4);
-
-    while (!q_is_empty(queue))
-    {
-        do_consume(queue);
-    }
-
-    q_free(queue);
-}
-
-int main()
-{
-    setbuf(stdout, NULL);
-
-    printf("Test #1. Expect: (X|Y){0, 1, 2, ..., 199}\n");
-    test_1();
-
-    printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    test_2();
-
-    printf("\n\n");
-
-    return 0;
+    // printf("wait\n");
 }
