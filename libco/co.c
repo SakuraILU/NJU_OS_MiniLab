@@ -31,7 +31,7 @@ typedef struct co
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
 
-  struct co *pre, *next // 协程链表指针
+  struct co *pre, *next; // 协程链表指针
 } Co;
 
 Co *head = NULL, *tail = NULL, *current = NULL;
