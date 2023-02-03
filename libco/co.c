@@ -144,9 +144,8 @@ void co_yield ()
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
       current->status = CO_DEAD;
       printf("%s dead\n", current->name);
-      current = current->caller;
-      printf("recovery %s\n", current->name);
-      longjmp(current->context, SJ_RECOVERY);
+      if (current->waiter != NULL)
+        current->waiter->status = CO_RUNNING;
 
       break;
     }
