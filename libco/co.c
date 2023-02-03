@@ -35,7 +35,7 @@ typedef struct co
   struct co *pre, *next; // 协程链表指针
 } Co;
 
-static inline void stack_switch_call(void *sp, void *entry(void *), uintptr_t arg);
+static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg);
 
 Co *head = NULL, *tail = NULL, *current = NULL;
 
@@ -161,7 +161,7 @@ void co_yield ()
   }
 }
 
-static inline void stack_switch_call(void *sp, void *entry(void *), uintptr_t arg)
+static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg)
 {
   asm volatile(
 #if __x86_64__
