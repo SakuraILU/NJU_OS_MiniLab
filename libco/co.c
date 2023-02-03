@@ -177,7 +177,7 @@ static inline void stack_switch_call(void *sp, void *entry(void *), uintptr_t ar
 #endif
   );
 
-  entry(arg);
+  entry((void *)arg);
 
   asm volatile(
 #if __x86_64__
