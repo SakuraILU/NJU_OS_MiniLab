@@ -96,6 +96,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   co->func = func;
   co->arg = arg;
   co->status = CO_NEW;
+  co->caller = current;
 
   co->next = co->pre = NULL;
 
