@@ -36,38 +36,38 @@ typedef struct co
 
 Co *head = NULL, *tail = NULL, *current = NULL;
 
-static void insert(Co *cor)
+static void insert(Co *co)
 {
-  tail->next = cor;
-  cor->pre = tail;
-  cor->next = NULL;
-  tail = cor;
+  tail->next = co;
+  co->pre = tail;
+  co->next = NULL;
+  tail = co;
 }
 
-static void remove(Co *cor)
+static void remove(Co *co)
 {
-  Co *tcor = cor;
-  if (tcor == tail)
+  Co *tco = co;
+  if (tco == tail)
   {
-    tail = tcor->pre;
+    tail = tco->pre;
     tail->next = NULL;
   }
   else
   {
-    Co *pcor = tcor->pre, *ncor = tcor->next;
-    pcor->next = ncor;
-    ncor->pre = pcor;
+    Co *pco = tco->pre, *nco = tco->next;
+    pco->next = nco;
+    nco->pre = pco;
   }
-  free(tcor);
+  free(tco);
 }
 
 static __attribute__((constructor)) void co_init()
 {
   Co *head = (Co *)malloc(sizeof(Co));
-  Co *main_cor = co_start("main", NULL, NULL);
-  main_cor->pre = head;
-  head->next = main_cor;
-  tail = current = main_cor;
+  Co *main_co = co_start("main", NULL, NULL);
+  main_co->pre = head;
+  head->next = main_co;
+  tail = current = main_co;
 }
 
 static __attribute__((destructor)) void co_free()
@@ -82,20 +82,20 @@ static __attribute__((destructor)) void co_free()
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
-  Co *cor = (Co *)malloc(sizeof(Co));
-  memset(cor, 0, sizeof(Co));
+  Co *co = (Co *)malloc(sizeof(Co));
+  memset(co, 0, sizeof(Co));
 
-  cor->name = name;
-  cor->func = func;
-  cor->arg = arg;
-  cor->status = CO_NEW;
+  co->name = name;
+  co->func = func;
+  co->arg = arg;
+  co->status = CO_NEW;
 
-  cor->next = cor->pre = NULL;
+  co->next = co->pre = NULL;
 
   if (head->next != NULL)
-    insert(cor);
+    insert(co);
 
-  return cor;
+  return co;
 }
 
 void co_wait(struct co *co)
