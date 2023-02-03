@@ -32,6 +32,7 @@ typedef struct co
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
   uintptr_t caller_stack;
+  struct co *caller;
 
   struct co *pre, *next; // 协程链表指针
 } Co;
@@ -142,7 +143,7 @@ void co_yield ()
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
       current->status = CO_DEAD;
       printf("%s dead\n", current->name);
-      current = current->waiter;
+      current = current->caller;
 
       break;
     }
