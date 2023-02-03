@@ -23,7 +23,7 @@ static void work_loop(void *arg)
     {
         printf("%s \n", s);
         // get_count();
-        add_count();
+        // add_count();
         co_yield ();
     }
 }
