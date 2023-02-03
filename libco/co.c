@@ -22,7 +22,7 @@ enum setjmp_status
 
 typedef struct co
 {
-  const char *name;
+  char *name;
   void (*func)(void *); // co_start 指定的入口地址和参数
   void *arg;
 
@@ -88,7 +88,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   Co *co = (Co *)malloc(sizeof(Co));
   memset(co, 0, sizeof(Co));
 
-  co->name = name;
+  co->name = (char *)name;
   co->func = func;
   co->arg = arg;
   co->status = CO_NEW;
