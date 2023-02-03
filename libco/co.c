@@ -119,7 +119,8 @@ void co_wait(struct co *co)
 
 void co_yield ()
 {
-  if (setjmp(current->context) == SJ_RECOVERY)
+  int ret = 0;
+  if (ret = setjmp(current->context) == SJ_RECOVERY)
     return;
 
   while (true)
