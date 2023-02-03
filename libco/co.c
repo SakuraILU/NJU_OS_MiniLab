@@ -1,119 +1,205 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-#include <stdbool.h>
-#include <time.h>
 #include "co.h"
-#define MAX_CO 100
-typedef unsigned char uint8_t;
-uint8_t *__stack;
-void *__stack_backup;
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <setjmp.h>
+#include <assert.h>
 
-#if defined(__i386__)
-#define SP "%%esp"
-#elif defined(__x86_64__)
-#define SP "%%rsp"
-#endif
-
-typedef void *func_t(void *);
-
-struct co
+enum co_status
 {
-  bool st;
-  int num;
-  jmp_buf buf;
-  uint8_t stack[4096];
-  void *stack_backup;
-} __attribute__((aligned(16)));
-struct co coroutines[MAX_CO];
-struct co *current;
-func_t cu_func;
-void *cu_arg;
-int cunt;
+  CO_NEW = 1, // 新创建，还未执行过
+  CO_RUNNING, // 已经执行过
+  CO_WAITING, // 在 co_wait 上等待
+  CO_DEAD,    // 已经结束，但还未释放资源
+};
 
-void co_init()
+enum setjmp_status
 {
-  cunt = 0;
-  coroutines[cunt].st = true;
-  coroutines[cunt].num = cunt;
-  srand(time(NULL));
+  SJ_SAVE = 0,
+  SJ_RECOVERY,
+};
+
+typedef struct co
+{
+  char *name;
+  void (*func)(void *); // co_start 指定的入口地址和参数
+  void *arg;
+
+  enum co_status status;     // 协程的状态
+  struct co *waiter;         // 是否有其他协程在等待当前协程
+  jmp_buf context;           // 寄存器现场 (setjmp.h)
+  uint8_t stack[STACK_SIZE]; // 协程的堆栈
+  uintptr_t caller_stack;
+  struct co *caller;
+
+  struct co *pre, *next; // 协程链表指针
+} Co;
+
+static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg);
+
+Co *head = NULL, *tail = NULL, *current = NULL;
+
+static void bl_insert(Co *co)
+{
+  tail->next = co;
+  co->pre = tail;
+  co->next = NULL;
+  tail = co;
 }
 
-struct co *co_start(const char *name, func_t func, void *arg)
+static void bl_remove(Co *co)
 {
-  ++cunt;
-  coroutines[cunt].num = cunt;
-  coroutines[cunt].st = true;
-  cu_func = func;
-  cu_arg = arg;
-  int val = setjmp(coroutines[0].buf); // if we don't use it, will never return to this function.
-  if (!val)
+  Co *tco = co;
+  if (tco == tail)
   {
-    __stack = coroutines[cunt].stack + sizeof(coroutines[cunt].stack);
-    asm volatile("mov " SP ", %0; mov %1, " SP
-                 : "=g"(__stack_backup)
-                 : "g"(__stack));
-    coroutines[cunt].stack_backup = __stack_backup;
-
-    current = &coroutines[cunt];
-    // printf("%d\n",cunt);
-    /*char * temp=(char *)cu_arg;
-    printf("%s\n", temp);*/
-    cu_func(cu_arg);
-    // printf("reach here\n");  //printf this sentence * cunt
-    current->st = 0; // current may change
-    int temp = current->num;
-    // printf("%d\n",temp);
-
-    current = &coroutines[0];
-    // longjmp(current->buf, 1);
-    __stack_backup = coroutines[temp].stack_backup;
-    asm volatile("mov %0," SP
-                 :
-                 : "g"(__stack_backup));
-    // printf("change esp\n");
-    longjmp(current->buf, 1);
+    tail = tco->pre;
+    tail->next = NULL;
   }
-  /*else
-    printf("return from co_yield\n");*/
-  return &coroutines[cunt];
+  else
+  {
+    Co *pco = tco->pre, *nco = tco->next;
+    pco->next = nco;
+    nco->pre = pco;
+  }
+  free(tco);
+}
+
+static __attribute__((constructor)) void co_init()
+{
+  head = (Co *)malloc(sizeof(Co));
+  Co *main_co = co_start("main", NULL, NULL);
+  main_co->status = CO_RUNNING;
+  main_co->pre = head;
+  head->next = main_co;
+  tail = current = main_co;
+}
+
+static __attribute__((destructor)) void co_free()
+{
+  Co *itr = tail;
+  while (itr != head)
+  {
+    bl_remove(itr);
+    itr = itr->pre;
+  }
+  free(head);
+}
+
+struct co *co_start(const char *name, void (*func)(void *), void *arg)
+{
+  Co *co = (Co *)malloc(sizeof(Co));
+  memset(co, 0, sizeof(Co));
+
+  co->name = (char *)name;
+  co->func = func;
+  co->arg = arg;
+  co->status = CO_NEW;
+  co->caller = current;
+
+  co->next = co->pre = NULL;
+
+  if (head->next != NULL)
+    bl_insert(co);
+
+  return co;
+}
+
+void co_wait(struct co *co)
+{
+  co->waiter = current;
+  if (co->status != CO_DEAD)
+  {
+    current->status = CO_WAITING;
+    co_yield ();
+  }
+
+  assert(co->status == CO_DEAD && co->waiter == current);
+
+  bl_remove(co);
 }
 
 void co_yield ()
 {
-  // printf("nmsl\n");
-  int val = setjmp(current->buf);
-  if (val == 0)
+  int ret = 0;
+  if ((ret = setjmp(current->context)) == SJ_RECOVERY)
   {
-    int next = rand() % (cunt + 1);
-    while (next == current->num || !coroutines[next].st)
-    {
-      next = rand() % (cunt + 1);
-    }
-    // printf("%d\n", next);
-    current = &coroutines[next];
-    longjmp(current->buf, 1);
-  }
-  else
-  {
-    // printf("nmsl\n");       //now start this coroutines;
+    printf("%s setjump status is %d\n", current->name, ret);
     return;
+  }
+  printf("%s setjump status is %d\n", current->name, ret);
+
+  while (true)
+  {
+    current = current->next;
+    if (current == NULL)
+      current = head->next;
+
+    switch (current->status)
+    {
+    case CO_NEW:
+    {
+      current->status = CO_RUNNING;
+      stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
+      current->status = CO_DEAD;
+      printf("%s dead\n", current->name);
+      current = current->caller;
+      printf("recovery %s\n", current->name);
+      longjmp(current->context, SJ_RECOVERY);
+
+      break;
+    }
+    case CO_RUNNING:
+    {
+      longjmp(current->context, SJ_RECOVERY);
+      break;
+    }
+    case CO_DEAD:
+    {
+      if (current->waiter != NULL)
+        current->waiter->status = CO_RUNNING;
+      break;
+    }
+    case CO_WAITING:
+    {
+      break;
+    }
+    default:
+      assert(false);
+    }
   }
 }
 
-void co_wait(struct co *thd)
+static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg)
 {
-  // printf("%d\n",cunt);
-  setjmp(current->buf);
-  if (thd->st)
-  { // still need to execute
-    int next = rand() % cunt + 1;
-    while (next == current->num || !coroutines[next].st)
-    {
-      next = rand() % cunt + 1;
-    }
-    current = &coroutines[next];
-    longjmp(current->buf, 1);
-  }
-  // printf("wait\n");
+  asm volatile(
+#if __x86_64__
+      "movq %%rsp, %0; movq %1, %%rsp"
+      : "=g"(current->caller_stack)
+      : "g"((uintptr_t)sp)
+      : "memory"
+#else
+      "movl %%esp, %0; movl %1, %%esp"
+      : "=g"(current->caller_stack)
+      : "g"((uintptr_t)sp)
+      : "memory"
+#endif
+  );
+
+  entry((void *)arg);
+
+  asm volatile(
+#if __x86_64__
+      "movq %0, %%rsp"
+      :
+      : "g"(current->caller_stack)
+      : "memory"
+#else
+      "movl %0, %%esp"
+      :
+      : "g"(current->caller_stack)
+      : "memory"
+#endif
+  );
 }
