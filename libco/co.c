@@ -30,12 +30,12 @@ typedef struct co
   struct co *waiter;         // 是否有其他协程在等待当前协程
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
+  uintptr_t caller_stack;
 
   struct co *pre, *next; // 协程链表指针
 } Co;
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg);
-static inline void stack_switch_ret();
 
 Co *head = NULL, *tail = NULL, *current = NULL;
 
@@ -135,7 +135,6 @@ void co_yield ()
     {
       current->status = CO_RUNNING;
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
-      stack_switch_ret();
       current->status = CO_DEAD;
       co_yield ();
 
@@ -166,31 +165,31 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
   asm volatile(
 #if __x86_64__
-      "movq %%rsp, %%r12; movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
-      :
-      : "b"((uintptr_t)sp), "d"(entry), "a"(arg)
+      "movq %%rsp, %0; movq %1, %%rsp"
+      : "=g"(current->caller_stack)
+      : "g"((uintptr_t)sp)
       : "memory"
 #else
-      "movl %%esp, %%ebx; movl %0, %%esp; movl %2, 4(%0); jmp *%1"
-      :
-      : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg)
+      "movl %%esp, %0; movl %1, %%esp"
+      : "=g"(current->caller_stack)
+      : "g"((uintptr_t)sp)
       : "memory"
 #endif
   );
-}
 
-static inline void stack_switch_ret()
-{
+  current->func(current->arg);
+
   asm volatile(
 #if __x86_64__
-      "movq %%r12, %%rsp"
+      "movq %0, %%rsp"
       :
-      :
+      : "g"(current->caller_stack)
+      : "memory"
 #else
-      "movl %%ebx, %%esp"
+      "movl %0, %%esp"
       :
-      :
-      :
+      : "g"(current->caller_stack)
+      : "memory"
 #endif
   );
 }
