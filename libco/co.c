@@ -119,8 +119,7 @@ void co_wait(struct co *co)
 
 void co_yield ()
 {
-  int ret = 0;
-  if ((ret = setjmp(current->context)) == SJ_RECOVERY)
+  if (setjmp(current->context))
     return;
 
   while (true)
@@ -142,7 +141,7 @@ void co_yield ()
     }
     case CO_RUNNING:
     {
-      longjmp(current->context, SJ_RECOVERY);
+      longjmp(current->context, 0);
       break;
     }
     case CO_DEAD:
