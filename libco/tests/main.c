@@ -19,7 +19,7 @@ static int get_count()
 static void work_loop(void *arg)
 {
     const char *s = (const char *)arg;
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         printf("%s %d \n", s, get_count());
         add_count();
