@@ -137,6 +137,7 @@ void co_yield ()
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
       stack_switch_ret();
       current->status = CO_DEAD;
+      co_yield ();
 
       break;
     }
