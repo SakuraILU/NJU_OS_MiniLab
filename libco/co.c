@@ -40,7 +40,7 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 
 Co *head = NULL, *tail = NULL, *current = NULL;
 
-static void insert(Co *co)
+static void bl_insert(Co *co)
 {
   tail->next = co;
   co->pre = tail;
@@ -48,7 +48,7 @@ static void insert(Co *co)
   tail = co;
 }
 
-static void remove(Co *co)
+static void bl_remove(Co *co)
 {
   Co *tco = co;
   if (tco == tail)
@@ -80,7 +80,7 @@ static __attribute__((destructor)) void co_free()
   Co *itr = tail;
   while (itr != head)
   {
-    remove(itr);
+    bl_remove(itr);
     itr = itr->pre;
   }
   free(head);
@@ -99,7 +99,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   co->next = co->pre = NULL;
 
   if (head->next != NULL)
-    insert(co);
+    bl_insert(co);
 
   return co;
 }
@@ -115,7 +115,7 @@ void co_wait(struct co *co)
 
   assert(co->status == CO_DEAD && co->waiter == current);
 
-  remove(co);
+  bl_remove(co);
 }
 
 void co_yield ()
