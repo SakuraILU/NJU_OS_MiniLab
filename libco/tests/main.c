@@ -25,7 +25,7 @@ struct co
 } __attribute__((aligned(16)));
 struct co coroutines[MAX_CO];
 struct co *current;
-func_t cu_func;
+void *cu_func(void *);
 void *cu_arg;
 int cunt;
 
