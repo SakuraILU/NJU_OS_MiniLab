@@ -67,6 +67,7 @@ static __attribute__((constructor)) void co_init()
 {
   head = (Co *)malloc(sizeof(Co));
   Co *main_co = co_start("main", NULL, NULL);
+  main_co->status = CO_RUNNING;
   main_co->pre = head;
   head->next = main_co;
   tail = current = main_co;
