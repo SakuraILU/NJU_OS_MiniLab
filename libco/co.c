@@ -144,6 +144,7 @@ void co_yield ()
       current->status = CO_DEAD;
       printf("%s dead\n", current->name);
       current = current->caller;
+      printf("recovery %s\n", current->name);
       longjmp(current->context, SJ_RECOVERY);
 
       break;
