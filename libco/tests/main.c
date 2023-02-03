@@ -22,7 +22,7 @@ static void work_loop(void *arg)
     for (int i = 0; i < 100; ++i)
     {
         get_count();
-        printf("hello\n");
+        // printf("hello\n");
         add_count();
         co_yield ();
     }
