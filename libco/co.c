@@ -35,6 +35,7 @@ typedef struct co
 } Co;
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg);
+static inline void stack_switch_ret();
 
 Co *head = NULL, *tail = NULL, *current = NULL;
 
@@ -134,6 +135,7 @@ void co_yield ()
     {
       current->status = CO_RUNNING;
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
+      stack_switch_ret();
       current->status = CO_DEAD;
 
       break;
@@ -163,10 +165,26 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
   asm volatile(
 #if __x86_64__
-      "movq %%rcx, 0(%0); movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
+      "movq %%rsp, %%r12; movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
       :
       : "b"((uintptr_t)sp - 16), "d"(entry), "a"(arg)
       : "memory"
+#else
+      "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
+      :
+      : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg)
+      : "memory"
+#endif
+  );
+}
+
+static inline void stack_switch_ret()
+{
+  asm volatile(
+#if __x86_64__
+      "movq %%r12, %%rsp"
+      :
+      :
 #else
       "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
       :
