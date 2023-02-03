@@ -65,7 +65,7 @@ static void remove(Co *co)
 
 static __attribute__((constructor)) void co_init()
 {
-  Co *head = (Co *)malloc(sizeof(Co));
+  head = (Co *)malloc(sizeof(Co));
   Co *main_co = co_start("main", NULL, NULL);
   main_co->pre = head;
   head->next = main_co;
