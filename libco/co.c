@@ -178,12 +178,10 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
       "movq %%rsp, %0; movq %1, %%rsp"
       : "=g"(current->caller_stack)
       : "g"((uintptr_t)sp)
-      : "memory"
 #else
       "movl %%esp, %0; movl %1, %%esp"
       : "=g"(current->caller_stack)
       : "g"((uintptr_t)sp)
-      : "memory"
 #endif
   );
 
@@ -194,12 +192,10 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
       "movq %0, %%rsp"
       :
       : "g"(current->caller_stack)
-      : "memory"
 #else
       "movl %0, %%esp"
       :
       : "g"(current->caller_stack)
-      : "memory"
 #endif
   );
 }
