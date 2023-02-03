@@ -124,9 +124,8 @@ void co_yield ()
 
   while (true)
   {
-    if (current->next != NULL)
-      current = current->next;
-    else
+    current = current->next;
+    if (current == NULL)
       current = head->next;
 
     switch (current->status)
