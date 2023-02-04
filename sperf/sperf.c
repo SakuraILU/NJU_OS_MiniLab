@@ -83,5 +83,5 @@ void parent()
     printf("%s\n", sysinfo);
   }
   free(sysinfo);
-  printf("END");
+  printf("END\n");
 }
