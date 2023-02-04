@@ -143,8 +143,7 @@ static void parent()
     else if (status == 0)
     { // 如果匹配上了
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
-      printf("==========sys %s \n", sysname);
+      printf("==========sys %s ", sysname);
     }
 
     status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
