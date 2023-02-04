@@ -36,11 +36,11 @@ static void test_1()
 {
 
     struct co *thd1 = co_start("thread-1", work, "X");
-    // struct co *thd2 = co_start("thread-2", work, "Y");
+    struct co *thd2 = co_start("thread-2", work, "Y");
     // struct co *thd3 = co_start("thread-3", work, "Z");
 
     co_wait(thd1);
-    // co_wait(thd2);
+    co_wait(thd2);
     // co_wait(thd3);
 
     //    printf("\n");
