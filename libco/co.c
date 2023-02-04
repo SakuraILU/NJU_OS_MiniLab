@@ -159,7 +159,9 @@ void co_yield ()
     }
     case CO_DEAD:
     {
-      assert(0);
+      if (current->waiter != NULL)
+        current->waiter->status = CO_RUNNING;
+      break;
     }
     case CO_WAITING:
     {
