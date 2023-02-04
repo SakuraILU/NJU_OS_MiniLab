@@ -135,6 +135,7 @@ void parse_sysinfo()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
+    printf("%s\n", sysinfo);
 
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
