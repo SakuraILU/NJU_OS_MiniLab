@@ -170,6 +170,4 @@ static void parent()
     add_sysinfo(sysname, systime);
   }
   printf("END\n");
-
-  regfree(&reg); // 释放正则表达式
 }
