@@ -64,7 +64,7 @@ void child(int argc, char *exec_argv[])
     printf("arg is %s\n", exec_argv[i]);
     argv[i + 2] = exec_argv[i];
   }
-  printf("%s %s %s\n", argv[0], argv[1], argv[2]);
+  printf("%s %s %s %d\n", argv[0], argv[1], argv[2], argc);
 
   execve(argv[0], argv, environ);
   perror(argv[0]);
