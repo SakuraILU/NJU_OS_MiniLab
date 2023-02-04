@@ -46,12 +46,12 @@ void add_sysinfo(char *sys_name, float sys_time)
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("here\n");
     if (strcmp(itr->name, sys_name) == 0)
     {
       itr->total_time += sys_time;
       return;
     }
+    itr = itr->next;
   }
 
   tail->next = (Sysinfo *)malloc(sizeof(Sysinfo));
