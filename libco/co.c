@@ -179,11 +179,11 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #if __x86_64__
       "movq %%rsp, %0; movq %1, %%rsp"
       : "=g"(current->caller_stack)
-      : "d"((uintptr_t)sp)
+      : "r"((uintptr_t)sp)
 #else
       "movl %%esp, %0; movl %1, %%esp"
       : "=g"(current->caller_stack)
-      : "d"((uintptr_t)sp)
+      : "r"((uintptr_t)sp)
 #endif
   );
 
