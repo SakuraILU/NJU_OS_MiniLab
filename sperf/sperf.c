@@ -152,21 +152,23 @@ void parse_sysinfo()
     }
 
     sysinfo = sysinfo + pmatch[0].rm_eo;
-    status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    if (status == REG_NOMATCH)
-    { // 如果没匹配上
-      if (getline(&sysinfo, &len, stdin) != -1)
-        break;
-      else
-        status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    }
+    while (true)
+    {
+      status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+      if (status == REG_NOMATCH)
+        if (getline(&sysinfo, &len, stdin) != -1)
+          continue;
+        else
+          assert(false);
 
-    if (status == 0)
-    { // 如果匹配上了
-      systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
+      if (status == 0)
+      { // 如果匹配上了
+        systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
+        break;
+      }
+      else
+        assert(false);
     }
-    else
-      assert(false);
 
     add_sysinfo(sysname, systime);
   }
