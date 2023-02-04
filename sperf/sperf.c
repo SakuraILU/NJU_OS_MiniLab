@@ -72,6 +72,7 @@ void parent()
   char *syscall_info;
   while ((syscall_info = readline()) != NULL)
   {
+    printf("%s\n", syscall_info);
   }
   printf("END");
 }
