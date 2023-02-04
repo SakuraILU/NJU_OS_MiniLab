@@ -76,11 +76,10 @@ void child(int argc, char *exec_argv[])
 
 void parent()
 {
-  char *sysinfo;
-  size_t len = 128;
+  char *sysinfo = NULL;
+  size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("hello\n");
     printf("%s\n", sysinfo);
   }
   free(sysinfo);
