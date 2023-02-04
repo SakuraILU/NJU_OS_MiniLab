@@ -81,9 +81,6 @@ int main(int argc, char *argv[])
   else if (ret > 0)
   {
     close(fd[1]);
-    close(STDIN_FILENO);
-    dup(fd[0]);
-    close(fd[0]);
 
     parent();
   }
