@@ -159,7 +159,6 @@ void parse_sysinfo()
     if (status == 0)
     { // 如果匹配上了
       systime = atof(strncpy(systime_str, sysinfo + offset + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-      break;
     }
     else
     {
@@ -189,7 +188,6 @@ void parse_sysinfo()
 
     add_sysinfo(sysname, systime);
   }
-  printf("over\n");
 }
 
 void sort_sysinfo()
