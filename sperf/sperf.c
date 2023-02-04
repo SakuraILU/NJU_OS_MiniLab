@@ -19,11 +19,9 @@
 //   perror(argv[0]);
 //   exit(EXIT_FAILURE);
 // }
-#define ARLEN(arr) (sizeof(arr) / sizeof(arr[0]))
-
 extern char **environ;
 
-void child(char *exec_argv[]);
+void child(int argc, char *exec_argv[]);
 void parent();
 
 int fd[2];
@@ -40,7 +38,7 @@ int main(int argc, char *argv[])
     dup(fd[1]);
     close(fd[1]);
 
-    child(argv + 1);
+    child(argc, argv + 1);
   }
   else if (ret > 0)
   {
@@ -56,9 +54,11 @@ int main(int argc, char *argv[])
   }
 }
 
-void child(char *exec_argv[])
+void child(int argc, char *exec_argv[])
 {
-  char *argv[2 + ARLEN(exec_argv)] = {"strace", "--syscall-time", NULL};
+  char *argv[2 + argc + 1] = {NULL};
+  argv[0] = "strace";
+  argv[1] = "--syscall-time";
   for (int i = 0; i < ARLEN(exec_argv); ++i)
     argv[i + 2] = exec_argv[i];
 
