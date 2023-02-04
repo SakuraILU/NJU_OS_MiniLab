@@ -135,7 +135,6 @@ void parse_sysinfo()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("%s", sysinfo);
 
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
@@ -145,6 +144,7 @@ void parse_sysinfo()
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    printf("%s", sysinfo);
     if (status == REG_NOMATCH)
     { // 如果没匹配上
       assert(false);
