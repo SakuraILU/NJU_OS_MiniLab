@@ -114,7 +114,7 @@ static void child(int argc, char *exec_argv[])
       NULL,
   };
 
-  execvp("/usr/bin/strace", argv);
+  execve("/usr/bin/strace", argv, envp);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
