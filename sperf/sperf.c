@@ -146,43 +146,29 @@ void parse_sysinfo()
     printf("%s", sysinfo);
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
-    { // 如果没匹配上
+      // 如果没匹配上
       continue;
-    }
     else if (status == 0)
-    { // 如果匹配上了
+      // 如果匹配上了
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-    }
 
     int offset = pmatch[0].rm_eo;
     status = regexec(&time_reg, sysinfo + offset, nmatch, pmatch, 0); // 匹配他
     if (status == 0)
-    { // 如果匹配上了
+      // 如果匹配上了
       systime = atof(strncpy(systime_str, sysinfo + offset + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-    }
     else
     {
-      while (true)
+      while (getline(&sysinfo, &len, stdin) != -1)
       {
         status = regexec(&time_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
         if (status == REG_NOMATCH)
-        {
-          if (getline(&sysinfo, &len, stdin) != -1)
-          {
-            printf("%s", sysinfo);
-            continue;
-          }
-          else
-            goto over;
-        }
-
-        if (status == 0)
+          continue;
+        else if (status == 0)
         { // 如果匹配上了
           systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
           break;
         }
-        else
-          assert(false);
       }
     }
 
