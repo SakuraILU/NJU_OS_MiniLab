@@ -42,7 +42,7 @@ static __attribute__((constructor)) void init()
 
 void add_sysinfo(char *sys_name, float sys_time)
 {
-  printf("sys %s time %f \n", sys_name, sys_time);
+  printf("add sys %s time %f \n", sys_name, sys_time);
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -59,7 +59,6 @@ void add_sysinfo(char *sys_name, float sys_time)
   strcpy(tail->name, sys_name);
   tail->total_time = sys_time;
   tail->next = NULL;
-  printf("sys %s time %f \n", sys_name, sys_time);
 }
 
 static void child(int argc, char *exec_argv[]);
@@ -130,7 +129,7 @@ static void parent()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("%s", sysinfo);
+    // printf("%s", sysinfo);
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
     float systime = 0;
@@ -146,7 +145,7 @@ static void parent()
     else if (status == 0)
     { // 如果匹配上了
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-      printf("==========sys %s \n", sysname);
+      // printf("==========sys %s \n", sysname);
     }
 
     sysinfo = sysinfo + pmatch[0].rm_eo;
@@ -163,7 +162,7 @@ static void parent()
     if (status == 0)
     { // 如果匹配上了
       systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-      printf("time %f \n", systime);
+      // printf("time %f \n", systime);
     }
     else
       assert(false);
