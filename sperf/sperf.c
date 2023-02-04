@@ -107,8 +107,6 @@ static void child(int argc, char *exec_argv[])
   {
     argv[i + 1] = exec_argv[i];
   }
-  argv[2 + argc + 1] = ">";
-  argv[2 + argc + 2] = "/dev/null";
 
   char *envp[] = {
       "PATH=/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
