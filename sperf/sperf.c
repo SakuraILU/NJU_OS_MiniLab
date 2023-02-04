@@ -132,8 +132,9 @@ static void parent()
     char systime_str[SYSTIME_MSIZE] = {0};
     int systime = 0;
 
-    const size_t nmatch = 1;                                // 定义匹配结果最大允许数
-    regmatch_t pmatch[1];                                   // 定义匹配结果在待匹配串中的下标范围
+    const size_t nmatch = 1; // 定义匹配结果最大允许数
+    regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
+
     int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
@@ -146,8 +147,6 @@ static void parent()
       printf("==========sys %s ", sysname);
     }
 
-    const size_t nmatch = 1;                                                  // 定义匹配结果最大允许数
-    regmatch_t pmatch[1];                                                     // 定义匹配结果在待匹配串中的下标范围
     int status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
