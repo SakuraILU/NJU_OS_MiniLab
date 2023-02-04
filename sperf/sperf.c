@@ -127,7 +127,7 @@ static void parent()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    const size_t nmatch = 2;                                // 定义匹配结果最大允许数
+    const size_t nmatch = 3;                                // 定义匹配结果最大允许数
     regmatch_t pmatch[2];                                   // 定义匹配结果在待匹配串中的下标范围
     int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
