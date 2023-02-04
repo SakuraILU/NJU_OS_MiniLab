@@ -83,7 +83,7 @@ void parent()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("%s\n", sysinfo);
+    printf("%s", sysinfo);
   }
   free(sysinfo);
   printf("END\n");
