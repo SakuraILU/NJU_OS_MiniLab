@@ -143,7 +143,7 @@ static void parent()
     else if (status == 0)
     { // 如果匹配上了
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-      printf("==========sys %s \n", sysname);
+      // printf("==========sys %s \n", sysname);
     }
 
     // status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
