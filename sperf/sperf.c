@@ -71,8 +71,8 @@ void child(int argc, char *exec_argv[])
 
 void parent()
 {
-  char syscall_info[SYSINFO_MSIZE];
-  while (getline(syscall_info, SYSINFO_MSIZE, stdin) != -1)
+  char *syscall_info;
+  while (getline(&syscall_info, SYSINFO_MSIZE, stdin) != -1)
   {
     printf("%s\n", syscall_info);
   }
