@@ -65,10 +65,9 @@ void child(int argc, char *exec_argv[])
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
   {
-    printf("arg is %s\n", exec_argv[i]);
     argv[i + 1] = exec_argv[i];
   }
-  printf("%s %s %s\n", argv[0], argv[1], argv[2]);
+  printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
   execve(argv[0], argv, environ);
   perror(argv[0]);
