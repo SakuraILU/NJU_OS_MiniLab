@@ -75,8 +75,6 @@ int main(int argc, char *argv[])
   if (ret == 0)
   {
     close(fd[0]);
-    dup2(fd[1], STDERR_FILENO);
-    close(fd[1]);
 
     child(argc, argv);
   }
@@ -100,12 +98,16 @@ int main(int argc, char *argv[])
 
 static void child(int argc, char *exec_argv[])
 {
-  char *argv[2 + argc + 1];
+  char *argv[2 + argc + 3];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
+  argv[2] = "-o";
+  char desp[16];
+  sprintf(desp, "/proc/self/%d", fd[1]);
+  argv[3] = desp;
   for (int i = 1; i < argc; ++i)
   {
-    argv[i + 1] = exec_argv[i];
+    argv[i + 3] = exec_argv[i];
   }
 
   char *envp[] = {
