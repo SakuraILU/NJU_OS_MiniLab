@@ -23,6 +23,9 @@
 
 extern char **environ;
 
+void child(char *exec_argv[]);
+void parent();
+
 int fd[2];
 
 int main(int argc, char *argv[])
