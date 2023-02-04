@@ -141,7 +141,7 @@ static void parent()
       char sysname[SYSNAME_MSIZE] = {0};
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
       char systime_str[SYSTIME_MSIZE] = {0};
-      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[0].rm_so - 2));
+      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
       printf("%s", sysinfo);
       printf("==========sys %s time %s\n", sysname, systime_str);
       add_sysinfo(sysname, systime);
