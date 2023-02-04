@@ -178,7 +178,7 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
       : "b"((uintptr_t)sp)
       : "memory"
 #else
-      "movl %%esp, %0; movl %1, %%esp"
+      "mov %%esp, %0; movl %1, %%esp"
       : "=g"(current->caller_stack)
       : "b"((uintptr_t)sp)
       : "memory"
@@ -194,7 +194,7 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
       : "b"(current->caller_stack)
       : "memory"
 #else
-      "movl %0, %%esp"
+      "mov %0, %%esp"
       :
       : "b"(current->caller_stack)
       : "memory"
