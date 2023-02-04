@@ -142,7 +142,7 @@ static void parent()
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so + 2);
       char systime_str[SYSTIME_MSIZE] = {0};
       int systime = atoi(strncpy(systime_str, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so + 2));
-      printf("==========sys %s time %d\n", sysname, systime_str);
+      printf("==========sys %s time %d\n", sysname, systime);
       add_sysinfo(sysname, systime);
     }
   }
