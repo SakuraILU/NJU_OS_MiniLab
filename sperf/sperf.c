@@ -127,26 +127,39 @@ static void parent()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    const size_t nmatch = 2;                                // 定义匹配结果最大允许数
-    regmatch_t pmatch[2];                                   // 定义匹配结果在待匹配串中的下标范围
+    printf("%s", sysinfo);
+    char sysname[SYSNAME_MSIZE] = {0};
+    char systime_str[SYSTIME_MSIZE] = {0};
+    int systime = 0;
+
+    const size_t nmatch = 1;                                // 定义匹配结果最大允许数
+    regmatch_t pmatch[1];                                   // 定义匹配结果在待匹配串中的下标范围
     int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
-      // printf("No Match\n");
       assert(false);
     }
     else if (status == 0)
     { // 如果匹配上了
-      // printf("Match\n");
-      char sysname[SYSNAME_MSIZE] = {0};
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-      char systime_str[SYSTIME_MSIZE] = {0};
       int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
-      printf("[0](%d,%d)  [1](%d,%d)\n", pmatch[0].rm_so, pmatch[0].rm_eo, pmatch[1].rm_so, pmatch[1].rm_eo);
-      printf("%s", sysinfo);
-      printf("==========sys %s time %s\n", sysname, systime_str);
-      add_sysinfo(sysname, systime);
+      printf("==========sys %s ", sysname);
     }
+
+    const size_t nmatch = 1;                                                  // 定义匹配结果最大允许数
+    regmatch_t pmatch[1];                                                     // 定义匹配结果在待匹配串中的下标范围
+    int status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
+    if (status == REG_NOMATCH)
+    { // 如果没匹配上
+      assert(false);
+    }
+    else if (status == 0)
+    { // 如果匹配上了
+      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
+      printf("time %d \n", systime);
+    }
+
+    add_sysinfo(sysname, systime);
   }
   printf("END\n");
 
