@@ -68,7 +68,7 @@ void child(int argc, char *exec_argv[])
   }
   printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
-  execve("/usr/bin/strace", argv, environ);
+  execve("strace", argv, environ);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
