@@ -139,7 +139,7 @@ static void parent()
     { // 如果匹配上了
       // printf("Match\n");
       char sysname[SYSNAME_MSIZE] = {0};
-      strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
+      strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so);
       char systime_str[SYSTIME_MSIZE] = {0};
       int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
       printf("[0](%d,%d)  [1](%d,%d)\n", pmatch[0].rm_so, pmatch[0].rm_eo, pmatch[1].rm_so, pmatch[1].rm_eo);
