@@ -59,6 +59,7 @@ void add_sysinfo(char *sys_name, float sys_time)
   strcpy(tail->name, sys_name);
   tail->total_time = sys_time;
   tail->next = NULL;
+  printf("add sys %s time %f \n", sys_name, sys_time);
 }
 
 static void child(int argc, char *exec_argv[]);
