@@ -125,11 +125,11 @@ static void parent()
 
 void parse_sysinfo()
 {
-  regex_t name_reg, time_reg;                 // 定义一个正则实例
-  const char *name_pat = "^[a-zA-Z_0-9]*";    // 定义模式串
-  regcomp(&name_reg, name_pat, REG_EXTENDED); // 编译正则模式串
-  const char *time_pat = "[0-9]+\\.[0-9]+>";  // 定义模式串
-  regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
+  regex_t name_reg, time_reg;                       // 定义一个正则实例
+  const char *name_pat = "^[a-zA-Z_][a-zA-Z0-9_]*"; // 定义模式串
+  regcomp(&name_reg, name_pat, REG_EXTENDED);       // 编译正则模式串
+  const char *time_pat = "[0-9]+\\.[0-9]+>";        // 定义模式串
+  regcomp(&time_reg, time_pat, REG_EXTENDED);       // 编译正则模式串
 
   char *sysinfo = NULL;
   size_t len = 0;
