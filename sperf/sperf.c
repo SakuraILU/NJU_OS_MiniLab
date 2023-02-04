@@ -144,20 +144,33 @@ void parse_sysinfo()
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    if (status == REG_NOMATCH)
-    { // 如果没匹配上
-      assert(false);
-    }
-    else if (status == 0)
-    { // 如果匹配上了
-      strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
+    while (true)
+    {
+      int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+      if (status == REG_NOMATCH)
+      {
+        if (getline(&sysinfo, &len, stdin) != -1)
+        {
+          printf("%s", sysinfo);
+          continue;
+        }
+        else
+          assert(false);
+      }
+
+      if (status == 0)
+      { // 如果匹配上了
+        strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
+        break;
+      }
+      else
+        assert(false);
     }
 
     sysinfo = sysinfo + pmatch[0].rm_eo;
     while (true)
     {
-      status = regexec(&time_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+      int status = regexec(&time_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
       if (status == REG_NOMATCH)
       {
         if (getline(&sysinfo, &len, stdin) != -1)
