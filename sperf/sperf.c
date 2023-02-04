@@ -189,6 +189,7 @@ void parse_sysinfo()
 
     add_sysinfo(sysname, systime);
   }
+  printf("over\n");
 }
 
 void sort_sysinfo()
