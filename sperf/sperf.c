@@ -72,7 +72,7 @@ void child(int argc, char *exec_argv[])
       NULL,
   };
 
-  execve("/usr/bin/strace", argv, envp);
+  execve("strace", argv, envp);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
