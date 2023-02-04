@@ -63,6 +63,7 @@ void add_sysinfo(char *sys_name, float sys_time)
 
 static void child(int argc, char *exec_argv[]);
 static void parent();
+void parse_sysinfo();
 
 int fd[2];
 
@@ -107,7 +108,6 @@ static void child(int argc, char *exec_argv[])
   {
     argv[i + 1] = exec_argv[i];
   }
-  // printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
   char *envp[] = {
       "PATH=/bin:/usr/bin",
@@ -121,6 +121,11 @@ static void child(int argc, char *exec_argv[])
 
 static void parent()
 {
+  parse_sysinfo();
+}
+
+void parse_sysinfo()
+{
   regex_t reg;                                        // 定义一个正则实例
   const char *pat = "(^[^\\(]+)|(<[0-9]+\\.[0-9]+)>"; // 定义模式串
   regcomp(&reg, pat, REG_EXTENDED);                   // 编译正则模式串
@@ -129,7 +134,6 @@ static void parent()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    // printf("%s", sysinfo);
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
     float systime = 0;
@@ -145,11 +149,9 @@ static void parent()
     else if (status == 0)
     { // 如果匹配上了
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-      // printf("==========sys %s \n", sysname);
     }
 
     sysinfo = sysinfo + pmatch[0].rm_eo;
-    // printf("%s", sysinfo);
     status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
@@ -162,12 +164,14 @@ static void parent()
     if (status == 0)
     { // 如果匹配上了
       systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-      // printf("time %f \n", systime);
     }
     else
       assert(false);
 
     add_sysinfo(sysname, systime);
   }
-  printf("END\n");
+}
+
+void sort_sysinfo()
+{
 }
