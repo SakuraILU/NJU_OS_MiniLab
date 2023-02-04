@@ -19,8 +19,6 @@
 //   exit(EXIT_FAILURE);
 // }
 
-#define SYSINFO_MSIZE 128
-
 extern char **environ;
 
 void child(int argc, char *exec_argv[]);
@@ -72,9 +70,11 @@ void child(int argc, char *exec_argv[])
 void parent()
 {
   char *syscall_info;
-  while (getline(&syscall_info, SYSINFO_MSIZE, stdin) != -1)
+  size_t len = 128;
+  while (getline(&syscall_info, &len, stdin) != -1)
   {
     printf("%s\n", syscall_info);
   }
+  free(line);
   printf("END");
 }
