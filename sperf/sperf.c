@@ -173,7 +173,7 @@ void parse_sysinfo()
             continue;
           }
           else
-            assert(false);
+            goto over;
         }
 
         if (status == 0)
@@ -188,6 +188,8 @@ void parse_sysinfo()
 
     add_sysinfo(sysname, systime);
   }
+
+over:
 }
 
 void sort_sysinfo()
