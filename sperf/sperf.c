@@ -103,7 +103,7 @@ static void child(int argc, char *exec_argv[])
   argv[1] = "--syscall-time";
   argv[2] = "-o";
   char desp[16];
-  sprintf(desp, "/proc/self/%d", fd[1]);
+  sprintf(desp, "/proc/\'pid\'/%d", fd[1]);
   argv[3] = desp;
   for (int i = 1; i < argc; ++i)
   {
