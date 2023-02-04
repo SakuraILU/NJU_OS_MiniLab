@@ -143,7 +143,7 @@ void parse_sysinfo()
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    printf("%s", sysinfo);
+    // printf("%s", sysinfo);
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
@@ -154,28 +154,38 @@ void parse_sysinfo()
       strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
     }
 
-    sysinfo = sysinfo + pmatch[0].rm_eo;
-    while (true)
+    int offset = pmatch[0].rm_eo;
+    status = regexec(&time_reg, sysinfo + offset, nmatch, pmatch, 0); // 匹配他
+    if (status == 0)
+    { // 如果匹配上了
+      systime = atof(strncpy(systime_str, sysinfo + offset + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
+      break;
+    }
+    else
     {
-      status = regexec(&time_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-      if (status == REG_NOMATCH)
+
+      while (true)
       {
-        if (getline(&sysinfo, &len, stdin) != -1)
+        status = regexec(&time_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+        if (status == REG_NOMATCH)
         {
-          printf("%s", sysinfo);
-          continue;
+          if (getline(&sysinfo, &len, stdin) != -1)
+          {
+            printf("%s", sysinfo);
+            continue;
+          }
+          else
+            assert(false);
+        }
+
+        if (status == 0)
+        { // 如果匹配上了
+          systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
+          break;
         }
         else
           assert(false);
       }
-
-      if (status == 0)
-      { // 如果匹配上了
-        systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-        break;
-      }
-      else
-        assert(false);
     }
 
     add_sysinfo(sysname, systime);
