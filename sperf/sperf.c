@@ -69,12 +69,12 @@ void child(int argc, char *exec_argv[])
 
 void parent()
 {
-  char *syscall_info;
+  char *sysinfo;
   size_t len = 128;
-  while (getline(&syscall_info, &len, stdin) != -1)
+  while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("%s\n", syscall_info);
+    printf("%s\n", sysinfo);
   }
-  free(line);
+  free(sysinfo);
   printf("END");
 }
