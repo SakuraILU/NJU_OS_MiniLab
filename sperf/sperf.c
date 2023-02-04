@@ -119,9 +119,9 @@ static void child(int argc, char *exec_argv[])
 
 static void parent()
 {
-  regex_t reg;                           // 定义一个正则实例
-  const char *pat = "([0-9]+\\.[0-9]+)"; // 定义模式串
-  regcomp(&reg, pat, REG_EXTENDED);      // 编译正则模式串
+  regex_t reg;                                 // 定义一个正则实例
+  const char *pat = "(\\<[0-9]+\\.[0-9]+)\\>"; // 定义模式串
+  regcomp(&reg, pat, REG_EXTENDED);            // 编译正则模式串
 
   char *sysinfo = NULL;
   size_t len = 0;
