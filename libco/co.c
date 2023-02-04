@@ -31,7 +31,7 @@ typedef struct co
   struct co *waiter;         // 是否有其他协程在等待当前协程
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
-  uintptr_t caller_stack;
+  uintptr_t stack_bak;
   struct co *caller;
 
   struct co *pre, *next; // 协程链表指针
@@ -174,12 +174,12 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
   asm volatile(
 #if __x86_64__
       "movq %%rsp, %0; movq %1, %%rsp"
-      : "=g"(current->caller_stack)
+      : "=g"(current->stack_bak)
       : "b"((uintptr_t)sp)
       : "memory"
 #else
       "movl %%esp, %0; movl %1, %%esp"
-      : "=g"(current->caller_stack)
+      : "=g"(current->stack_bak)
       : "b"((uintptr_t)sp)
       : "memory"
 #endif
@@ -191,12 +191,12 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #if __x86_64__
       "movq %0, %%rsp"
       :
-      : "b"(current->caller_stack)
+      : "b"(current->stack_bak)
       : "memory"
 #else
       "movl %0, %%esp"
       :
-      : "b"(current->caller_stack)
+      : "b"(current->stack_bak)
       : "memory"
 #endif
   );
