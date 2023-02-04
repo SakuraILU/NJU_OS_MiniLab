@@ -139,7 +139,7 @@ void co_yield ()
       current->status = CO_RUNNING;
       stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
       current->status = CO_DEAD;
-      printf("%s dead\n", current->name);
+      // printf("%s dead\n", current->name);
       if (current->waiter != NULL)
         current->waiter->status = CO_RUNNING;
 
