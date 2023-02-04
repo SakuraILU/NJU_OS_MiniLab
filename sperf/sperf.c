@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <regex.h>
 #include <assert.h>
+#include <stdbool.h>
 
 // int main(int argc, char *argv[])
 // {
@@ -19,8 +22,45 @@
 //   exit(EXIT_FAILURE);
 // }
 
-void child(int argc, char *exec_argv[]);
-void parent();
+#define SYSNAME_MSIZE 64
+#define SYSTIME_MSIZE 32
+
+typedef struct sysinfo
+{
+  char name[SYSNAME_MSIZE];
+  uint total_time;
+  struct sysinfo *next;
+} Sysinfo;
+
+Sysinfo *head, *tail;
+
+static __attribute__((construct)) init()
+{
+  tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
+  memset(head, 0, sizeof(head));
+}
+
+void add_sysinfo(char *sys_name, uint sys_time)
+{
+  Sysinfo *itr = head->next;
+  while (itr != NULL)
+  {
+    if (strcmp(itr->name, sys_name) == 0)
+    {
+      itr->total_time += sys_time;
+      return;
+    }
+  }
+
+  tail->next = (Sysinfo *)malloc(sizeof(Sysinfo));
+  tail = tail->next;
+  strcpy(tail->name, sys_name);
+  tail->total_time = sys_time;
+  tail->next = NULL;
+}
+
+static void child(int argc, char *exec_argv[]);
+static void parent();
 
 int fd[2];
 
@@ -56,7 +96,7 @@ int main(int argc, char *argv[])
   }
 }
 
-void child(int argc, char *exec_argv[])
+static void child(int argc, char *exec_argv[])
 {
   char *argv[2 + argc + 1];
   argv[0] = "strace";
@@ -77,14 +117,37 @@ void child(int argc, char *exec_argv[])
   exit(EXIT_FAILURE);
 }
 
-void parent()
+static void parent()
 {
+  regex_t reg;                                             // 定义一个正则实例
+  const char *pat = "(^[^\\()]+)|(\\<[0-9]+\\.[0-9]+\\>)"; // 定义模式串
+  regcomp(&reg, pat, REG_EXTENDED);                        // 编译正则模式串
+
   char *sysinfo = NULL;
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    printf("%s", sysinfo);
+    const size_t nmatch = 2;                                // 定义匹配结果最大允许数
+    regmatch_t pmatch[2];                                   // 定义匹配结果在待匹配串中的下标范围
+    int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    if (status == REG_NOMATCH)
+    { // 如果没匹配上
+      // printf("No Match\n");
+      assert(false);
+    }
+    else if (status == 0)
+    { // 如果匹配上了
+      // printf("Match\n");
+      char sysname[SYSNAME_MSIZE] = {0};
+      strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so + 2);
+      char systime_str[SYSTIME_MSIZE] = {0};
+      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so + 2));
+      printf("==========sys %s time %d\n", sysname, systime_str);
+      add_sysinfo(sysname, systime);
+    }
   }
-  free(sysinfo);
   printf("END\n");
+
+  free(sysinfo);
+  regfree(&reg); // 释放正则表达式
 }
