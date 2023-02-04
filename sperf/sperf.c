@@ -171,6 +171,5 @@ static void parent()
   }
   printf("END\n");
 
-  // free(sysinfo);
-  // regfree(&reg); // 释放正则表达式
+  regfree(&reg); // 释放正则表达式
 }
