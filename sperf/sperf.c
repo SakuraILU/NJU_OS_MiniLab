@@ -160,7 +160,7 @@ static void parent()
 
     if (status == 0)
     { // 如果匹配上了
-      float systime = atof("0.00031");
+      float systime = atof("1.2");
       printf("time %s \n", systime_str);
     }
     else
