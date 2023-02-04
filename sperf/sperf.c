@@ -70,7 +70,7 @@ void child(int argc, char *exec_argv[])
 void parent()
 {
   char *syscall_info;
-  while ((syscall_info = readline()) != NULL)
+  while ((syscall_info = readline("")) != NULL)
   {
     printf("%s\n", syscall_info);
   }
