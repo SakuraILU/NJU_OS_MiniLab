@@ -34,7 +34,7 @@ typedef struct sysinfo
 
 Sysinfo *head, *tail;
 
-static __attribute__((construct)) init()
+static __attribute__((construct)) void init()
 {
   tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
   memset(head, 0, sizeof(head));
