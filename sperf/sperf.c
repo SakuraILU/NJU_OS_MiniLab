@@ -126,7 +126,7 @@ static void parent()
 void parse_sysinfo()
 {
   regex_t name_reg, time_reg;                 // 定义一个正则实例
-  const char *name_pat = "^[^\\(]+";          // 定义模式串
+  const char *name_pat = "^[^\\(]*";          // 定义模式串
   regcomp(&name_reg, name_pat, REG_EXTENDED); // 编译正则模式串
   const char *time_pat = "<[0-9]+\\.[0-9]+>"; // 定义模式串
   regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
@@ -145,7 +145,6 @@ void parse_sysinfo()
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    printf("%d\n", status);
     if (status == REG_NOMATCH)
     { // 如果没匹配上
       assert(false);
