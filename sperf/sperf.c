@@ -109,7 +109,7 @@ static void child(int argc, char *exec_argv[])
   }
 
   char *envp[] = {
-      "PATH=/bin:/usr/bin",
+      "PATH=/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
       NULL,
   };
 
