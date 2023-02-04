@@ -124,12 +124,7 @@ void co_yield ()
 {
   int ret = 0;
   if ((ret = setjmp(current->context)) == SJ_RECOVERY)
-  {
-    printf("%s(arg %s)\n", current->name, (char *)current->arg);
     return;
-  }
-  // printf("%s setjump status is %d\n", current->name, ret);
-  // printf("hello");
 
   while (true)
   {
