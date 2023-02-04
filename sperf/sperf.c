@@ -161,7 +161,7 @@ static void parent()
     if (status == 0)
     { // 如果匹配上了
       float systime = atof("1.2");
-      printf("time %s \n", systime_str);
+      printf("time %f \n", systime);
     }
     else
       assert(false);
