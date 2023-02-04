@@ -68,7 +68,8 @@ void child(int argc, char *exec_argv[])
   }
   printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
-  execve("strace", argv, environ);
+  char **env = {getenv("PATH")};
+  execve("strace", argv, env);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
