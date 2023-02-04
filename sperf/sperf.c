@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <readline/readline.h>
-#include <readline/history.h>
 #include <assert.h>
 
 // int main(int argc, char *argv[])
