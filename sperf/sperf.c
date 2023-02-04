@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
   else if (ret > 0)
   {
     close(fd[1]);
-    close2(fd[0], STDIN_FILENO);
+    dup2(fd[0], STDIN_FILENO);
     close(fd[0]);
 
     parent();
@@ -176,8 +176,6 @@ void parse_sysinfo()
 
     add_sysinfo(sysname, systime);
   }
-
-over:
 }
 
 void sort_sysinfo()
