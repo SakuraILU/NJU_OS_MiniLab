@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     dup(fd[1]);
     close(fd[1]);
 
-    child(argc, argv + 1);
+    child(argc, argv);
   }
   else if (ret > 0)
   {
@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
 
 void child(int argc, char *exec_argv[])
 {
-  char *argv[2 + argc + 1] = {NULL};
+  char *argv[2 + argc + 1];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
-  for (int i = 0; i < ARLEN(exec_argv); ++i)
+  for (int i = 1; i <= argc; ++i)
     argv[i + 2] = exec_argv[i];
 
   execve(argv[0], argv, environ);
