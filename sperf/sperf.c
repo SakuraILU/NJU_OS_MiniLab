@@ -145,6 +145,7 @@ void parse_sysinfo()
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    printf("%d\n", status);
     if (status == REG_NOMATCH)
     { // 如果没匹配上
       assert(false);
