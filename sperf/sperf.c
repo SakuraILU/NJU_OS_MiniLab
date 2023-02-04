@@ -131,7 +131,7 @@ static void parent()
     printf("%s", sysinfo);
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
-    int systime = 0;
+    float systime = 0;
 
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
