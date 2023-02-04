@@ -19,8 +19,6 @@
 //   exit(EXIT_FAILURE);
 // }
 
-extern char **environ;
-
 void child(int argc, char *exec_argv[]);
 void parent();
 
@@ -69,7 +67,7 @@ void child(int argc, char *exec_argv[])
   }
   printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
-  execve("/usr/bin/strace", argv, environ);
+  execve("/usr/bin/strace", argv, getenv("PATH"));
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
