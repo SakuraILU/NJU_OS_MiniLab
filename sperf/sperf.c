@@ -147,7 +147,7 @@ void parse_sysinfo()
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
-      assert(false);
+      continue;
     }
     else if (status == 0)
     { // 如果匹配上了
