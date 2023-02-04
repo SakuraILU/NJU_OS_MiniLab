@@ -134,41 +134,41 @@ void parse_sysinfo()
   while (getline(&sysinfo, &len, stdin) != -1)
   {
     printf("%s", sysinfo);
-    char sysname[SYSNAME_MSIZE] = {0};
-    char systime_str[SYSTIME_MSIZE] = {0};
-    float systime = 0;
+    // char sysname[SYSNAME_MSIZE] = {0};
+    // char systime_str[SYSTIME_MSIZE] = {0};
+    // float systime = 0;
 
-    const size_t nmatch = 1; // 定义匹配结果最大允许数
-    regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
+    // const size_t nmatch = 1; // 定义匹配结果最大允许数
+    // regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    if (status == REG_NOMATCH)
-    { // 如果没匹配上
-      assert(false);
-    }
-    else if (status == 0)
-    { // 如果匹配上了
-      strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
-    }
+    // int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    // if (status == REG_NOMATCH)
+    // { // 如果没匹配上
+    //   assert(false);
+    // }
+    // else if (status == 0)
+    // { // 如果匹配上了
+    //   strncpy(sysname, sysinfo + pmatch[0].rm_so, pmatch[0].rm_eo - pmatch[0].rm_so);
+    // }
 
-    sysinfo = sysinfo + pmatch[0].rm_eo;
-    status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    if (status == REG_NOMATCH)
-    { // 如果没匹配上
-      if (getline(&sysinfo, &len, stdin) != -1)
-        break;
-      else
-        status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
-    }
+    // sysinfo = sysinfo + pmatch[0].rm_eo;
+    // status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    // if (status == REG_NOMATCH)
+    // { // 如果没匹配上
+    //   if (getline(&sysinfo, &len, stdin) != -1)
+    //     break;
+    //   else
+    //     status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
+    // }
 
-    if (status == 0)
-    { // 如果匹配上了
-      systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-    }
-    else
-      assert(false);
+    // if (status == 0)
+    // { // 如果匹配上了
+    //   systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
+    // }
+    // else
+    //   assert(false);
 
-    add_sysinfo(sysname, systime);
+    // add_sysinfo(sysname, systime);
   }
 }
 
