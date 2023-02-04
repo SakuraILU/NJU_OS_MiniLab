@@ -80,6 +80,7 @@ void parent()
   size_t len = 128;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
+    printf("hello\n");
     printf("%s\n", sysinfo);
   }
   free(sysinfo);
