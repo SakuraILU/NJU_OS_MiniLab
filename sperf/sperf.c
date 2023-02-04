@@ -161,11 +161,11 @@ static void parent()
     if (status == 0)
     { // 如果匹配上了
       float systime = atof(strncpy(systime_str, sysinfo + pmatch[0].rm_so + 1, pmatch[0].rm_eo - pmatch[0].rm_so - 2));
-      printf("time %f \n", systime);
     }
     else
       assert(false);
 
+    printf("time %f \n", systime);
     add_sysinfo(sysname, systime);
   }
   printf("END\n");
