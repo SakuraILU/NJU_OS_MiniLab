@@ -28,7 +28,7 @@
 typedef struct sysinfo
 {
   char name[SYSNAME_MSIZE];
-  uint total_time;
+  float total_time;
   struct sysinfo *next;
 } Sysinfo;
 
@@ -40,7 +40,7 @@ static __attribute__((constructor)) void init()
   memset(head, 0, sizeof(Sysinfo));
 }
 
-void add_sysinfo(char *sys_name, uint sys_time)
+void add_sysinfo(char *sys_name, float sys_time)
 {
   printf("add sysinfo (%s,%d)\n", sys_name, sys_time);
   Sysinfo *itr = head->next;
