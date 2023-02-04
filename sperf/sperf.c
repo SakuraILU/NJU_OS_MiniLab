@@ -43,6 +43,10 @@ int main(int argc, char *argv[])
   else if (ret > 0)
   {
     close(fd[1]);
+    close(STDIN_FILENO);
+    dup(fd[0]);
+    close(fd[0]);
+
     parent();
   }
   else
@@ -75,7 +79,6 @@ void parent()
 {
   char *sysinfo;
   size_t len = 128;
-  printf("here\n");
   while (getline(&sysinfo, &len, stdin) != -1)
   {
     printf("%s\n", sysinfo);
