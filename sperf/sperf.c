@@ -42,6 +42,7 @@ static __attribute__((constructor)) void init()
 
 void add_sysinfo(char *sys_name, uint sys_time)
 {
+  printf("add sysinfo\n");
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -57,7 +58,6 @@ void add_sysinfo(char *sys_name, uint sys_time)
   strcpy(tail->name, sys_name);
   tail->total_time = sys_time;
   tail->next = NULL;
-  printf("add sysinfo\n");
 }
 
 static void child(int argc, char *exec_argv[]);
