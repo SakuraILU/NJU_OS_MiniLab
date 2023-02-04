@@ -42,7 +42,7 @@ static __attribute__((constructor)) void init()
 
 void add_sysinfo(char *sys_name, float sys_time)
 {
-  printf("add sys %s time %f \n", sys_name, sys_time);
+  // printf("add sys %s time %f \n", sys_name, sys_time);
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
