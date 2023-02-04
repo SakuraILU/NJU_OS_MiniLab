@@ -22,7 +22,6 @@
 void child(int argc, char *exec_argv[]);
 void parent();
 
-extern char **environ;
 int fd[2];
 
 int main(int argc, char *argv[])
@@ -66,11 +65,14 @@ void child(int argc, char *exec_argv[])
   {
     argv[i + 1] = exec_argv[i];
   }
-  printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
+  // printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
-  char *env[] = {getenv("PATH"), NULL};
-  printf("%s \n", env[0]);
-  execve("strace", argv, env);
+  char *envp[] = {
+      "PATH=/bin:/usr/bin",
+      NULL,
+  };
+
+  execve("strace", argv, envp);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
