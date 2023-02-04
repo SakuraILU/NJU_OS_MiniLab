@@ -37,7 +37,7 @@ Sysinfo *head, *tail;
 static __attribute__((constructor)) void init()
 {
   tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
-  memset(head, 0, sizeof(head));
+  memset(head, 0, sizeof(Sysinfo));
 }
 
 void add_sysinfo(char *sys_name, uint sys_time)
