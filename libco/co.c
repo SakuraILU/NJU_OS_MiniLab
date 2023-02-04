@@ -175,12 +175,12 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #if __x86_64__
       "movq %%rsp, %0; movq %1, %%rsp"
       : "=g"(current->caller_stack)
-      : "b"((uintptr_t)sp - 16)
+      : "b"((uintptr_t)sp)
       : "memory"
 #else
       "movl %%esp, %0; movl %1, %%esp"
       : "=g"(current->caller_stack)
-      : "b"((uintptr_t)sp - 8)
+      : "b"((uintptr_t)sp)
       : "memory"
 #endif
   );
