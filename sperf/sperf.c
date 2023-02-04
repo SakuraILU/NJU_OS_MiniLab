@@ -119,15 +119,15 @@ static void child(int argc, char *exec_argv[])
 
 static void parent()
 {
-  regex_t reg;                                            // 定义一个正则实例
-  const char *pat = "(^[^\\(]+)|(\\<[0-9]+\\.[0-9]+\\>)"; // 定义模式串
-  regcomp(&reg, pat, REG_EXTENDED);                       // 编译正则模式串
+  regex_t reg;                                      // 定义一个正则实例
+  const char *pat = "(^[^\\(]+)|([0-9]+\\.[0-9]+)"; // 定义模式串
+  regcomp(&reg, pat, REG_EXTENDED);                 // 编译正则模式串
 
   char *sysinfo = NULL;
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    const size_t nmatch = 3;                                // 定义匹配结果最大允许数
+    const size_t nmatch = 2;                                // 定义匹配结果最大允许数
     regmatch_t pmatch[2];                                   // 定义匹配结果在待匹配串中的下标范围
     int status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
