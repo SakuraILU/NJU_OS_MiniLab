@@ -157,7 +157,7 @@ static void parent()
       printf("time %d \n", systime);
     }
 
-    add_sysinfo(sysname, systime);
+    // add_sysinfo(sysname, systime);
   }
   printf("END\n");
 
