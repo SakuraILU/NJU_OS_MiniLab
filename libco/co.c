@@ -137,7 +137,7 @@ void co_yield ()
     case CO_NEW:
     {
       current->status = CO_RUNNING;
-      stack_switch_call(current->stack + STACK_SIZE - 16, current->func, (uintptr_t)current->arg);
+      stack_switch_call(current->stack + STACK_SIZE, current->func, (uintptr_t)current->arg);
       current->status = CO_DEAD;
       printf("%s dead\n", current->name);
       if (current->waiter != NULL)
@@ -175,12 +175,12 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #if __x86_64__
       "movq %%rsp, %0; movq %1, %%rsp"
       : "=g"(current->caller_stack)
-      : "b"((uintptr_t)sp)
+      : "b"((uintptr_t)sp - 16)
       : "memory"
 #else
       "movl %%esp, %0; movl %1, %%esp"
       : "=g"(current->caller_stack)
-      : "b"((uintptr_t)sp)
+      : "b"((uintptr_t)sp - 8)
       : "memory"
 #endif
   );
