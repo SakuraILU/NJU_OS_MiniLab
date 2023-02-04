@@ -64,7 +64,7 @@ void child(int argc, char *exec_argv[])
     printf("arg is %s\n", exec_argv[i]);
     argv[i + 1] = exec_argv[i];
   }
-  printf("%s %s %s %d\n", argv[0], argv[1], argv[2], argc);
+  printf("%s %s %s\n", argv[0], argv[1], argv[2]);
 
   execve(argv[0], argv, environ);
   perror(argv[0]);
@@ -75,6 +75,7 @@ void parent()
 {
   char *sysinfo;
   size_t len = 128;
+  printf("here\n");
   while (getline(&sysinfo, &len, stdin) != -1)
   {
     printf("%s\n", sysinfo);
