@@ -42,7 +42,7 @@ static __attribute__((constructor)) void init()
 
 void add_sysinfo(char *sys_name, float sys_time)
 {
-  // printf("add sys %s time %f \n", sys_name, sys_time);
+  printf("add sys %s time %f \n", sys_name, sys_time);
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -127,7 +127,7 @@ static void parent()
 void parse_sysinfo()
 {
   regex_t reg;                                         // 定义一个正则实例
-  const char *pat = "(^[^\\(]+)|(<[0-9]+\\.[0-9]+)>$"; // 定义模式串
+  const char *pat = "(^[^\\(]+)|(<[0-9]+\\.[0-9]+>&)"; // 定义模式串
   regcomp(&reg, pat, REG_EXTENDED);                    // 编译正则模式串
 
   char *sysinfo = NULL;
