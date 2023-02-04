@@ -135,7 +135,7 @@ void parse_sysinfo()
   size_t len = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-    // printf("%s", sysinfo);
+    printf("%s", sysinfo);
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
     float systime = 0;
@@ -160,7 +160,10 @@ void parse_sysinfo()
       if (status == REG_NOMATCH)
       {
         if (getline(&sysinfo, &len, stdin) != -1)
+        {
+          printf("%s", sysinfo);
           continue;
+        }
         else
           assert(false);
       }
