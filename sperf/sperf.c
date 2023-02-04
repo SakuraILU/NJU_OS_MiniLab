@@ -146,16 +146,16 @@ static void parent()
       printf("==========sys %s ", sysname);
     }
 
-    status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
-    if (status == REG_NOMATCH)
-    { // 如果没匹配上
-      assert(false);
-    }
-    else if (status == 0)
-    { // 如果匹配上了
-      int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
-      printf("time %d \n", systime);
-    }
+    // status = regexec(&reg, sysinfo + pmatch[0].rm_eo, nmatch, pmatch, 0); // 匹配他
+    // if (status == REG_NOMATCH)
+    // { // 如果没匹配上
+    //   assert(false);
+    // }
+    // else if (status == 0)
+    // { // 如果匹配上了
+    //   int systime = atoi(strncpy(systime_str, sysinfo + pmatch[1].rm_so + 1, pmatch[1].rm_eo - pmatch[1].rm_so - 2));
+    //   printf("time %d \n", systime);
+    // }
 
     // add_sysinfo(sysname, systime);
   }
