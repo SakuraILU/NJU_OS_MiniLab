@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <readline/readline.h>
 #include <assert.h>
 
 // int main(int argc, char *argv[])
@@ -19,6 +18,9 @@
 //   perror(argv[0]);
 //   exit(EXIT_FAILURE);
 // }
+
+#define SYSINFO_MSIZE 128
+
 extern char **environ;
 
 void child(int argc, char *exec_argv[]);
@@ -69,8 +71,8 @@ void child(int argc, char *exec_argv[])
 
 void parent()
 {
-  char *syscall_info;
-  while ((syscall_info = readline("")) != NULL)
+  char syscall_info[SYSINFO_MSIZE];
+  while (getline(syscall_info, SYSINFO_MSIZE, stdin) != -1)
   {
     printf("%s\n", syscall_info);
   }
