@@ -147,7 +147,7 @@ static void parent()
     }
 
     sysinfo = sysinfo + pmatch[0].rm_eo;
-    printf("%s", sysinfo + pmatch[0].rm_eo);
+    printf("%s", sysinfo);
     status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
     { // 如果没匹配上
