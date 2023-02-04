@@ -156,10 +156,12 @@ void parse_sysinfo()
     {
       status = regexec(&reg, sysinfo, nmatch, pmatch, 0); // 匹配他
       if (status == REG_NOMATCH)
+      {
         if (getline(&sysinfo, &len, stdin) != -1)
           continue;
         else
           assert(false);
+      }
 
       if (status == 0)
       { // 如果匹配上了
