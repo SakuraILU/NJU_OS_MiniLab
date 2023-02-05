@@ -259,11 +259,11 @@ Sysinfo *quick_sort(Sysinfo *head)
 
   if (head1 == NULL)
   {
-    mark->next = qsort(head2);
+    mark->next = quick_sort(head2);
     return mark;
   }
 
-  head1 = qsort(head1);
+  head1 = quick_sort(head1);
   itr1 = head1;
   while (itr1->next == NULL)
   {
@@ -274,7 +274,7 @@ Sysinfo *quick_sort(Sysinfo *head)
   if (head2 == NULL)
     return head1;
   else
-    mark->next = qsort(head2);
+    mark->next = quick_sort(head2);
 
   return head1;
 }
