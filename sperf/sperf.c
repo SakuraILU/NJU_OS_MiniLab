@@ -256,6 +256,7 @@ Sysinfo *quick_sort(Sysinfo *head)
       tmp->next = NULL;
     }
   }
+  printf("head1 %p, head2 %p\n", head1, head2);
 
   if (head1 == NULL)
   {
