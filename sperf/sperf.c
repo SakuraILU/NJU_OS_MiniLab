@@ -80,7 +80,7 @@ static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
 void sort_sysinfo();
-Sysinfo *qsort(Sysinfo *head);
+Sysinfo *quick_sort(Sysinfo *head);
 
 int fd[2];
 
@@ -217,10 +217,10 @@ void parse_sysinfo()
 
 void sort_sysinfo()
 {
-  head->next = qsort(head->next);
+  head->next = quick_sort(head->next);
 }
 
-Sysinfo *qsort(Sysinfo *head)
+Sysinfo *quick_sort(Sysinfo *head)
 {
   assert(head != NULL);
 
