@@ -36,15 +36,18 @@ typedef struct sysinfo
 
 Sysinfo *head, *tail;
 
+float total_time = 0;
+
 static __attribute__((constructor)) void init()
 {
   tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
   memset(head, 0, sizeof(Sysinfo));
 }
 
-void add_sysinfo(char *sys_name, float sys_time)
+static void add_sysinfo(char *sys_name, float sys_time)
 {
   printf("add sys %s time %f \n", sys_name, sys_time);
+  total_time += sys_time;
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -63,9 +66,21 @@ void add_sysinfo(char *sys_name, float sys_time)
   tail->next = NULL;
 }
 
+static void print_sysinfo()
+{
+  Sysinfo *itr = head->next;
+  while (itr != NULL)
+  {
+    printf("====================");
+    printf("%s (%d)", itr->name, itr->total_time / total_time);
+    itr = itr->next;
+  }
+}
+
 static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
+void sort_sysinfo();
 
 int fd[2];
 
@@ -136,6 +151,8 @@ static void child(int argc, char *exec_argv[])
 static void parent()
 {
   parse_sysinfo();
+  sort_sysinfo();
+  print_sysinfo();
 }
 
 void parse_sysinfo()
