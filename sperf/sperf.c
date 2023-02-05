@@ -7,22 +7,6 @@
 #include <time.h>
 #include <assert.h>
 
-// int main(int argc, char *argv[])
-// {
-//   char *exec_argv[] = {
-//       "strace",
-//       "ls",
-//       NULL,
-//   };
-//   char *exec_envp[] = {
-//       "PATH=/bin",
-//       NULL,
-//   };
-//   execve("strace", exec_argv, exec_envp);
-//   perror(argv[0]);
-//   exit(EXIT_FAILURE);
-// }
-
 #define SYSNAME_MSIZE 24
 #define SYSTIME_MSIZE 24
 #define INTERVAL 2
@@ -37,7 +21,7 @@ typedef struct sysinfo
   float total_time;
   struct sysinfo *next;
 } Sysinfo;
-Sysinfo *head, *tail;
+Sysinfo *dummy, *tail;
 float sys_total_time = 0;
 
 regex_t name_reg, time_reg;
@@ -46,8 +30,8 @@ const char *time_pat = "<[0-9]+\\.[0-9]+>"; // 定义模式串
 
 static __attribute__((constructor)) void constructor()
 {
-  tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
-  memset(head, 0, sizeof(Sysinfo));
+  tail = dummy = (Sysinfo *)malloc(sizeof(Sysinfo));
+  memset(dummy, 0, sizeof(Sysinfo));
 
   regcomp(&name_reg, name_pat, REG_EXTENDED); // 编译正则模式串
   regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
@@ -63,7 +47,7 @@ static void add_sysinfo(char *sys_name, float sys_time)
 {
   // printf("add sys %s time %f \n", sys_name, sys_time);
   sys_total_time += sys_time;
-  Sysinfo *itr = head->next;
+  Sysinfo *itr = dummy->next;
   while (itr != NULL)
   {
     if (strcmp(itr->name, sys_name) == 0)
@@ -85,7 +69,7 @@ static void print_sysinfo()
 {
   eprintf("===SYSCALL USAGE PERCENT===\n");
   printf("TIME: %d\n", INTERVAL);
-  Sysinfo *itr = head->next;
+  Sysinfo *itr = dummy->next;
   while (itr != NULL)
   {
     eprintf("%-24s (%6.3f%%)\n", itr->name, itr->total_time / sys_total_time * 100);
@@ -97,7 +81,7 @@ static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
 void sort_sysinfo();
-static Sysinfo *quick_sort(Sysinfo *head);
+static Sysinfo *quick_sort(Sysinfo *dummy);
 
 int fd[2];
 bool sperf_over = false;
@@ -160,7 +144,6 @@ static void child(int argc, char *exec_argv[])
   argv[argc + 2] = NULL;
 
   execve("/usr/bin/strace", argv, environ);
-
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
@@ -238,7 +221,7 @@ void parse_sysinfo()
 
 void sort_sysinfo()
 {
-  head->next = quick_sort(head->next);
+  dummy->next = quick_sort(dummy->next);
 }
 
 static Sysinfo *quick_sort(Sysinfo *head)
