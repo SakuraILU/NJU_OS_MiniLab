@@ -122,7 +122,7 @@ static void child(int argc, char *exec_argv[])
 
   execve("/usr/bin/strace", (char **)argv, environ);
 
-  perror(argv[0]);
+  perror((char *)argv[0]);
   exit(EXIT_FAILURE);
 }
 
