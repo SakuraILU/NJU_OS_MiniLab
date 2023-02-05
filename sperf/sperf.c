@@ -25,6 +25,8 @@
 #define SYSNAME_MSIZE 24
 #define SYSTIME_MSIZE 24
 
+#define eprintf(...) fprintf(stderr, ##__VA_ARGS__)
+
 extern char **environ;
 
 typedef struct sysinfo
@@ -67,11 +69,11 @@ static void add_sysinfo(char *sys_name, float sys_time)
 
 static void print_sysinfo()
 {
-  printf("===SYSCALL USAGE PERCENT===\n");
+  eprintf("===SYSCALL USAGE PERCENT===\n");
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("%-24s (%6.3f%%)\n", itr->name, itr->total_time / sys_total_time * 100);
+    eprintf("%-24s (%6.3f%%)\n", itr->name, itr->total_time / sys_total_time * 100);
     itr = itr->next;
   }
 }
