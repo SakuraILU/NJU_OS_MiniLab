@@ -229,7 +229,7 @@ Sysinfo *quick_sort(Sysinfo *head)
     return mark;
 
   Sysinfo *head1 = NULL, *head2 = NULL, *itr1 = NULL, *itr2 = NULL;
-  while (mark->next == NULL)
+  while (mark->next != NULL)
   {
     Sysinfo *tmp = mark->next;
     mark->next = tmp->next;
@@ -256,7 +256,6 @@ Sysinfo *quick_sort(Sysinfo *head)
       tmp->next = NULL;
     }
   }
-  printf("head1 %p, head2 %p\n", head1, head2);
 
   if (head1 == NULL)
   {
