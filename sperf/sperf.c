@@ -25,6 +25,7 @@
 
 #define SYSNAME_MSIZE 24
 #define SYSTIME_MSIZE 24
+#define INTERVAL 2
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__)
 
@@ -71,6 +72,7 @@ static void add_sysinfo(char *sys_name, float sys_time)
 static void print_sysinfo()
 {
   eprintf("===SYSCALL USAGE PERCENT===\n");
+  printf("TIME: %d\n", INTERVAL);
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -218,11 +220,11 @@ void parse_sysinfo()
     add_sysinfo(sysname, systime);
 
     interval = time(NULL) - stime;
-    if (interval >= 2)
+    if (interval >= INTERVAL)
       break;
   }
 
-  if (interval < 2)
+  if (interval < INTERVAL)
     sperf_over = true;
 
   free(sysinfo);
