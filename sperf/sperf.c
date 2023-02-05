@@ -192,6 +192,8 @@ void parse_sysinfo()
 
     add_sysinfo(sysname, systime);
   }
+
+  free(sysinfo);
 }
 
 void sort_sysinfo()
