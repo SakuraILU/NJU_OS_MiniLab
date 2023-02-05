@@ -72,7 +72,7 @@ static void print_sysinfo()
   while (itr != NULL)
   {
     printf("====================");
-    printf("%s (%d)", itr->name, itr->total_time / total_time);
+    printf("%s (%f)", itr->name, itr->total_time / total_time);
     itr = itr->next;
   }
 }
