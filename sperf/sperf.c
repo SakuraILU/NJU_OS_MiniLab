@@ -22,8 +22,8 @@
 //   exit(EXIT_FAILURE);
 // }
 
-#define SYSNAME_MSIZE 32
-#define SYSTIME_MSIZE 32
+#define SYSNAME_MSIZE 24
+#define SYSTIME_MSIZE 24
 
 extern char **environ;
 
