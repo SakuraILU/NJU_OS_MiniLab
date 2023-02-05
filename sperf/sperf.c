@@ -37,14 +37,26 @@ typedef struct sysinfo
   float total_time;
   struct sysinfo *next;
 } Sysinfo;
+Sysinfo *head, *tail;
 float sys_total_time = 0;
 
-Sysinfo *head, *tail;
+regex_t name_reg, time_reg;
+const char *name_pat = "^[a-z_][a-z0-9_]*"; // 定义模式串
+const char *time_pat = "<[0-9]+\\.[0-9]+>"; // 定义模式串
 
 static __attribute__((constructor)) void init()
 {
   tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
   memset(head, 0, sizeof(Sysinfo));
+
+  regcomp(&name_reg, name_pat, REG_EXTENDED); // 编译正则模式串
+  regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
+}
+
+static __attribute__((destructor)) void free()
+{
+  regfree(&name_reg);
+  regfree(&time_reg);
 }
 
 static void add_sysinfo(char *sys_name, float sys_time)
@@ -85,7 +97,7 @@ static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
 void sort_sysinfo();
-Sysinfo *quick_sort(Sysinfo *head);
+static Sysinfo *qsort(Sysinfo *head);
 
 int fd[2];
 bool sperf_over = false;
@@ -166,12 +178,6 @@ static void parent()
 
 void parse_sysinfo()
 {
-  regex_t name_reg, time_reg;                 // 定义一个正则实例
-  const char *name_pat = "^[a-z_][a-z0-9_]*"; // 定义模式串
-  regcomp(&name_reg, name_pat, REG_EXTENDED); // 编译正则模式串
-  const char *time_pat = "<[0-9]+\\.[0-9]+>"; // 定义模式串
-  regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
-
   char *sysinfo = NULL;
   size_t len = 0;
 
@@ -228,16 +234,14 @@ void parse_sysinfo()
     sperf_over = true;
 
   free(sysinfo);
-  regfree(&name_reg);
-  regfree(&time_reg);
 }
 
 void sort_sysinfo()
 {
-  head->next = quick_sort(head->next);
+  head->next = qsort(head->next);
 }
 
-Sysinfo *quick_sort(Sysinfo *head)
+static Sysinfo *qsort(Sysinfo *head)
 {
   assert(head != NULL);
 
@@ -276,11 +280,11 @@ Sysinfo *quick_sort(Sysinfo *head)
   if (head1 == NULL)
   {
     assert(head2 != NULL);
-    mark->next = quick_sort(head2);
+    mark->next = qsort(head2);
     return mark;
   }
 
-  head1 = quick_sort(head1);
+  head1 = qsort(head1);
   itr1 = head1;
   while (itr1->next != NULL)
   {
@@ -291,7 +295,7 @@ Sysinfo *quick_sort(Sysinfo *head)
   if (head2 == NULL)
     return head1;
   else
-    mark->next = quick_sort(head2);
+    mark->next = qsort(head2);
 
   return head1;
 }
