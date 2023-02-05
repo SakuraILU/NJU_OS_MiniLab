@@ -44,7 +44,7 @@ regex_t name_reg, time_reg;
 const char *name_pat = "^[a-z_][a-z0-9_]*"; // 定义模式串
 const char *time_pat = "<[0-9]+\\.[0-9]+>"; // 定义模式串
 
-static __attribute__((constructor)) void init()
+static __attribute__((constructor)) void constructor()
 {
   tail = head = (Sysinfo *)malloc(sizeof(Sysinfo));
   memset(head, 0, sizeof(Sysinfo));
@@ -53,7 +53,7 @@ static __attribute__((constructor)) void init()
   regcomp(&time_reg, time_pat, REG_EXTENDED); // 编译正则模式串
 }
 
-static __attribute__((destructor)) void free()
+static __attribute__((destructor)) void destuctor()
 {
   regfree(&name_reg);
   regfree(&time_reg);
