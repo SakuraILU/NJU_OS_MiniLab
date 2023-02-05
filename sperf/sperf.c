@@ -44,7 +44,7 @@ static __attribute__((constructor)) void init()
 
 void add_sysinfo(char *sys_name, float sys_time)
 {
-  // printf("add sys %s time %f \n", sys_name, sys_time);
+  printf("add sys %s time %f \n", sys_name, sys_time);
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -103,6 +103,16 @@ int main(int argc, char *argv[])
   }
 }
 
+// 很离谱的是-O1优化时，编译器会把argv初始化或者赋NULL值都给删掉，
+// 可能是因为在这段函数里没有使用arg[argc+2]？但是argv[0,1..]也没
+// 使用过却没有被优化...有点无语。
+// 定位问题的过程：在读strace top时，tracelog里输出了unknown option未知参数，strace echo good
+// 时输出了good xxxxxxxxxxxxxxxxxxx（乱码), strace ls时, tracelog里输出了"cannot access 'xxx(乱码)'"....etc
+//
+// 怀疑argv赋值出了问题，gdb了一下，发现无论是memset(argv, NULL, argc+3) 还是
+// argv[argc+2] = NULL均无效，说明这两个东西很可能被编译优化掉了，然后把-O1改成-O0就
+// 完全正常。。。volatile只作用与数组名，而不保证里面的数组元素...所以干脆直接
+// 就把这段函数给禁止优化了，改成了O0级，终于正常了T^T
 #pragma GCC push_options
 #pragma GCC optimize("O0")
 static void child(int argc, char *exec_argv[])
@@ -148,7 +158,7 @@ void parse_sysinfo()
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    printf("%s", sysinfo);
+    // printf("%s", sysinfo);
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
       // 如果没匹配上
