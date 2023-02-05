@@ -113,11 +113,6 @@ static void child(int argc, char *exec_argv[])
     argv[i + 1] = exec_argv[i];
   }
 
-  char *envp[] = {
-      "PATH=/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
-      NULL,
-  };
-
   execve("/usr/bin/strace", argv, environ);
   perror(argv[0]);
   exit(EXIT_FAILURE);
