@@ -22,7 +22,7 @@
 //   exit(EXIT_FAILURE);
 // }
 
-#define SYSNAME_MSIZE 64
+#define SYSNAME_MSIZE 32
 #define SYSTIME_MSIZE 32
 
 extern char **environ;
@@ -72,7 +72,7 @@ static void print_sysinfo()
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("%-10s (%f)\n", itr->name, itr->total_time / total_time);
+    printf("%-32s (%f)\n", itr->name, itr->total_time / total_time);
     itr = itr->next;
   }
 }
