@@ -103,9 +103,9 @@ int main(int argc, char *argv[])
   }
 }
 
+#pragma GCC push_options
 static void child(int argc, char *exec_argv[])
 {
-#pragma GCC push_options
 #pragma GCC optimize("O0")
   char *argv[2 + argc + 1];
   argv[0] = "strace";
@@ -116,12 +116,12 @@ static void child(int argc, char *exec_argv[])
   }
   argv[argc + 2] = NULL;
 
-#pragma GCC pop_options
   execve("/usr/bin/strace", argv, environ);
 
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
+#pragma GCC pop_options
 
 static void parent()
 {
