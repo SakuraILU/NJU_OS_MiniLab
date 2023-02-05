@@ -195,6 +195,7 @@ void parse_sysinfo()
 
   free(sysinfo);
   regfree(&name_reg);
+  regfree(&time_reg);
 }
 
 void sort_sysinfo()
