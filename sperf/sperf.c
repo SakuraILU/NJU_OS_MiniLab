@@ -72,7 +72,7 @@ static void print_sysinfo()
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("%-24s (%f)\n", itr->name, itr->total_time / total_time);
+    printf("%-24s (%f\\%)\n", itr->name, itr->total_time / total_time * 100);
     itr = itr->next;
   }
 }
