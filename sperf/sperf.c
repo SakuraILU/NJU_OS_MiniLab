@@ -114,7 +114,7 @@ static void child(int argc, char *exec_argv[])
   }
 
   char *envp[] = {
-      "PATH=/:/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
+      "PATH=/home/sakura/Code/Language/nodejs/node-v16.16.0-linux-x64/bin:/usr/local/cuda-11.3/bin:/home/sakura/Code/Language/Python/Miniconda/bin:/usr/lib/ccache:/home/sakura/Code/Language/nodejs/node-v16.16.0-linux-x64/bin:/usr/local/cuda-11.3/bin:/home/sakura/Code/Language/Python/Miniconda/bin:/usr/lib/ccache:/home/sakura/Code/Language/Python/Miniconda/condabin:/home/sakura/Code/Language/nodejs/node-v16.16.0-linux-x64/bin:/usr/local/cuda-11.3/bin:/home/sakura/Code/Language/Python/Miniconda/bin:/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/usr/local/go/bin:/usr/local/go/bin",
       NULL,
   };
 
