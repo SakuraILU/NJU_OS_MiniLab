@@ -25,6 +25,8 @@
 #define SYSNAME_MSIZE 64
 #define SYSTIME_MSIZE 32
 
+extern char **environ;
+
 typedef struct sysinfo
 {
   char name[SYSNAME_MSIZE];
@@ -112,11 +114,11 @@ static void child(int argc, char *exec_argv[])
   }
 
   char *envp[] = {
-      "PATH=/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/:./",
+      "PATH=/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
       NULL,
   };
 
-  execve("/usr/bin/strace", argv, envp);
+  execve("/usr/bin/strace", argv, environ);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
