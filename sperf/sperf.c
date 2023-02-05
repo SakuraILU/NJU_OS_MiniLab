@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
 }
 
 #pragma GCC push_options
+#pragma GCC optimize("O0")
 static void child(int argc, char *exec_argv[])
 {
-#pragma GCC optimize("O0")
   char *argv[2 + argc + 1];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
