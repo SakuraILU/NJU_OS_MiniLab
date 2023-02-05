@@ -223,6 +223,7 @@ void sort_sysinfo()
 Sysinfo *quick_sort(Sysinfo *head)
 {
   assert(head != NULL);
+  printf("here\n");
 
   Sysinfo *mark = head;
   if (mark->next == NULL)
