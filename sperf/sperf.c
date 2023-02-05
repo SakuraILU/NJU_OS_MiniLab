@@ -105,18 +105,18 @@ int main(int argc, char *argv[])
 
 static void child(int argc, char *exec_argv[])
 {
-  volatile char *argv[2 + argc + 1];
+  char *argv[2 + argc + 1];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
   {
     argv[i + 1] = exec_argv[i];
   }
-  argv[argc + 2] = NULL;
+  volatile argv[argc + 2] = NULL;
 
-  execve("/usr/bin/strace", (char **)argv, environ);
+  execve("/usr/bin/strace", argv, environ);
 
-  perror((char *)argv[0]);
+  perror(argv[0]);
   exit(EXIT_FAILURE);
 }
 
