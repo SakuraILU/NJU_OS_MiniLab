@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
     dup2(fd[1], STDERR_FILENO);
     close(fd[1]);
 
-    close(STDOUT_FILENO);
-    fopen("/dev/null", "w");
+    // close(STDOUT_FILENO);
+    // fopen("/dev/null", "w");
 
     child(argc, argv);
   }
