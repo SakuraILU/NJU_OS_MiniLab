@@ -97,7 +97,7 @@ static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
 void sort_sysinfo();
-static Sysinfo *qsort(Sysinfo *head);
+static Sysinfo *quick_sort(Sysinfo *head);
 
 int fd[2];
 bool sperf_over = false;
@@ -238,10 +238,10 @@ void parse_sysinfo()
 
 void sort_sysinfo()
 {
-  head->next = qsort(head->next);
+  head->next = quick_sort(head->next);
 }
 
-static Sysinfo *qsort(Sysinfo *head)
+static Sysinfo *quick_sort(Sysinfo *head)
 {
   assert(head != NULL);
 
@@ -280,11 +280,11 @@ static Sysinfo *qsort(Sysinfo *head)
   if (head1 == NULL)
   {
     assert(head2 != NULL);
-    mark->next = qsort(head2);
+    mark->next = quick_sort(head2);
     return mark;
   }
 
-  head1 = qsort(head1);
+  head1 = quick_sort(head1);
   itr1 = head1;
   while (itr1->next != NULL)
   {
@@ -295,7 +295,7 @@ static Sysinfo *qsort(Sysinfo *head)
   if (head2 == NULL)
     return head1;
   else
-    mark->next = qsort(head2);
+    mark->next = quick_sort(head2);
 
   return head1;
 }
