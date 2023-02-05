@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
     dup2(fd[1], STDERR_FILENO);
     close(fd[1]);
 
-    // close(STDOUT_FILENO);
-    // fopen("/dev/null", "w");
+    close(STDOUT_FILENO);
+    fopen("/dev/null", "w");
 
     child(argc, argv);
   }
@@ -113,7 +113,13 @@ static void child(int argc, char *exec_argv[])
     argv[i + 1] = exec_argv[i];
   }
 
-  execve("/usr/bin/strace", argv, environ);
+  char *envp[] = {
+      "PATH=/:/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
+      NULL,
+  };
+
+  execve("/usr/bin/strace", argv, envp);
+
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
