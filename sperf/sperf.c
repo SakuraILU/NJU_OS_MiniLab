@@ -271,7 +271,7 @@ Sysinfo *quick_sort(Sysinfo *head)
   printf("qsort link1 \n");
   head1 = quick_sort(head1);
   itr1 = head1;
-  while (itr1->next == NULL)
+  while (itr1->next != NULL)
   {
     itr1 = itr1->next;
   }
