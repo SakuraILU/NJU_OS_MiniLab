@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
 static void child(int argc, char *exec_argv[])
 {
-  char *argv[2 + argc + 1];
+  volatile char *argv[2 + argc + 1];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
