@@ -80,6 +80,7 @@ static void child(int argc, char *exec_argv[]);
 static void parent();
 void parse_sysinfo();
 void sort_sysinfo();
+Sysinfo *qsort(Sysinfo *head);
 
 int fd[2];
 
@@ -216,4 +217,64 @@ void parse_sysinfo()
 
 void sort_sysinfo()
 {
+  head->next = qsort(head->next);
+}
+
+Sysinfo *qsort(Sysinfo *head)
+{
+  assert(head != NULL);
+
+  Sysinfo *mark = head;
+  if (mark->next == NULL)
+    return mark;
+
+  Sysinfo *head1, *head2, *itr1, *itr2;
+  while (mark->next == NULL)
+  {
+    Sysinfo *tmp = mark->next;
+    mark->next = tmp->next;
+    if (tmp->total_time >= mark->total_time)
+    {
+      if (head1 == NULL)
+        head1 = itr1 = tmp;
+      else
+      {
+        itr1->next = tmp;
+        itr1 = itr1->next;
+      }
+      tmp->next = NULL;
+    }
+    else
+    {
+      if (head2 == NULL)
+        head2 = itr2 = tmp;
+      else
+      {
+        itr2->next = tmp;
+        itr2 = itr2->next;
+      }
+      tmp->next = NULL;
+    }
+  }
+
+  if (head1 == NULL)
+  {
+    mark->next = qsort(head2);
+    return mark;
+  }
+
+  head1 = qsort(head1);
+  itr1 = head1;
+  while (itr1->next == NULL)
+  {
+    itr1 = itr1->next;
+  }
+  itr1->next = mark;
+
+  if (head2 == NULL)
+    return head1;
+  else
+    mark->next = qsort(head2);
+
+  return head1;
 }
