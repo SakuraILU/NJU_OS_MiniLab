@@ -33,10 +33,9 @@ typedef struct sysinfo
   float total_time;
   struct sysinfo *next;
 } Sysinfo;
+float sys_total_time = 0;
 
 Sysinfo *head, *tail;
-
-float total_time = 0;
 
 static __attribute__((constructor)) void init()
 {
@@ -47,7 +46,7 @@ static __attribute__((constructor)) void init()
 static void add_sysinfo(char *sys_name, float sys_time)
 {
   // printf("add sys %s time %f \n", sys_name, sys_time);
-  total_time += sys_time;
+  sys_total_time += sys_time;
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
@@ -72,7 +71,7 @@ static void print_sysinfo()
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("%-24s (%f%%)\n", itr->name, itr->total_time / total_time * 100);
+    printf("%-24s (%.3f%%)\n", itr->name, itr->total_time / sys_total_time * 100);
     itr = itr->next;
   }
 }
