@@ -1,10 +1,11 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <regex.h>
+#include <time.h>
 #include <assert.h>
-#include <stdbool.h>
 
 // int main(int argc, char *argv[])
 // {
@@ -85,6 +86,7 @@ void sort_sysinfo();
 Sysinfo *quick_sort(Sysinfo *head);
 
 int fd[2];
+bool sperf_over = false;
 
 int main(int argc, char *argv[])
 {
@@ -152,9 +154,12 @@ static void child(int argc, char *exec_argv[])
 
 static void parent()
 {
-  parse_sysinfo();
-  sort_sysinfo();
-  print_sysinfo();
+  while (!sperf_over)
+  {
+    parse_sysinfo();
+    sort_sysinfo();
+    print_sysinfo();
+  }
 }
 
 void parse_sysinfo()
@@ -167,9 +172,10 @@ void parse_sysinfo()
 
   char *sysinfo = NULL;
   size_t len = 0;
+
+  time_t stime = time(NULL), interval = 0;
   while (getline(&sysinfo, &len, stdin) != -1)
   {
-
     char sysname[SYSNAME_MSIZE] = {0};
     char systime_str[SYSTIME_MSIZE] = {0};
     float systime = 0;
@@ -210,7 +216,14 @@ void parse_sysinfo()
     }
 
     add_sysinfo(sysname, systime);
+
+    interval = time(NULL) - stime;
+    if (interval >= 2)
+      break;
   }
+
+  if (interval < 2)
+    sperf_over = true;
 
   free(sysinfo);
   regfree(&name_reg);
