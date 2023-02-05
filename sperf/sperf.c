@@ -46,7 +46,7 @@ static __attribute__((constructor)) void init()
 
 static void add_sysinfo(char *sys_name, float sys_time)
 {
-  printf("add sys %s time %f \n", sys_name, sys_time);
+  // printf("add sys %s time %f \n", sys_name, sys_time);
   total_time += sys_time;
   Sysinfo *itr = head->next;
   while (itr != NULL)
@@ -71,7 +71,7 @@ static void print_sysinfo()
   Sysinfo *itr = head->next;
   while (itr != NULL)
   {
-    printf("====================");
+    printf("====================\n");
     printf("%s (%f)\n", itr->name, itr->total_time / total_time);
     itr = itr->next;
   }
