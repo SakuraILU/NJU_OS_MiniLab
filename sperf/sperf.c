@@ -245,7 +245,6 @@ Sysinfo *quick_sort(Sysinfo *head)
         itr1->next = tmp;
         itr1 = itr1->next;
       }
-      tmp->next = NULL;
     }
     else
     {
@@ -257,8 +256,8 @@ Sysinfo *quick_sort(Sysinfo *head)
         itr2->next = tmp;
         itr2 = itr2->next;
       }
-      tmp->next = NULL;
     }
+    tmp->next = NULL;
   }
   printf("\n");
 
@@ -269,6 +268,7 @@ Sysinfo *quick_sort(Sysinfo *head)
     return mark;
   }
 
+  printf("qsort link1 \n");
   head1 = quick_sort(head1);
   itr1 = head1;
   while (itr1->next == NULL)
