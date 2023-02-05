@@ -228,8 +228,6 @@ Sysinfo *quick_sort(Sysinfo *head)
   if (mark->next == NULL)
     return mark;
 
-  printf("mark is %f ", mark->total_time);
-
   Sysinfo *head1 = NULL, *head2 = NULL, *itr1 = NULL, *itr2 = NULL;
   while (mark->next != NULL)
   {
@@ -237,7 +235,6 @@ Sysinfo *quick_sort(Sysinfo *head)
     mark->next = tmp->next;
     if (tmp->total_time >= mark->total_time)
     {
-      printf(" L %f ", tmp->total_time);
       if (head1 == NULL)
         head1 = itr1 = tmp;
       else
@@ -248,7 +245,6 @@ Sysinfo *quick_sort(Sysinfo *head)
     }
     else
     {
-      printf(" R %f ", tmp->total_time);
       if (head2 == NULL)
         head2 = itr2 = tmp;
       else
@@ -259,7 +255,6 @@ Sysinfo *quick_sort(Sysinfo *head)
     }
     tmp->next = NULL;
   }
-  printf("\n");
 
   if (head1 == NULL)
   {
