@@ -105,15 +105,15 @@ int main(int argc, char *argv[])
 
 static void child(int argc, char *exec_argv[])
 {
-  volatile char *argv[2 + argc + 1];
+  char *argv[2 + argc + 1];
   argv[0] = "strace";
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
   {
     argv[i + 1] = exec_argv[i];
   }
-  // argv[argc + 2] = NULL;
-  printf("%s\n", argv[argc + 2]);
+  argv[argc + 2] = NULL;
+  // printf("%s\n", argv[argc + 2]);
 
   char *envp[] = {
       "PATH=/:/bin:/usr/bin:/home/sakura/Code/Language/Python/Miniconda/bin/",
