@@ -228,7 +228,7 @@ Sysinfo *quick_sort(Sysinfo *head)
   if (mark->next == NULL)
     return mark;
 
-  Sysinfo *head1, *head2, *itr1, *itr2;
+  Sysinfo *head1 = NULL, *head2 = NULL, *itr1 = NULL, *itr2 = NULL;
   while (mark->next == NULL)
   {
     Sysinfo *tmp = mark->next;
