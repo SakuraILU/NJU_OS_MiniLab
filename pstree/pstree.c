@@ -14,7 +14,12 @@
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
 char version_info[] = "pstree (PSmisc) 23.4\n \
-Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n";
+Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n \
+\n \
+PSmisc comes with ABSOLUTELY NO WARRANTY.\n \
+This is free software, and you are welcome to redistribute it under\n \
+the terms of the GNU General Public License.\n \
+For more information about these matters, see the files named COPYING.";
 
 void parse_args(int argc, char *argv[]);
 
@@ -58,7 +63,7 @@ void parse_args(int argc, char *argv[])
       break;
 
     case 'v':
-      printf("option v\n");
+      show_version = true;
       break;
 
     default:
