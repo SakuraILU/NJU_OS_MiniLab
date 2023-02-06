@@ -57,6 +57,12 @@ static __attribute__((constructor)) void constructor()
 {
   tail = dummy = malloc(sizeof(Proc));
   memset(dummy, 0, sizeof(Proc));
+
+  for (int i = 0; i < MAXDEPTH; ++i)
+  {
+    idents[i].pos = 0;
+    idents[i].need_print = false;
+  }
 }
 
 void add_proc(const char *name, uint pid, uint ppid)
