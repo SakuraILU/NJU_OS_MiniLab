@@ -228,8 +228,8 @@ void print_ident()
       printf(" ");
 
     if (i < depth)
-      printf("│  ");
+      printf("│ ");
     else
-      printf("├");
+      printf("└─");
   }
 }
