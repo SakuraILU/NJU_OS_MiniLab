@@ -210,24 +210,22 @@ void print_tree(Proc *proc)
 {
   printf("%s", proc->name);
 
-  depth++;
   Childptr *child_itr = proc->childs_head;
   if (child_itr == NULL)
     return;
+
+  depth++;
+  idents[depth].pos = idents[depth - 1].pos + strlen(proc->name) + 3;
+  if (child_itr->next != NULL)
+  {
+    printf("─┬─");
+    idents[depth].need_print = true;
+  }
   else
   {
-    if (child_itr->next != NULL)
-    {
-      printf("─┬─");
-      idents[depth].need_print = true;
-    }
-    else
-    {
-      printf("───");
-      idents[depth].need_print = false;
-    }
+    printf("───");
+    idents[depth].need_print = false;
   }
-  idents[depth].pos = idents[depth - 1].pos + strlen(proc->name) + 3;
 
   while (child_itr != NULL)
   {
@@ -249,7 +247,6 @@ void print_ident()
   {
     for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
     {
-      printf("%d\n", i);
       printf(" ");
     }
 
