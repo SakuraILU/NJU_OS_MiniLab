@@ -65,7 +65,7 @@ static __attribute__((constructor)) void constructor()
   }
 }
 
-void add_proc(const char *name, uint pid, uint ppid)
+static void add_proc(const char *name, uint pid, uint ppid)
 {
   tail->next = malloc(sizeof(Proc));
   tail = tail->next;
@@ -104,7 +104,7 @@ void add_proc(const char *name, uint pid, uint ppid)
   child_itr->next = nchild;
 }
 
-void traverse_proc()
+static void traverse_proc()
 {
   Proc *itr = dummy->next;
   while (itr != NULL)
@@ -125,10 +125,9 @@ bool show_version = false;
 bool need_sort = false;
 bool show_pids = false;
 
-void parse_args(int argc, char *argv[]);
-void print_tree(Proc *proc);
-void print_ident(bool is_last_child);
-void sort_child_by_name();
+static void parse_args(int argc, char *argv[]);
+static void print_tree(Proc *proc);
+static void sort_child_by_name();
 
 int main(int argc, char *argv[])
 {
@@ -178,7 +177,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void parse_args(int argc, char *argv[])
+static void parse_args(int argc, char *argv[])
 {
   while (true)
   {
@@ -213,7 +212,33 @@ void parse_args(int argc, char *argv[])
   }
 }
 
-void print_tree(Proc *proc)
+static void print_ident(bool is_last_child)
+{
+  for (int i = 1; i <= depth; ++i)
+  {
+    for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
+    {
+      printf(" ");
+    }
+
+    if (!idents[i].need_print)
+      printf("  ");
+    else if (i < depth)
+      printf("│ ");
+    else
+    {
+      if (!is_last_child)
+        printf("├─");
+      else
+      {
+        printf("└─");
+        idents[i].need_print = false;
+      }
+    }
+  }
+}
+
+static void print_tree(Proc *proc)
 {
   printf("%s", proc->name);
 
@@ -252,33 +277,7 @@ void print_tree(Proc *proc)
   depth--;
 }
 
-void print_ident(bool is_last_child)
-{
-  for (int i = 1; i <= depth; ++i)
-  {
-    for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
-    {
-      printf(" ");
-    }
-
-    if (!idents[i].need_print)
-      printf("  ");
-    else if (i < depth)
-      printf("│ ");
-    else
-    {
-      if (!is_last_child)
-        printf("├─");
-      else
-      {
-        printf("└─");
-        idents[i].need_print = false;
-      }
-    }
-  }
-}
-
-Childptr *quick_sort(Childptr *head)
+static Childptr *quick_sort(Childptr *head)
 {
   assert(head != NULL);
 
@@ -334,7 +333,7 @@ Childptr *quick_sort(Childptr *head)
   return head1;
 }
 
-void sort_child_by_name()
+static void sort_child_by_name()
 {
   Proc *itr = dummy->next;
   while (itr != NULL)
