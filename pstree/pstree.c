@@ -58,6 +58,9 @@ void add_proc(const char *name, uint pid, uint ppid)
   tail->pid = pid;
   strcpy(tail->name, name);
 
+  if (ppid == 0)
+    return;
+
   Proc *itr = dummy->next;
   Proc *child = tail, *parent = NULL;
   while (itr != NULL)
