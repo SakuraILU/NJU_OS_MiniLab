@@ -15,6 +15,7 @@
   } while (0)
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
+#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
 
 #define PROCNAME_LEN 64
 #define PATH_LEN 128
@@ -200,7 +201,7 @@ void print_tree(Proc *proc)
   printf("%s-+-", proc->name);
   Childptr *child_itr = proc->childs_head;
   depth++;
-  idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
+  idents[depth] = MAX(0, idents[depth - 1]) + strlen(proc->name) + 3;
 
   while (child_itr != NULL)
   {
