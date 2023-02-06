@@ -16,7 +16,7 @@
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
-#define PROCNAME_LEN 64
+#define PROCNAME_LEN 16
 #define PATH_LEN 128
 
 char version_info[] = "pstree (PSmisc) 23.4\n\
@@ -147,7 +147,8 @@ int main(int argc, char *argv[])
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
-  traverse_proc();
+  // traverse_proc();
+  print_tree(dummy->next, 0);
 
   return 0;
 }
@@ -174,7 +175,7 @@ void parse_args(int argc, char *argv[])
       break;
 
     case 'n':
-      printf("option n\n");
+      need_sort = true;
       break;
 
     case 'v':
@@ -185,4 +186,26 @@ void parse_args(int argc, char *argv[])
       debug("?? getopt returned character code 0%o ??\n", opt);
     }
   }
+}
+
+void print_tree(Proc *proc, int nident)
+{
+  nident = nident + strlen(proc->name) + 3;
+  Childptr *child_itr = proc->childs_head;
+  while (child_itr != NULL)
+  {
+    print_tree(child_itr, nident);
+    child_itr = child_itr->next;
+
+    if (child_itr != NULL)
+    {
+      print_ident(nident);
+    }
+  }
+}
+
+void print_ident(int nident)
+{
+  for (int i = 0; i < nident; ++i)
+    printf(" ");
 }
