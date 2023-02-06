@@ -147,6 +147,8 @@ int main(int argc, char *argv[])
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
+  traverse_proc();
+
   return 0;
 }
 
