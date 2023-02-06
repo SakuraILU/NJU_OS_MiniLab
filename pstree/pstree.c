@@ -263,7 +263,9 @@ static void print_tree(Proc *proc)
 
 static Childptr *quick_sort(Childptr *head)
 {
-  assert(head != NULL);
+  // assert(head != NULL);
+  if (head == NULL)
+    return NULL;
 
   if (head != NULL && head->next == NULL)
     return head;
