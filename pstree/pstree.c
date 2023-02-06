@@ -89,6 +89,23 @@ void add_proc(const char *name, uint pid, uint ppid)
   child_itr->next = nchild;
 }
 
+void traverse_proc()
+{
+  Proc *itr = dummy->next;
+  while (itr != NULL)
+  {
+    printf("%-20s  %d\n", itr->name, itr->pid);
+    Childptr *child_itr = itr->childs_head;
+    while (child_itr != NULL)
+    {
+      printf("\t %-20s  %d\n", child_itr->child->name, child_itr->child->pid);
+      child_itr = child_itr->next;
+    }
+    itr = itr->next;
+    /* code */
+  }
+}
+
 bool show_version = false;
 bool need_sort = false;
 bool show_pids = false;
@@ -126,7 +143,7 @@ int main(int argc, char *argv[])
     proc_name[strlen(proc_name) - 1] = 0;
     char *proc_name_pure = proc_name + 1;
     // assert(pid == proc_pid);
-    printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
+    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
