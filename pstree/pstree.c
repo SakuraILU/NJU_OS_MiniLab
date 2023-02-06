@@ -261,7 +261,7 @@ static void print_tree(Proc *proc)
   depth--;
 }
 
-static Childptr *quick_sort(Childptr *head)
+Childptr *quick_sort(Childptr *head)
 {
   assert(head != NULL);
 
