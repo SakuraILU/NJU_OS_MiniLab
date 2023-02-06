@@ -45,6 +45,9 @@ typedef struct childptr
 
 Proc *dummy = NULL, *tail = NULL;
 
+int idents[MAXDEPTH];
+int depth = 0;
+
 static __attribute__((constructor)) void constructor()
 {
   tail = dummy = malloc(sizeof(Proc));
@@ -108,8 +111,6 @@ void traverse_proc()
   }
 }
 
-int idents[MAXDEPTH];
-int depth = 0;
 bool show_version = false;
 bool need_sort = false;
 bool show_pids = false;
