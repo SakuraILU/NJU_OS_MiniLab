@@ -43,6 +43,9 @@ int main(int argc, char *argv[])
   struct dirent *dir_itr;
   while ((dir_itr = readdir(proc_dir)) != NULL)
   {
+    int pid = 0;
+    if ((pid = atoi(dir_itr->d_name)) == 0)
+      continue;
     printf("%s\n", dir_itr->d_name);
   }
 
