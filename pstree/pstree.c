@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
-  // traverse_proc();
-  print_tree(dummy->next, 0);
+  traverse_proc();
+  // print_tree(dummy->next, 0);
 
   return 0;
 }
