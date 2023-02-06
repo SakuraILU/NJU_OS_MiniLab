@@ -203,6 +203,7 @@ void print_tree(Proc *proc, int nident)
     if (child_itr != NULL)
     {
       print_ident(nident);
+      printf("\n");
     }
   }
 }
