@@ -7,11 +7,12 @@
 #include <string.h>
 #include <assert.h>
 
-#define debug(cond, ...)            \
-  do                                \
-  {                                 \
-    fprintf(stderr, ##__VA_ARGS__); \
-    assert(cond);                   \
+#define debug(cond, ...)              \
+  do                                  \
+  {                                   \
+    if (cond)                         \
+      fprintf(stderr, ##__VA_ARGS__); \
+    assert(cond);                     \
   } while (0)
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
@@ -46,7 +47,7 @@ typedef struct childptr
 
 Proc *dummy = NULL, *tail = NULL;
 
-struct idents
+struct idents // 记录树上每个深度的子树的开头位置（根进程名的开头位置）
 {
   int pos;
   bool need_print;
@@ -175,22 +176,26 @@ static void build_tree()
   struct dirent *dir_itr;
   while ((dir_itr = readdir(proc_dir)) != NULL)
   {
+    // only deal with 'pid' directories, skip others
     int pid = 0;
-    if ((pid = atoi(dir_itr->d_name)) == 0)
+    if ((pid = atoi(dir_itr->d_name)) == 0) // atoi(str) will return 0 if str is not a number
       continue;
-    // printf("%s\n", dir_itr->d_name);
+
+    // open /proc/'pid'/stat
     char fpath[PATH_LEN];
     sprintf(fpath, "/proc/%d/stat", pid);
     FILE *file = fopen(fpath, "r+");
-    // printf("%s\n", fpath);
     assert(file != NULL);
 
+    // extract information from /proc/'pid'/stat file (man proc, search /proc/[pid]/stat)
+    // format: pid(%d) comm(%s) state(%c) ppid(%d) …
     uint proc_pid = 0, proc_ppid = 0;
     char proc_name[PROCNAME_LEN]; // 读取出的proc name是包含了小括号的，e.g. (systemd)
     char proc_status;
     fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
 
-    // 去除小括号，如果show_pids，在proc name后面追加(pid)
+    // throw away parenthesis of proc_name,
+    // if show_pids，append (pid) after proc_name
     proc_name[strlen(proc_name) - 1] = 0;
     char *proc_name_real = proc_name + 1;
     if (show_pids)
@@ -201,7 +206,8 @@ static void build_tree()
     }
 
     debug(pid == proc_pid, "proc 'pid' read from /proc directory should be equal to proc name extrac from /proc/'pid'/stat file");
-    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_real, proc_pid, proc_status, proc_ppid);
+
+    // add process in the proc_link and add it into its parent's childs_link
     add_proc(proc_name_real, proc_pid, proc_ppid);
   }
 }
