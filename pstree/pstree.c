@@ -189,7 +189,7 @@ void parse_args(int argc, char *argv[])
     switch (opt)
     {
     case 'p':
-      printf("option p\n");
+      show_pids = true;
       break;
 
     case 'n':
@@ -208,7 +208,10 @@ void parse_args(int argc, char *argv[])
 
 void print_tree(Proc *proc)
 {
-  printf("%s", proc->name);
+  if (show_pids)
+    printf("%s(%d)", proc->name, proc->pid);
+  else
+    printf("%s", proc->name);
 
   Childptr *child_itr = proc->childs_head;
   if (child_itr == NULL)
