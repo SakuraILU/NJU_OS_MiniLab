@@ -49,6 +49,7 @@ static __attribute__((constructor)) void constructor()
 {
   tail = dummy = malloc(sizeof(Proc));
   memset(dummy, 0, sizeof(Proc));
+  idents[0] = -2;
 }
 
 void add_proc(const char *name, uint pid, uint ppid)
@@ -220,6 +221,6 @@ void print_ident()
   {
     for (int j = 0; j < idents[i] - idents[i - 1]; ++j)
       printf(" ");
-    printf(" | ");
+    printf("| ");
   }
 }
