@@ -111,6 +111,8 @@ bool need_sort = false;
 bool show_pids = false;
 
 void parse_args(int argc, char *argv[]);
+void print_tree(Proc *proc, int nident);
+void print_ident(int nident);
 
 int main(int argc, char *argv[])
 {
@@ -142,12 +144,13 @@ int main(int argc, char *argv[])
     fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
     proc_name[strlen(proc_name) - 1] = 0;
     char *proc_name_pure = proc_name + 1;
-    // assert(pid == proc_pid);
+    assert(pid == proc_pid);
     // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
   traverse_proc();
+  // print_tree(dummy->next, 0);
 
   return 0;
 }
@@ -185,4 +188,27 @@ void parse_args(int argc, char *argv[])
       debug("?? getopt returned character code 0%o ??\n", opt);
     }
   }
+}
+
+void print_tree(Proc *proc, int nident)
+{
+  // printf("%s-+-", proc->name);
+  // nident = nident + strlen(proc->name) + 3;
+  // Childptr *child_itr = proc->childs_head;
+  // while (child_itr != NULL)
+  // {
+  //   print_tree(child_itr->child, nident);
+  //   child_itr = child_itr->next;
+
+  //   if (child_itr != NULL)
+  //   {
+  //     print_ident(nident);
+  //   }
+  // }
+}
+
+void print_ident(int nident)
+{
+  for (int i = 0; i < nident; ++i)
+    printf(" ");
 }
