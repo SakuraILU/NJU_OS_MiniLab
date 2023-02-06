@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
-  traverse_proc();
-  // print_tree(dummy->next, 0);
+  // traverse_proc();
+  print_tree(dummy->next, 0);
 
   return 0;
 }
@@ -192,19 +192,19 @@ void parse_args(int argc, char *argv[])
 
 void print_tree(Proc *proc, int nident)
 {
-  // printf("%s-+-", proc->name);
-  // nident = nident + strlen(proc->name) + 3;
-  // Childptr *child_itr = proc->childs_head;
-  // while (child_itr != NULL)
-  // {
-  //   print_tree(child_itr->child, nident);
-  //   child_itr = child_itr->next;
+  printf("%s-+-", proc->name);
+  nident = nident + strlen(proc->name) + 3;
+  Childptr *child_itr = proc->childs_head;
+  while (child_itr != NULL)
+  {
+    print_tree(child_itr->child, nident);
+    child_itr = child_itr->next;
 
-  //   if (child_itr != NULL)
-  //   {
-  //     print_ident(nident);
-  //   }
-  // }
+    if (child_itr != NULL)
+    {
+      print_ident(nident);
+    }
+  }
 }
 
 void print_ident(int nident)
