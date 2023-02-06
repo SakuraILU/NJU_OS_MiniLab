@@ -319,6 +319,7 @@ static Childptr *quick_sort(Childptr *head)
   if (head2 != NULL)
     mark->next = quick_sort(head2);
 
+  printf("ret\n");
   return head1;
 }
 
@@ -329,7 +330,6 @@ static void sort_child_by_name()
   {
     if (itr->childs_head != NULL)
       itr->childs_head = quick_sort(itr->childs_head);
-    printf("sort...\n");
     itr = itr->next;
   }
 }
