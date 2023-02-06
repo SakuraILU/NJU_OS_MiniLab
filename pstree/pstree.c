@@ -196,7 +196,7 @@ void print_tree(Proc *proc, int nident)
   Childptr *child_itr = proc->childs_head;
   while (child_itr != NULL)
   {
-    print_tree(child_itr, nident);
+    print_tree(child_itr->child, nident);
     child_itr = child_itr->next;
 
     if (child_itr != NULL)
