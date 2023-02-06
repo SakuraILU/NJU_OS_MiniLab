@@ -54,7 +54,7 @@ Proc *dummy = NULL, *tail = NULL;
 // idents[0] idents[1]
 struct idents
 {
-  int pos; // 距离最左侧的距离
+  int offset; // 距离最左侧的距离
   bool need_print;
 } idents[MAXDEPTH];
 int depth = 0;
@@ -66,7 +66,7 @@ static __attribute__((constructor)) void constructor()
 
   for (int i = 0; i < MAXDEPTH; ++i)
   {
-    idents[i].pos = 0;
+    idents[i].offset = 0;
     idents[i].need_print = false;
   }
 }
@@ -221,7 +221,7 @@ static void print_ident(bool is_last_child)
 {
   for (int i = 1; i <= depth; ++i)
   {
-    for (int j = 0; j < idents[i].pos - 2; ++j)
+    for (int j = 0; j < idents[i].offset - 2; ++j)
     {
       printf(" ");
     }
@@ -252,7 +252,7 @@ static void print_tree_dfs(Proc *proc)
     return;
 
   depth++;
-  idents[depth].pos = strlen(proc->name) + 3;
+  idents[depth].offset = strlen(proc->name) + 3;
   if (child_itr->next != NULL)
   {
     printf("─┬─");
