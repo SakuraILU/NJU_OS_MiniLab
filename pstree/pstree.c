@@ -186,16 +186,3 @@ void parse_args(int argc, char *argv[])
     }
   }
 }
-
-void print_tree(Proc *proc, int nident)
-{
-  print_ident();
-  printf("%s─┬─", proc->name);
-  nident = strlen(proc->name) + 3;
-}
-
-void print_ident(int nident)
-{
-  for (int i = 0; i < nident; ++i)
-    printf(" ");
-}
