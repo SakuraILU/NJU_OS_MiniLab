@@ -2,6 +2,8 @@
 #include <stdio.h>  /* for printf */
 #include <stdlib.h> /* for exit */
 #include <getopt.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <assert.h>
 
 #define debug(...)                  \
@@ -32,7 +34,17 @@ int main(int argc, char *argv[])
   parse_args(argc, argv);
 
   if (show_version)
+  {
     eprintf("%s\n", version_info);
+    return 0;
+  }
+
+  DIR *proc_dir = opendir("/proc");
+  struct dirent *dir_itr;
+  while ((dir_itr = readdir(proc_dir)) != NULL)
+  {
+    printf("%s\n", dir_itr->d_name);
+  }
 
   return 0;
 }
