@@ -261,7 +261,7 @@ static void print_tree(Proc *proc)
   depth--;
 }
 
-Childptr *quick_sort(Childptr *head)
+static Childptr *quick_sort(Childptr *head)
 {
   assert(head != NULL);
 
@@ -330,8 +330,8 @@ static void sort_child_by_name()
   Proc *itr = dummy->next;
   while (itr != NULL)
   {
-    // if (itr->childs_head != NULL)
-    // itr->childs_head = quick_sort(itr->childs_head);
+    if (itr->childs_head != NULL)
+      itr->childs_head = quick_sort(itr->childs_head);
     itr = itr->next;
   }
 }
