@@ -46,11 +46,6 @@ typedef struct childptr
 
 Proc *dummy = NULL, *tail = NULL;
 
-typedef struct ident
-{
-  int pos;
-  bool need_print;
-} Ident;
 int idents[MAXDEPTH];
 int depth = 0;
 
@@ -203,25 +198,12 @@ void parse_args(int argc, char *argv[])
 void print_tree(Proc *proc)
 {
   printf("%s", proc->name);
-
-  depth++;
-
   Childptr *child_itr = proc->childs_head;
   if (child_itr == NULL)
     return;
   else
-  {
-    if (child_itr->next != NULL)
-    {
-      printf("─┬─");
-      // idents[depth].need_print = true;
-    }
-    else
-    {
-      printf("───");
-      // idents[depth].need_print = false;
-    }
-  }
+    printf("─┬─");
+  depth++;
   idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
   while (child_itr != NULL)
@@ -248,8 +230,6 @@ void print_ident()
     if (i < depth)
       printf("│ ");
     else
-    {
       printf("├─");
-    }
   }
 }
