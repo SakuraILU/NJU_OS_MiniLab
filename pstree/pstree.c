@@ -197,8 +197,12 @@ void parse_args(int argc, char *argv[])
 
 void print_tree(Proc *proc)
 {
-  printf("%s─┬─", proc->name);
+  printf("%s", proc->name);
   Childptr *child_itr = proc->childs_head;
+  if (child_itr == NULL)
+    return;
+  else
+    printf("─┬─");
   depth++;
   idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
