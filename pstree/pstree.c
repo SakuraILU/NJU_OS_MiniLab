@@ -297,8 +297,8 @@ static Childptr *quick_sort(Childptr *head)
         tail2 = tail2->next;
       }
     }
-    printf("here\n");
   }
+  printf("here\n");
   assert(head1 != NULL && head2 != NULL);
 
   if (head1 == NULL)
