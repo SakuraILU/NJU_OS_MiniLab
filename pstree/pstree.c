@@ -225,7 +225,12 @@ void print_ident(bool is_last_child)
   for (int i = 1; i <= depth; ++i)
   {
     for (int j = 0; j < idents[i] - idents[i - 1] - 2; ++j)
-      printf(" ");
+    {
+      if (!is_last_child)
+        printf(" ");
+      else
+        printf("─");
+    }
 
     if (i < depth)
       printf("│ ");
