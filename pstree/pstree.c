@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 #include <assert.h>
 
 #define debug(...)                  \
@@ -15,6 +16,9 @@
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
+#define PROCNAME_LEN 64
+#define PATH_LEN 128
+
 char version_info[] = "pstree (PSmisc) 23.4\n\
 Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n\
 \n\
@@ -23,11 +27,74 @@ This is free software, and you are welcome to redistribute it under\n\
 the terms of the GNU General Public License.\n\
 For more information about these matters, see the files named COPYING.";
 
-void parse_args(int argc, char *argv[]);
+typedef struct proc
+{
+  uint pid;
+  struct childptr *childs_head;
+  char name[PROCNAME_LEN];
+
+  struct proc *next;
+} Proc;
+
+typedef struct childptr
+{
+  struct proc *child;
+  struct childptr *next;
+} Childptr;
+
+Proc *dummy = NULL, *tail = NULL;
+
+static __attribute__((constructor)) void constructor()
+{
+  tail = dummy = malloc(sizeof(Proc));
+  memset(dummy, 0, sizeof(Proc));
+}
+
+void add_proc(const char *name, uint pid)
+{
+  tail->next = malloc(sizeof(Proc));
+  tail = tail->next;
+  memset(tail, 0, sizeof(Proc));
+  tail->pid = pid;
+  strcpy(tail->name, name);
+}
+
+void add_child(uint pid, uint ppid)
+{
+  Proc *itr = dummy->next;
+  Proc *child = NULL, *parent = NULL;
+  while (itr != NULL)
+  {
+    if (itr->pid == ppid)
+      parent = itr;
+    else if (itr->pid == pid)
+      child = itr;
+  }
+  assert(child != NULL && parent != NULL);
+
+  Childptr *nchild = malloc(sizeof(Childptr));
+  nchild->child = child;
+  nchild->next = NULL;
+
+  Childptr *child_itr = parent->childs_head;
+  if (child_itr == NULL)
+  {
+    parent->childs_head = nchild;
+    return;
+  }
+
+  while (child_itr->next != NULL)
+  {
+    child_itr = child->next;
+  }
+  child_itr->next = nchild;
+}
 
 bool show_version = false;
 bool need_sort = false;
 bool show_pids = false;
+
+void parse_args(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +114,16 @@ int main(int argc, char *argv[])
     if ((pid = atoi(dir_itr->d_name)) == 0)
       continue;
     printf("%s\n", dir_itr->d_name);
+    char fpath[PATH_LEN];
+    sprintf(fpath, "/proc/%d/status", pid);
+    FILE *file = fopen(fpath, "r+");
+
+    uint proc_pid = 0, proc_ppid = 0;
+    char proc_name[PROCNAME_LEN];
+    char proc_status;
+    sscanf("%d (%s) %c %d", proc_pid, proc_name, proc_status, proc_ppid);
+    printf("proc name %s, proc pid %d, proc ppid %d\n", proc_name, proc_pid, proc_ppid);
+    // add_proc()
   }
 
   return 0;
