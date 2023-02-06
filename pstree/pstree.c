@@ -230,6 +230,6 @@ void print_ident()
     if (i < depth)
       printf("│  ");
     else
-      printf(" ├");
+      printf("├");
   }
 }
