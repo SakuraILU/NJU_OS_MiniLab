@@ -164,7 +164,7 @@ static void parse_args(int argc, char *argv[])
       break;
 
     default:
-      debug("?? getopt returned character code %d ??\n", opt);
+      debug(false, "?? getopt returned character code %d ??\n", opt);
     }
   }
 }
