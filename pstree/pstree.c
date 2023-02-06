@@ -117,7 +117,7 @@ bool show_pids = false;
 
 void parse_args(int argc, char *argv[]);
 void print_tree(Proc *proc);
-void print_ident(bool is_last_child);
+void print_ident();
 
 int main(int argc, char *argv[])
 {
@@ -198,13 +198,24 @@ void parse_args(int argc, char *argv[])
 void print_tree(Proc *proc)
 {
   printf("%s", proc->name);
+
+  depth++;
   Childptr *child_itr = proc->childs_head;
   if (child_itr == NULL)
     return;
   else
-    printf("─┬─");
-  depth++;
-  idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
+  {
+    if (child_itr->next != NULL)
+    {
+      printf("─┬─");
+      idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
+    }
+    else
+    {
+      printf("───");
+      idents[depth] = 0;
+    }
+  }
 
   while (child_itr != NULL)
   {
@@ -214,13 +225,13 @@ void print_tree(Proc *proc)
     if (child_itr != NULL)
     {
       printf("\n");
-      print_ident(child_itr->next == NULL);
+      print_ident();
     }
   }
   depth--;
 }
 
-void print_ident(bool is_last_child)
+void print_ident()
 {
   for (int i = 1; i <= depth; ++i)
   {
