@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     switch (c)
     {
-    case 0:
+    case 1:
       printf("option %s", long_options[option_index].name);
       if (optarg)
         printf(" with arg %s", optarg);
