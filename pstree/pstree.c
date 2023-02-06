@@ -7,11 +7,11 @@
 #include <string.h>
 #include <assert.h>
 
-#define debug(...)                  \
-  do                                \
-  {                                 \
-    fprintf(stderr, ##__VA_ARGS__); \
-    assert(false);                  \
+#define debug(cond, ...)                \
+  do                                    \
+  {                                     \
+    fprintf(stderr, "??"##__VA_ARGS__); \
+    assert(cond);                       \
   } while (0)
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
@@ -276,7 +276,7 @@ static void print_tree()
 
 static Childptr *quick_sort(Childptr *head)
 {
-  assert(head != NULL);
+  debug(head != NULL, "print an empty tree\n");
 
   Childptr *mark = head;
   if (mark->next == NULL)
@@ -311,7 +311,7 @@ static Childptr *quick_sort(Childptr *head)
     }
     tmp->next = NULL;
   }
-  assert(head1 != NULL || head2 != NULL);
+  debug(head1 != NULL || head2 != NULL, "both child links are empty\n");
 
   if (head1 == NULL)
   {
