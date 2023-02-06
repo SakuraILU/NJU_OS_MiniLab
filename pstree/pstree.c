@@ -328,7 +328,7 @@ static void sort_child_by_name()
   Proc *itr = dummy->next;
   while (itr != NULL)
   {
-    // printf("sort...\n");
+    printf("sort...\n");
     itr->childs_head = quick_sort(itr->childs_head);
     itr = itr->next;
   }
