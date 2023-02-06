@@ -111,6 +111,8 @@ bool need_sort = false;
 bool show_pids = false;
 
 void parse_args(int argc, char *argv[]);
+void print_tree(Proc *proc, int nident);
+void print_tree(Proc *proc, int nident);
 
 int main(int argc, char *argv[])
 {
