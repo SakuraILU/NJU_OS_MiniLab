@@ -222,10 +222,10 @@ void print_tree(Proc *proc)
     child_itr = child_itr->next;
     if (child_itr != NULL)
     {
-      printf("\n");
       print_ident();
     }
   }
+  printf("\n");
   depth--;
 }
 
