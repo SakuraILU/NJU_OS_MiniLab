@@ -290,7 +290,7 @@ static Childptr *quick_sort(Childptr *head)
     }
     else
     {
-      printf("L cmp %s, %s\n", tmp->child->name, mark->child->name);
+      printf("R cmp %s, %s\n", tmp->child->name, mark->child->name);
       if (head2 == NULL)
         tail2 = head2 = tmp;
       else
