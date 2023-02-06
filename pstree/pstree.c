@@ -313,7 +313,6 @@ static Childptr *quick_sort(Childptr *head)
   tail1 = head1 = quick_sort(head1);
   while (tail1->next != NULL)
   {
-    printf("here\n");
     tail = tail->next;
   }
   tail1->next = mark;
@@ -328,9 +327,9 @@ static void sort_child_by_name()
   Proc *itr = dummy->next;
   while (itr != NULL)
   {
-    printf("sort...\n");
     if (itr->childs_head != NULL)
       itr->childs_head = quick_sort(itr->childs_head);
+    printf("sort...\n");
     itr = itr->next;
   }
 }
