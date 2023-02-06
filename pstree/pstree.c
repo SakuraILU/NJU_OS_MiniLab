@@ -7,11 +7,11 @@
 #include <string.h>
 #include <assert.h>
 
-#define debug(cond, ...)                \
-  do                                    \
-  {                                     \
-    fprintf(stderr, "??"##__VA_ARGS__); \
-    assert(cond);                       \
+#define debug(cond, ...)            \
+  do                                \
+  {                                 \
+    fprintf(stderr, ##__VA_ARGS__); \
+    assert(cond);                   \
   } while (0)
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
