@@ -267,7 +267,6 @@ static Childptr *quick_sort(Childptr *head)
 
   if (head != NULL && head->next == NULL)
   {
-    printf("over");
     return head;
   }
 
@@ -312,9 +311,9 @@ static Childptr *quick_sort(Childptr *head)
   }
 
   tail1 = head1 = quick_sort(head1);
-  printf("sort1\n");
   while (tail1->next != NULL)
   {
+    printf("here\n");
     tail = tail->next;
   }
   tail1->next = mark;
