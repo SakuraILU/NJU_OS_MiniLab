@@ -13,10 +13,13 @@
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
-char version_info[] = "pstree (PSmisc) 23.4\n\\
-Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n";
+char version_info[] = "pstree (PSmisc) 23.4\n //
+                          Copyright(C) 1993 -
+                          2020 Werner Almesberger and
+                      Craig Small\n ";
 
-void parse_args(int argc, char *argv[]);
+                      void
+                      parse_args(int argc, char *argv[]);
 
 bool show_version = false;
 bool need_sort = false;
