@@ -225,6 +225,6 @@ void print_ident()
       nspace = idents[1] - 2;
     for (int j = 0; j < nspace; ++j)
       printf(" ");
-    printf("|");
+    printf("| ");
   }
 }
