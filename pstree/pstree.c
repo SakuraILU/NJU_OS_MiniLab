@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
       continue;
     printf("%s\n", dir_itr->d_name);
     char fpath[PATH_LEN];
-    sprintf(fpath, "/proc/%d/status", pid);
+    sprintf(fpath, "/proc/%d/stat", pid);
     FILE *file = fopen(fpath, "r+");
     assert(file != NULL);
 
