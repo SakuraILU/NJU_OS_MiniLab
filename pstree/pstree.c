@@ -128,6 +128,7 @@ bool show_pids = false;
 void parse_args(int argc, char *argv[]);
 void print_tree(Proc *proc);
 void print_ident(bool is_last_child);
+Proc *quick_sort(Proc *head);
 
 int main(int argc, char *argv[])
 {
@@ -275,4 +276,60 @@ void print_ident(bool is_last_child)
       }
     }
   }
+}
+
+Proc *quick_sort(Proc *head)
+{
+  assert(head != NULL);
+
+  if (head != NULL && head->next == NULL)
+    return head;
+
+  Proc *mark = head;
+
+  Proc *head1 = NULL, *head2 = NULL, *tail1 = NULL, *tail2 = NULL;
+  while (mark->next != NULL)
+  {
+    Proc *tmp = mark->next;
+    mark->next = tmp->next;
+    tmp->next = NULL;
+    if (strcmp(tmp->name, mark->name) < 0)
+    {
+      if (head1 == NULL)
+        tail1 = head1 = tmp;
+      else
+      {
+        tail1->next = tmp;
+        tail1 = tail1->next;
+      }
+    }
+    else
+    {
+      if (head2 == NULL)
+        tail2 = head2 = tmp;
+      else
+      {
+        tail2->next = tmp;
+        tail2 = tail2->next;
+      }
+    }
+  }
+  assert(head1 != NULL && head2 != NULL);
+
+  if (head1 == NULL)
+  {
+    mark->next = quick_sort(head2);
+    return mark;
+  }
+
+  tail1 = head1 = quick_sort(head1);
+  while (tail1->next != NULL)
+  {
+    tail = tail->next;
+  }
+  tail1->next = mark;
+  if (head2 != NULL)
+    mark->next = quick_sort(head2);
+
+  return head1;
 }
