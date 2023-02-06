@@ -202,7 +202,6 @@ void print_tree(Proc *proc)
 
   while (child_itr != NULL)
   {
-
     print_tree(child_itr->child);
 
     child_itr = child_itr->next;
@@ -212,7 +211,6 @@ void print_tree(Proc *proc)
       print_ident();
     }
   }
-  idents[depth] = 0;
   depth--;
 }
 
