@@ -16,10 +16,7 @@
 char version_info[] = "pstree (PSmisc) 23.4\n \\
 Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n \\
 \n \\
-PSmisc comes with ABSOLUTELY NO WARRANTY.\n \\
-This is free software, and you are welcome to redistribute it under\n \\
-the terms of the GNU General Public License.\n \\
-For more information about these matters, see the files named COPYING.";
+PSmisc comes with ABSOLUTELY NO WARRANTY.\n";
 
 void parse_args(int argc, char *argv[]);
 
