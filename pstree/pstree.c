@@ -218,7 +218,7 @@ void print_tree(Proc *proc)
 
 void print_ident()
 {
-  for (int i = 1; i < depth; ++i)
+  for (int i = 1; i <= depth; ++i)
   {
     int nspace = idents[i] - idents[i - 1];
     if (i == 1)
