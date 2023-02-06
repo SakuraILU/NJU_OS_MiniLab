@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     char fpath[PATH_LEN];
     sprintf(fpath, "/proc/%d/status", pid);
     FILE *file = fopen(fpath, "r+");
-    assert(file == NULL);
+    assert(file != NULL);
 
     uint proc_pid = 0, proc_ppid = 0;
     char proc_name[PROCNAME_LEN];
