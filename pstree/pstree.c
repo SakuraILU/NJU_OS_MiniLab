@@ -53,7 +53,6 @@ static __attribute__((constructor)) void constructor()
 {
   tail = dummy = malloc(sizeof(Proc));
   memset(dummy, 0, sizeof(Proc));
-  idents[0] = -2;
 }
 
 void add_proc(const char *name, uint pid, uint ppid)
@@ -201,7 +200,7 @@ void print_tree(Proc *proc)
   printf("%s-+-", proc->name);
   Childptr *child_itr = proc->childs_head;
   depth++;
-  idents[depth] = MAX(0, idents[depth - 1]) + strlen(proc->name) + 3;
+  idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
   while (child_itr != NULL)
   {
@@ -221,8 +220,11 @@ void print_ident()
 {
   for (int i = 1; i < depth; ++i)
   {
-    for (int j = 0; j < idents[i] - idents[i - 1]; ++j)
+    int nspace = idents[i] - idents[i - 1];
+    if (i == 1)
+      nspace = idents[1] - 2;
+    for (int j = 0; j < nspace; ++j)
       printf(" ");
-    printf("| ");
+    printf("|");
   }
 }
