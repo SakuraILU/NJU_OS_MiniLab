@@ -129,8 +129,7 @@ int main(int argc, char *argv[])
   if (!sort_by_num)
     sort_child_by_name();
 
-  print_tree(dummy->next);
-  printf("\n");
+  print_tree();
 
   return 0;
 }
@@ -230,7 +229,7 @@ static void print_ident(bool is_last_child)
   }
 }
 
-static void print_tree(Proc *proc)
+static void print_tree_dfs(Proc *proc)
 {
   printf("%s", proc->name);
 
@@ -253,7 +252,7 @@ static void print_tree(Proc *proc)
 
   while (true)
   {
-    print_tree(child_itr->child);
+    print_tree_dfs(child_itr->child);
 
     child_itr = child_itr->next;
     if (child_itr != NULL)
@@ -267,6 +266,12 @@ static void print_tree(Proc *proc)
     }
   }
   depth--;
+}
+
+static void print_tree()
+{
+  print_tree_dfs(dummy->next);
+  printf("\n");
 }
 
 static Childptr *quick_sort(Childptr *head)
