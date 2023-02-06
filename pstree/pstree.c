@@ -186,20 +186,23 @@ static void build_tree()
     assert(file != NULL);
 
     uint proc_pid = 0, proc_ppid = 0;
-    char proc_name[PROCNAME_LEN];
+    char proc_name[PROCNAME_LEN]; // 读取出的proc name是包含了小括号的，e.g. (systemd)
     char proc_status;
     fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
+
+    // 去除小括号，如果show_pids，在proc name后面追加(pid)
     proc_name[strlen(proc_name) - 1] = 0;
-    char *proc_name_pure = proc_name + 1;
+    char *proc_name_real = proc_name + 1;
     if (show_pids)
     {
       char pid_append[MAXNAMLEN];
       sprintf(pid_append, "(%d)", proc_pid);
       strcat(proc_name, pid_append);
     }
-    assert(pid == proc_pid);
-    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
-    add_proc(proc_name_pure, proc_pid, proc_ppid);
+
+    debug(pid == proc_pid, "proc 'pid' read from /proc directory should be equal to proc name extrac from /proc/'pid'/stat file");
+    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_real, proc_pid, proc_status, proc_ppid);
+    add_proc(proc_name_real, proc_pid, proc_ppid);
   }
 }
 
@@ -315,7 +318,7 @@ static Childptr *quick_sort(Childptr *head)
 
   if (head1 == NULL)
   {
-    assert(head2 != NULL, "link2 shouldn't be empty, because link1 is empty,too");
+    debug(head2 != NULL, "link2 shouldn't be empty, because link1 is empty,too");
     mark->next = quick_sort(head2);
     return mark;
   }
