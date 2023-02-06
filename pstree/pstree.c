@@ -220,9 +220,7 @@ void print_ident()
 {
   for (int i = 1; i <= depth; ++i)
   {
-    int nspace = idents[i] - idents[i - 1];
-    nspace -= 2;
-    for (int j = 0; j < nspace; ++j)
+    for (int j = 0; j < idents[i] - idents[i - 1] - 2; ++j)
       printf(" ");
     printf("│ ");
   }
