@@ -13,10 +13,8 @@ int main(int argc, char *argv[])
   // }
   // assert(!argv[argc]);
   int c;
-  int digit_optind = 0;
   while (true)
   {
-    int this_option_optind = optind ? optind : 1;
     int option_index = 0;
     static struct option long_options[] = {
         {"show-pids", no_argument, 0, 0},
