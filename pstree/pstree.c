@@ -315,6 +315,7 @@ static Childptr *quick_sort(Childptr *head)
   tail1 = head1 = quick_sort(head1);
   while (tail1->next != NULL)
   {
+    printf("here\n");
     tail = tail->next;
   }
   tail1->next = mark;
