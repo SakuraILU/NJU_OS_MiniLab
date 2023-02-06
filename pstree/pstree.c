@@ -110,8 +110,8 @@ bool show_pids = false;
 
 static void parse_args(int argc, char *argv[]);
 static void build_tree();
+static void sort_childs_by_name();
 static void print_tree();
-static void sort_child_by_name();
 
 int main(int argc, char *argv[])
 {
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
   // 由于/proc下面的文件是按序排列的（数字从小到大），因此顺序读取文件夹建的树中的节点的childs是已经按数字顺序排列的了
   if (!sort_by_num)
-    sort_child_by_name();
+    sort_childs_by_name();
 
   print_tree();
 
@@ -333,7 +333,7 @@ static Childptr *quick_sort(Childptr *head)
   return head1;
 }
 
-static void sort_child_by_name()
+static void sort_childs_by_name()
 {
   Proc *itr = dummy->next;
   while (itr != NULL)
