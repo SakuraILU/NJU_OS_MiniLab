@@ -110,7 +110,7 @@ bool show_pids = false;
 
 static void parse_args(int argc, char *argv[]);
 static void build_tree();
-static void print_tree(Proc *proc);
+static void print_tree();
 static void sort_child_by_name();
 
 int main(int argc, char *argv[])
