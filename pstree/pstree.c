@@ -4,6 +4,13 @@
 #include <getopt.h>
 #include <assert.h>
 
+#define debug(...)                  \
+  do                                \
+  {                                 \
+    fprintf(stderr, ##__VA_ARGS__); \
+    assert(0);                      \
+  } while (0)
+
 int main(int argc, char *argv[])
 {
   // for (int i = 0; i < argc; i++)
@@ -18,23 +25,16 @@ int main(int argc, char *argv[])
     int option_index = 0;
     static struct option long_options[] = {
         {"show-pids", no_argument, 0, 'p'},
-        {"numeric-sort", no_argument, 0, 0},
-        {"version", no_argument, 0, 0},
+        {"numeric-sort", no_argument, 0, 'n'},
+        {"version", no_argument, 0, 'v'},
         {0, 0, 0, 0}};
 
-    c = getopt_long(argc, argv, "pnv012", long_options, &option_index);
+    c = getopt_long(argc, argv, "pnv", long_options, &option_index);
     if (c == -1)
       break;
 
     switch (c)
     {
-    case 0:
-      printf("option %s", long_options[option_index].name);
-      if (optarg)
-        printf(" with arg %s", optarg);
-      printf("\n");
-      break;
-
     case 'p':
       printf("option p\n");
       break;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
       break;
 
     default:
-      printf("?? getopt returned character code 0%o ??\n", c);
+      debug("?? getopt returned character code 0%o ??\n", c);
     }
 
     return 0;
