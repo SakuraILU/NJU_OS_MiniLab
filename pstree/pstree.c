@@ -121,8 +121,8 @@ int main(int argc, char *argv[])
     uint proc_pid = 0, proc_ppid = 0;
     char proc_name[PROCNAME_LEN];
     char proc_status;
-    sscanf("%lu (%s) %c %u", proc_pid, proc_name, proc_status, proc_ppid);
-    printf("proc name %s, proc pid %u, proc ppid %u\n", proc_name, proc_pid, proc_ppid);
+    sscanf("%ld (%s) %c %ld", &proc_pid, proc_name, &proc_status, &proc_ppid);
+    printf("proc name %s, proc pid %ld, proc ppid %ld\n", proc_name, proc_pid, proc_ppid);
     // add_proc()
   }
 
