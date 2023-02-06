@@ -128,7 +128,7 @@ bool show_pids = false;
 void parse_args(int argc, char *argv[]);
 void print_tree(Proc *proc);
 void print_ident(bool is_last_child);
-Proc *quick_sort(Proc *head);
+void sort_child_by_name();
 
 int main(int argc, char *argv[])
 {
@@ -278,22 +278,22 @@ void print_ident(bool is_last_child)
   }
 }
 
-Proc *quick_sort(Proc *head)
+Childptr *quick_sort(Childptr *head)
 {
   assert(head != NULL);
 
   if (head != NULL && head->next == NULL)
     return head;
 
-  Proc *mark = head;
+  Childptr *mark = head;
 
-  Proc *head1 = NULL, *head2 = NULL, *tail1 = NULL, *tail2 = NULL;
+  Childptr *head1 = NULL, *head2 = NULL, *tail1 = NULL, *tail2 = NULL;
   while (mark->next != NULL)
   {
-    Proc *tmp = mark->next;
+    Childptr *tmp = mark->next;
     mark->next = tmp->next;
     tmp->next = NULL;
-    if (strcmp(tmp->name, mark->name) < 0)
+    if (strcmp(tmp->child->name, mark->child->name) < 0)
     {
       if (head1 == NULL)
         tail1 = head1 = tmp;
@@ -332,4 +332,14 @@ Proc *quick_sort(Proc *head)
     mark->next = quick_sort(head2);
 
   return head1;
+}
+
+void sort_child_by_name()
+{
+  Proc *itr = dummy->next;
+  while (itr != NULL)
+  {
+    itr->childs_head = quick_sort(itr->childs_head);
+    itr = itr->next;
+  }
 }
