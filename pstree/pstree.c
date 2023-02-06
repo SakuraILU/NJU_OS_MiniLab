@@ -247,8 +247,11 @@ void print_ident()
 {
   for (int i = 1; i <= depth; ++i)
   {
+    printf("%d\n", idents[i].pos);
     for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
+    {
       printf(" ");
+    }
 
     if (i < depth)
       printf("│ ");
