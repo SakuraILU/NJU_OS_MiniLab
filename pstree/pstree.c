@@ -218,7 +218,7 @@ void print_ident()
 {
   for (int i = 1; i < depth; ++i)
   {
-    for (int j = 0; j < idents[i] - 3; ++j)
+    for (int j = 0; j < idents[i] - idents[i - 1]; ++j)
       printf(" ");
     printf(" | ");
   }
