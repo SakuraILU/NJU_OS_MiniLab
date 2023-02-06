@@ -250,7 +250,9 @@ void print_ident()
       printf(" ");
     }
 
-    if (i < depth)
+    if (!idents[i].need_print)
+      printf("  ");
+    else if (i < depth)
       printf("│ ");
     else
       printf("├─");
