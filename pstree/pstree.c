@@ -303,7 +303,7 @@ static Childptr *quick_sort(Childptr *head)
       }
     }
   }
-  assert(head1 != NULL && head2 != NULL);
+  assert(head1 != NULL || head2 != NULL);
 
   if (head1 == NULL)
   {
