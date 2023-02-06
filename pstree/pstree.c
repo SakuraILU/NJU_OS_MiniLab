@@ -192,7 +192,7 @@ void parse_args(int argc, char *argv[])
 
 void print_tree(Proc *proc, int nident)
 {
-  printf("%s-+-", proc->name);
+  printf("%s-+-\n", proc->name);
   nident = nident + strlen(proc->name) + 3;
   Childptr *child_itr = proc->childs_head;
   while (child_itr != NULL)
