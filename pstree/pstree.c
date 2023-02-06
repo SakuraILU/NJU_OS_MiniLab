@@ -153,7 +153,8 @@ int main(int argc, char *argv[])
     add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
-  // traverse_proc();
+  sort_child_by_name();
+
   print_tree(dummy->next);
   printf("\n");
 
