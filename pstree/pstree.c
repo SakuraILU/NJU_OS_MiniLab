@@ -227,7 +227,7 @@ void print_tree(Proc *proc)
     idents[depth].need_print = false;
   }
 
-  while (child_itr != NULL)
+  while (true)
   {
     print_tree(child_itr->child);
 
@@ -235,8 +235,14 @@ void print_tree(Proc *proc)
     if (child_itr != NULL)
     {
       printf("\n");
+      if (child_itr->next == NULL)
+      {
+        idents[depth].need_print = false;
+      }
       print_ident();
     }
+    else
+      break;
   }
   depth--;
 }
