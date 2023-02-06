@@ -18,6 +18,7 @@
 
 #define PROCNAME_LEN 64
 #define PATH_LEN 128
+#define MAXDEPTH 24
 
 char version_info[] = "pstree (PSmisc) 23.4\n\
 Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n\
@@ -106,13 +107,15 @@ void traverse_proc()
   }
 }
 
+int idents[MAXDEPTH];
+int depth = 0;
 bool show_version = false;
 bool need_sort = false;
 bool show_pids = false;
 
 void parse_args(int argc, char *argv[]);
-void print_tree(Proc *proc, int nident);
-void print_ident(int nident);
+void print_tree(Proc *proc);
+void print_ident();
 
 int main(int argc, char *argv[])
 {
@@ -190,26 +193,34 @@ void parse_args(int argc, char *argv[])
   }
 }
 
-void print_tree(Proc *proc, int nident)
+void print_tree(Proc *proc)
 {
   printf("%s-+-", proc->name);
-  nident = nident + strlen(proc->name) + 3;
   Childptr *child_itr = proc->childs_head;
+  depth++;
+
   while (child_itr != NULL)
   {
-    print_tree(child_itr->child, nident);
-    child_itr = child_itr->next;
+    idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
+    print_tree(child_itr->child);
+
+    child_itr = child_itr->next;
     if (child_itr != NULL)
     {
       printf("\n");
-      print_ident(nident);
+      print_ident();
     }
   }
+  depth--;
 }
 
-void print_ident(int nident)
+void print_ident()
 {
-  for (int i = 0; i < nident; ++i)
-    printf(" ");
+  for (int i = 1; i < depth; ++i)
+  {
+    for (int j = 0; j < idents[depth] - 2; ++j)
+      printf(" ");
+    printf(" | ");
+  }
 }
