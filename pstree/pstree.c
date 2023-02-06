@@ -249,7 +249,7 @@ void print_ident()
   {
     for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
     {
-      printf("%d\n", idents[i].pos);
+      printf("%d %d\n", i, idents[i].pos);
       printf(" ");
     }
 
