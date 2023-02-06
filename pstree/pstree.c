@@ -10,7 +10,7 @@
 #define debug(cond, ...)              \
   do                                  \
   {                                   \
-    if (cond)                         \
+    if (!cond)                        \
       fprintf(stderr, ##__VA_ARGS__); \
     assert(cond);                     \
   } while (0)
