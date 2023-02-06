@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     uint proc_pid = 0, proc_ppid = 0;
     char proc_name[PROCNAME_LEN];
     char proc_status;
-    fscanf(file, "%d (%s) %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
+    fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
     assert(pid == proc_pid);
     printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name, proc_pid, proc_status, proc_ppid);
     // add_proc()
