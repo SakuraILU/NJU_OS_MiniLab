@@ -300,8 +300,8 @@ static Childptr *quick_sort(Childptr *head)
       }
     }
   }
-  printf("here\n");
   assert(head1 != NULL && head2 != NULL);
+  printf("here\n");
 
   if (head1 == NULL)
   {
