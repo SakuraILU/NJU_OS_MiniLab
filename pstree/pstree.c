@@ -312,15 +312,17 @@ static Childptr *quick_sort(Childptr *head)
     return mark;
   }
 
+  printf("1\n");
   tail1 = head1 = quick_sort(head1);
   while (tail1->next != NULL)
   {
-    printf("here\n");
     tail = tail->next;
   }
+  printf("2\n");
   tail1->next = mark;
   if (head2 != NULL)
     mark->next = quick_sort(head2);
+  printf("3\n");
 
   printf("ret3\n");
   return head1;
