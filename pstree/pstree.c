@@ -47,9 +47,14 @@ typedef struct childptr
 
 Proc *dummy = NULL, *tail = NULL;
 
-struct idents // 记录树上每个深度的子树的开头位置（根进程名的开头位置）
+// 记录树上每个深度的子树的开头位置（根进程名的开头位置）
+// systemd─┬─ModemManager
+// ^         ^
+// 0         9
+// idents[0] idents[1]
+struct idents
 {
-  int pos;
+  int pos; // 距离最左侧的距离
   bool need_print;
 } idents[MAXDEPTH];
 int depth = 0;
@@ -216,7 +221,7 @@ static void print_ident(bool is_last_child)
 {
   for (int i = 1; i <= depth; ++i)
   {
-    for (int j = 0; j < idents[i].pos - idents[i - 1].pos - 2; ++j)
+    for (int j = 0; j < idents[i].pos - 2; ++j)
     {
       printf(" ");
     }
@@ -247,7 +252,7 @@ static void print_tree_dfs(Proc *proc)
     return;
 
   depth++;
-  idents[depth].pos = idents[depth - 1].pos + strlen(proc->name) + 3;
+  idents[depth].pos = strlen(proc->name) + 3;
   if (child_itr->next != NULL)
   {
     printf("─┬─");
