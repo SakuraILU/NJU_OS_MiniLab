@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
 
   // traverse_proc();
   print_tree(dummy->next);
+  printf("\n");
 
   return 0;
 }
