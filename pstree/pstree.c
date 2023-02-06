@@ -271,6 +271,7 @@ static Childptr *quick_sort(Childptr *head)
   Childptr *mark = head;
 
   Childptr *head1 = NULL, *head2 = NULL, *tail1 = NULL, *tail2 = NULL;
+  printf("here\n");
   while (mark->next != NULL)
   {
     Childptr *tmp = mark->next;
