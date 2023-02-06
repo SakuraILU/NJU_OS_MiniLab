@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   }
 
   // traverse_proc();
-  print_tree(dummy->next, 0);
+  print_tree(dummy->next);
 
   return 0;
 }
