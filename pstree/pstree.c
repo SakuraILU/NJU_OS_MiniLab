@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     char proc_name[PROCNAME_LEN];
     char proc_status;
     fscanf(file, "%d (%s) %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
-    // printf("proc name %s, proc pid %d, proc ppid %d\n", proc_name, proc_pid, proc_ppid);
+    printf("proc name %s, proc pid %d, proc ppid %d\n", proc_name, proc_pid, proc_ppid);
     // add_proc()
   }
 
