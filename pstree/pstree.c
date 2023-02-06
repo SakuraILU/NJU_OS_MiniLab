@@ -68,6 +68,7 @@ void add_proc(const char *name, uint pid, uint ppid)
     if (itr->pid == ppid)
       parent = itr;
   }
+  printf("here\n");
   assert(child != NULL && parent != NULL);
 
   Childptr *nchild = malloc(sizeof(Childptr));
