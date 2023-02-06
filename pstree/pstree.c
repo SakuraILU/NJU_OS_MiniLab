@@ -1,6 +1,6 @@
 #include <stdbool.h>
-#include <stdio.h>  /* for printf */
-#include <stdlib.h> /* for exit */
+#include <stdio.h>
+#include <stdlib.h>
 #include <getopt.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -11,11 +11,11 @@
   do                                \
   {                                 \
     fprintf(stderr, ##__VA_ARGS__); \
-    assert(0);                      \
+    assert(false);                  \
   } while (0)
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
-#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
+#define ISLASTNODE(link) (link->next == NULL)
 
 #define PROCNAME_LEN 64
 #define PATH_LEN 128
@@ -105,7 +105,7 @@ static void add_proc(const char *name, uint pid, uint ppid)
 }
 
 bool show_version = false;
-bool need_sort = false;
+bool sort_by_num = false;
 bool show_pids = false;
 
 static void parse_args(int argc, char *argv[]);
@@ -122,38 +122,11 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  DIR *proc_dir = opendir("/proc");
-  struct dirent *dir_itr;
-  while ((dir_itr = readdir(proc_dir)) != NULL)
-  {
-    int pid = 0;
-    if ((pid = atoi(dir_itr->d_name)) == 0)
-      continue;
-    // printf("%s\n", dir_itr->d_name);
-    char fpath[PATH_LEN];
-    sprintf(fpath, "/proc/%d/stat", pid);
-    FILE *file = fopen(fpath, "r+");
-    // printf("%s\n", fpath);
-    assert(file != NULL);
+  build_tree();
 
-    uint proc_pid = 0, proc_ppid = 0;
-    char proc_name[PROCNAME_LEN];
-    char proc_status;
-    fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
-    proc_name[strlen(proc_name) - 1] = 0;
-    char *proc_name_pure = proc_name + 1;
-    if (show_pids)
-    {
-      char pid_append[MAXNAMLEN];
-      sprintf(pid_append, "(%d)", proc_pid);
-      strcat(proc_name, pid_append);
-    }
-    assert(pid == proc_pid);
-    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
-    add_proc(proc_name_pure, proc_pid, proc_ppid);
-  }
-
-  sort_child_by_name();
+  // 由于/proc下面的文件是按序排列的（数字从小到大），因此顺序读取文件夹建的树中的节点的childs是已经按数字顺序排列的了
+  if (!sort_by_num)
+    sort_child_by_name();
 
   print_tree(dummy->next);
   printf("\n");
@@ -183,7 +156,7 @@ static void parse_args(int argc, char *argv[])
       break;
 
     case 'n':
-      need_sort = true;
+      sort_by_num = true;
       break;
 
     case 'v':
@@ -193,6 +166,40 @@ static void parse_args(int argc, char *argv[])
     default:
       debug("?? getopt returned character code 0%o ??\n", opt);
     }
+  }
+}
+
+static void build_tree()
+{
+  DIR *proc_dir = opendir("/proc");
+  struct dirent *dir_itr;
+  while ((dir_itr = readdir(proc_dir)) != NULL)
+  {
+    int pid = 0;
+    if ((pid = atoi(dir_itr->d_name)) == 0)
+      continue;
+    // printf("%s\n", dir_itr->d_name);
+    char fpath[PATH_LEN];
+    sprintf(fpath, "/proc/%d/stat", pid);
+    FILE *file = fopen(fpath, "r+");
+    // printf("%s\n", fpath);
+    assert(file != NULL);
+
+    uint proc_pid = 0, proc_ppid = 0;
+    char proc_name[PROCNAME_LEN];
+    char proc_status;
+    fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
+    proc_name[strlen(proc_name) - 1] = 0;
+    char *proc_name_pure = proc_name + 1;
+    if (show_pids)
+    {
+      char pid_append[MAXNAMLEN];
+      sprintf(pid_append, "(%d)", proc_pid);
+      strcat(proc_name, pid_append);
+    }
+    assert(pid == proc_pid);
+    // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
+    add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 }
 
@@ -251,7 +258,7 @@ static void print_tree(Proc *proc)
     if (child_itr != NULL)
     {
       printf("\n");
-      print_ident(child_itr->next == NULL);
+      print_ident(ISLASTNODE(child_itr));
     }
     else
     {
