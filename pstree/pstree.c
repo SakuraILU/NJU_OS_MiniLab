@@ -237,12 +237,14 @@ void print_tree(Proc *proc)
       printf("\n");
       if (child_itr->next == NULL)
       {
-        idents[depth].need_print = false;
       }
       print_ident();
     }
     else
+    {
+      idents[depth].need_print = false;
       break;
+    }
   }
   depth--;
 }
