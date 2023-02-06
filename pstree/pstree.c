@@ -50,25 +50,20 @@ static __attribute__((constructor)) void constructor()
   memset(dummy, 0, sizeof(Proc));
 }
 
-void add_proc(const char *name, uint pid)
+void add_proc(const char *name, uint pid, uint ppid)
 {
   tail->next = malloc(sizeof(Proc));
   tail = tail->next;
   memset(tail, 0, sizeof(Proc));
   tail->pid = pid;
   strcpy(tail->name, name);
-}
 
-void add_child(uint pid, uint ppid)
-{
   Proc *itr = dummy->next;
-  Proc *child = NULL, *parent = NULL;
+  Proc *child = tail, *parent = NULL;
   while (itr != NULL)
   {
     if (itr->pid == ppid)
       parent = itr;
-    else if (itr->pid == pid)
-      child = itr;
   }
   assert(child != NULL && parent != NULL);
 
@@ -128,7 +123,7 @@ int main(int argc, char *argv[])
     char *proc_name_pure = proc_name + 1;
     // assert(pid == proc_pid);
     printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
-    add_proc(proc_name_pure, proc_pid);
+    add_proc(proc_name_pure, proc_pid, proc_ppid);
   }
 
   return 0;
