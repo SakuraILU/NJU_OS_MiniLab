@@ -117,11 +117,12 @@ int main(int argc, char *argv[])
     char fpath[PATH_LEN];
     sprintf(fpath, "/proc/%d/status", pid);
     FILE *file = fopen(fpath, "r+");
+    assert(file == NULL);
 
     uint proc_pid = 0, proc_ppid = 0;
     char proc_name[PROCNAME_LEN];
     char proc_status;
-    fscanf(file, "%d", &proc_pid);
+    fscanf(file, "%d (%s) %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
     // printf("proc name %s, proc pid %d, proc ppid %d\n", proc_name, proc_pid, proc_ppid);
     // add_proc()
   }
