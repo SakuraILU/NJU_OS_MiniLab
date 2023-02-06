@@ -13,10 +13,7 @@
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
-char version_info[] = "pstree (PSmisc) 23.4\n \\
-Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n \\
-\n \\
-PSmisc comes with ABSOLUTELY NO WARRANTY.\n";
+char version_info[] = "pstree (PSmisc) 23.4";
 
 void parse_args(int argc, char *argv[]);
 
