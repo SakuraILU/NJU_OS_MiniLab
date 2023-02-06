@@ -265,13 +265,12 @@ static Childptr *quick_sort(Childptr *head)
 {
   assert(head != NULL);
 
-  if (head != NULL && head->next == NULL)
+  Childptr *mark = head;
+  if (mark->next == NULL)
   {
     printf("ret1");
     return head;
   }
-
-  Childptr *mark = head;
 
   Childptr *head1 = NULL, *head2 = NULL, *tail1 = NULL, *tail2 = NULL;
   printf("here\n");
@@ -279,7 +278,6 @@ static Childptr *quick_sort(Childptr *head)
   {
     Childptr *tmp = mark->next;
     mark->next = tmp->next;
-    tmp->next = NULL;
     if (strcmp(tmp->child->name, mark->child->name) < 0)
     {
       printf("L cmp %s, %s\n", tmp->child->name, mark->child->name);
@@ -302,11 +300,13 @@ static Childptr *quick_sort(Childptr *head)
         tail2 = tail2->next;
       }
     }
+    tmp->next = NULL;
   }
   assert(head1 != NULL || head2 != NULL);
 
   if (head1 == NULL)
   {
+    assert(head2 != NULL);
     mark->next = quick_sort(head2);
     printf("ret2\n");
     return mark;
