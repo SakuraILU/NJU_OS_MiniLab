@@ -109,6 +109,7 @@ bool sort_by_num = false;
 bool show_pids = false;
 
 static void parse_args(int argc, char *argv[]);
+static void build_tree();
 static void print_tree(Proc *proc);
 static void sort_child_by_name();
 
