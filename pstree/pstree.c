@@ -113,11 +113,11 @@ int main(int argc, char *argv[])
     int pid = 0;
     if ((pid = atoi(dir_itr->d_name)) == 0)
       continue;
-    printf("%s\n", dir_itr->d_name);
+    // printf("%s\n", dir_itr->d_name);
     char fpath[PATH_LEN];
     sprintf(fpath, "/proc/%d/stat", pid);
     FILE *file = fopen(fpath, "r+");
-    printf("%s\n", fpath);
+    // printf("%s\n", fpath);
     assert(file != NULL);
 
     uint proc_pid = 0, proc_ppid = 0;
