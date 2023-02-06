@@ -315,7 +315,7 @@ static Childptr *quick_sort(Childptr *head)
 
   if (head1 == NULL)
   {
-    assert(head2 != NULL);
+    assert(head2 != NULL, "link2 shouldn't be empty, because link1 is empty,too");
     mark->next = quick_sort(head2);
     return mark;
   }
