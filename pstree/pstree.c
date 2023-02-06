@@ -276,7 +276,7 @@ static Childptr *quick_sort(Childptr *head)
     Childptr *tmp = mark->next;
     mark->next = tmp->next;
     tmp->next = NULL;
-    printf("cmp %s, %s\n", tmp->child.name, mark->child->name);
+    printf("cmp %s, %s\n", tmp->child->name, mark->child->name);
     if (strcmp(tmp->child->name, mark->child->name) < 0)
     {
       if (head1 == NULL)
