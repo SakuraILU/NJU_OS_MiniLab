@@ -16,7 +16,7 @@
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
 
-#define PROCNAME_LEN 64
+#define PROCNAME_LEN 18
 #define PATH_LEN 128
 
 char version_info[] = "pstree (PSmisc) 23.4\n\
