@@ -159,6 +159,12 @@ int main(int argc, char *argv[])
     fscanf(file, "%d %s %c %d", &proc_pid, proc_name, &proc_status, &proc_ppid);
     proc_name[strlen(proc_name) - 1] = 0;
     char *proc_name_pure = proc_name + 1;
+    if (show_pids)
+    {
+      char pid_append[MAXNAMLEN];
+      sprintf(pid_append, "(%d)", proc_pid);
+      strcat(proc_name, pid_append);
+    }
     assert(pid == proc_pid);
     // printf("proc name %s, proc pid %d, proc status %c, proc ppid %d\n", proc_name_pure, proc_pid, proc_status, proc_ppid);
     add_proc(proc_name_pure, proc_pid, proc_ppid);
@@ -208,10 +214,7 @@ void parse_args(int argc, char *argv[])
 
 void print_tree(Proc *proc)
 {
-  if (show_pids)
-    printf("%s(%d)", proc->name, proc->pid);
-  else
-    printf("%s", proc->name);
+  printf("%s", proc->name);
 
   Childptr *child_itr = proc->childs_head;
   if (child_itr == NULL)
