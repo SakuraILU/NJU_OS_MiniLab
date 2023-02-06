@@ -235,7 +235,6 @@ void print_ident()
   {
     for (int j = 0; j < idents[i] - idents[i - 1] - 2; ++j)
     {
-      printf("%d\n", idents[i] - idents[i - 1] - 2);
       printf(" ");
     }
 
