@@ -85,7 +85,7 @@ void add_child(uint pid, uint ppid)
 
   while (child_itr->next != NULL)
   {
-    child_itr = child->next;
+    child_itr = child_itr->next;
   }
   child_itr->next = nchild;
 }
