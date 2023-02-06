@@ -11,15 +11,34 @@
     assert(0);                      \
   } while (0)
 
+#define eprintf(...) fprintf(stderr, ##__VA_ARGS__);
+
+char version_info[] = "pstree (PSmisc) 23.4\n \\
+Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n \\
+\n \\
+PSmisc comes with ABSOLUTELY NO WARRANTY.\n \\
+This is free software, and you are welcome to redistribute it under\n \\
+the terms of the GNU General Public License.\n \\
+For more information about these matters, see the files named COPYING.";
+
+void parse_args(int argc, char *argv[]);
+
+bool show_version = false;
+bool need_sort = false;
+bool show_pids = false;
+
 int main(int argc, char *argv[])
 {
-  // for (int i = 0; i < argc; i++)
-  // {
-  //   assert(argv[i]);
-  //   printf("argv[%d] = %s\n", i, argv[i]);
-  // }
-  // assert(!argv[argc]);
-  int c;
+  parse_args(argc, argv);
+
+  if (show_version)
+    eprintf("%s", version_info);
+
+  return 0;
+}
+
+void parse_args(int argc, char *argv[])
+{
   while (true)
   {
     int option_index = 0;
@@ -29,11 +48,11 @@ int main(int argc, char *argv[])
         {"version", no_argument, 0, 'v'},
         {0, 0, 0, 0}};
 
-    c = getopt_long(argc, argv, "pnv", long_options, &option_index);
-    if (c == -1)
+    int opt = getopt_long(argc, argv, "pnv", long_options, &option_index);
+    if (opt == -1)
       break;
 
-    switch (c)
+    switch (opt)
     {
     case 'p':
       printf("option p\n");
@@ -48,9 +67,7 @@ int main(int argc, char *argv[])
       break;
 
     default:
-      debug("?? getopt returned character code 0%o ??\n", c);
+      debug("?? getopt returned character code 0%o ??\n", opt);
     }
-
-    return 0;
   }
 }
