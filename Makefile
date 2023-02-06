@@ -22,10 +22,10 @@ $(NAME)-32: $(DEPS) # 32bit binary
 	gcc -m32 $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS)
  
 $(NAME)-64.so: $(DEPS) # 64bit shared library
-	gcc -fPIC -shared -m64 $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS)
+	gcc -fPIC -shared -m64 $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS) 
 
 $(NAME)-32.so: $(DEPS) # 32bit shared library
-	gcc -fPIC -shared -m32 $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS)
+	gcc -fPIC -shared -m32 $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS) 
 
 clean:
 	rm -f $(NAME)-64 $(NAME)-32 $(NAME)-64.so $(NAME)-32.so

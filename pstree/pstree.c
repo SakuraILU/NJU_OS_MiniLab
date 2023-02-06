@@ -47,17 +47,17 @@ typedef struct childptr
 
 Proc *dummy = NULL, *tail = NULL;
 
-// 记录树上每个深度的子树的开头位置（根进程名的开头位置）
-// systemd─┬─ModemManager
-// ^         ^
-// 0         9
-// idents[0] idents[1]
+// 记录树上每个深度的子树的相对偏移量（根进程名的开头的相对量: strlen(proc_name) + 3）
+// systemd─┬─sddm─┬─Xor
+// ^         ^      ^
+// 0 <-----> 10 <-> 7
+// [0]      [1]    [2]
 struct idents
 {
   int offset; // 距离最左侧的距离
   bool need_print;
 } idents[MAXDEPTH];
-int depth = 0;
+int depth = 0; // 递归打印树的当前递归深度
 
 static __attribute__((constructor)) void constructor()
 {
