@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   {
     int option_index = 0;
     static struct option long_options[] = {
-        {"show-pids", no_argument, 0, 0},
+        {"show-pids", no_argument, 0, 'p'},
         {"numeric-sort", no_argument, 0, 0},
         {"version", no_argument, 0, 0},
         {0, 0, 0, 0}};
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     switch (c)
     {
-    case 1:
+    case 0:
       printf("option %s", long_options[option_index].name);
       if (optarg)
         printf(" with arg %s", optarg);
