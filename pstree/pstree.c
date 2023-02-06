@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
         {"version", no_argument, 0, 0},
         {0, 0, 0, 0}};
 
-    c = getopt_long(argc, argv, "pnv", long_options, &option_index);
+    c = getopt_long(argc, argv, "pnv012", long_options, &option_index);
     if (c == -1)
       break;
 
@@ -38,15 +38,15 @@ int main(int argc, char *argv[])
       break;
 
     case 'p':
-      printf("option a\n");
+      printf("option p\n");
       break;
 
     case 'n':
-      printf("option b\n");
+      printf("option n\n");
       break;
 
     case 'v':
-      printf("option c with value '%s'\n", optarg);
+      printf("option v\n");
       break;
 
     default:
