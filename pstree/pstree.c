@@ -244,10 +244,7 @@ void print_ident()
       printf("│ ");
     else
     {
-      if (!is_last_child)
-        printf("├─");
-      else
-        printf("└─");
+      printf("├─");
     }
   }
 }
