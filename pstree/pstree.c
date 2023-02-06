@@ -266,7 +266,10 @@ static Childptr *quick_sort(Childptr *head)
   assert(head != NULL);
 
   if (head != NULL && head->next == NULL)
+  {
+    printf("over");
     return head;
+  }
 
   Childptr *mark = head;
 
