@@ -198,10 +198,10 @@ void print_tree(Proc *proc)
   printf("%s-+-", proc->name);
   Childptr *child_itr = proc->childs_head;
   depth++;
+  idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
   while (child_itr != NULL)
   {
-    idents[depth] = idents[depth - 1] + strlen(proc->name) + 3;
 
     print_tree(child_itr->child);
 
@@ -212,6 +212,7 @@ void print_tree(Proc *proc)
       print_ident();
     }
   }
+  idents[depth] = 0;
   depth--;
 }
 
