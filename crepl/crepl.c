@@ -158,7 +158,7 @@ void wrap_cmd(char *cmd)
 {
   printf("%s\n", cmd);
   char tmp[CMD_MXSIZE];
-  strcpy(tmp, cmd);
   memset(tmp, 0, CMD_MXSIZE);
+  strcpy(tmp, cmd);
   sprintf(cmd, "int wrap_fun(){%s}", tmp);
 }
