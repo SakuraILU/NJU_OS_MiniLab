@@ -12,7 +12,8 @@
 #define ERR_MSG_LEN 4096
 
 int src_fd = 0;
-char src[PATH_MXSIZE] = "/tmp/src_code.XXXXXX";
+char org_tmp_name[PATH_MXSIZE] = "/tmp/src.XXXXXX";
+char src[PATH_MXSIZE];
 char dst[PATH_MXSIZE];
 char ndst = 0;
 
@@ -33,14 +34,14 @@ char *compile_cmd[] = {
 };
 
 void compile_libso(char *code);
+char *set_dstname(int ndst);
 
 static __attribute__((constructor)) void constructor()
 {
-  src_fd = mkstemp(src);
-  char old_src[PATH_MXSIZE];
-  strcpy(old_src, src);
-  strcat(src, ".c");
-  rename(old_src, src);
+  src_fd = mkstemp(org_tmp_name);
+
+  sprintf(src, "%s.c", org_tmp_name);
+  rename(org_tmp_name, src);
 }
 
 static __attribute__((destructor)) void destructor()
@@ -102,9 +103,15 @@ void compile_libso(char *code)
     remain -= cnt;
   }
 
-  sprintf(dst, "%d.so", ndst++);
+  set_dstname(ndst++);
 
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
   exit(EXIT_FAILURE);
+}
+
+char *set_dstname(int ndst)
+{
+  sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
+  return dst;
 }
