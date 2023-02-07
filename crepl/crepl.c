@@ -166,3 +166,12 @@ void wrap_cmd(char *cmd)
   strcpy(tmp, cmd);
   sprintf(cmd, "int wrap_fun(){return %s}", tmp);
 }
+
+int fb(int num)
+{
+  if (num == 1)
+    return 1;
+  else if (num == 2)
+    return 3;
+  return fb(num - 1) + fb(num - 2);
+}
