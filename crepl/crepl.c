@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     fflush(stdout);
     if (!fgets(line, sizeof(line), stdin))
       break;
+    line[strlen(line) - 1] = 0;
     printf("Got %zu chars.\n", strlen(line)); // ??
 
     set_dstname(ndst);
@@ -157,5 +158,6 @@ void wrap_cmd(char *cmd)
 {
   char tmp[CMD_MXSIZE];
   strcpy(tmp, cmd);
+  memset(tmp, 0, CMD_MXSIZE);
   sprintf(cmd, "int wrap_fun(){%s}", tmp);
 }
