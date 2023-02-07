@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     fflush(stdout);
     if (!fgets(cmd, sizeof(cmd), stdin))
       break;
-    cmd[strlen(cmd) - 1] = 0; // 取出末尾的'\n'
+    cmd[strlen(cmd) - 3] = 0; // 取出末尾的'\n'
 
     set_dstname(ndst);
 
