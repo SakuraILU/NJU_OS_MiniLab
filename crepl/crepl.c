@@ -155,15 +155,14 @@ void parent(char *cmd, Cmdtype cmd_type)
         printf("( %s ) == %d\n", cmd, wrap_fun());
 
         dlclose(dl_handler);
-        unlink(dst);
-        ndst--;
 
         exit(EXIT_SUCCESS);
       }
+      wait(&wstatus);
 
       // 运行一次之后就不用了，删掉该动态库
-
-      wait(&wstatus);
+      unlink(dst);
+      ndst--;
     }
     else
       // flag RTLD_GLOBAL 非常重要，必须GLOBAL才能被其他动态库解析到
