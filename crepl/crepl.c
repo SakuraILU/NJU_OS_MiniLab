@@ -114,9 +114,6 @@ int main(int argc, char *argv[])
 
       parent(cmd, cmd_type);
 
-      if (cmd_type == RUN)
-        ndst--;
-
       close(fd[0]);
     }
 
@@ -149,6 +146,7 @@ void parent(char *cmd, Cmdtype cmd_type)
       // 也不需要什么通信
       if (fork() == 0)
       {
+        // 运行一次之后就不用了，所以用RTLD_LOCAL方式加载
         void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
         wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
         if (wrap_fun == NULL)
@@ -165,9 +163,10 @@ void parent(char *cmd, Cmdtype cmd_type)
       wait(&wstatus);
     }
     else
-    {
+      // flag RTLD_GLOBAL 非常重要，必须GLOBAL才能被其他动态库解析到
+      // 也就是动态加载器只会解析当前动态库以及其他用RTLD_GLOBAL方式加载的动态库
+      // 如果不标记GLOBAL的话，后面的int wrap_fun()将无法解析之前加载进来的动态库了
       dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
-    }
   }
   else
   {
