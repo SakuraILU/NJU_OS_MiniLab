@@ -24,10 +24,10 @@ char *compile_cmd[] = {
 #else
     "-m32",
 #endif
-    "--shared",
+    "-shared",
     "-fPIC",
     "-O2",
-    "-w",
+    "-W",
     src,
     "-o",
     dst,
