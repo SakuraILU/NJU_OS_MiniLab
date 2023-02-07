@@ -33,6 +33,7 @@ void compile_libso(char *code);
 static __attribute__((constructor)) void constructor()
 {
   src_fd = mkstemp(src);
+  strcat(src, ".c");
 }
 
 static __attribute__((destructor)) void destructor()
