@@ -155,13 +155,13 @@ void parent(char *cmd, Cmdtype cmd_type)
         printf("( %s ) == %d\n", cmd, wrap_fun());
 
         dlclose(dl_handler);
+        unlink(dst);
+        ndst--;
 
         exit(EXIT_SUCCESS);
       }
 
       // 运行一次之后就不用了，删掉该动态库
-      unlink(dst);
-      ndst--;
 
       wait(&wstatus);
     }
