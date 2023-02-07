@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     printf("Got %zu chars.\n", strlen(line)); // ??
+    ++ndst;
 
     int fd[2];
     pipe(fd);
@@ -103,7 +104,7 @@ void compile_libso(char *code)
     remain -= cnt;
   }
 
-  set_dstname(ndst++);
+  set_dstname(ndst);
 
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
