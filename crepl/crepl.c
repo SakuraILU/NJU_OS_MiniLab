@@ -74,7 +74,6 @@ static __attribute__((destructor)) void destructor()
 int main(int argc, char *argv[])
 {
   static char line[CMD_MXSIZE];
-  // printf("create tmp file %s", src);
 
   while (1)
   {
@@ -85,7 +84,6 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     line[strlen(line) - 1] = 0;
-    // printf("Got %zu chars.\n", strlen(line)); // ??
 
     set_dstname(ndst);
 
@@ -120,26 +118,23 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        if (fork() == 0)
-        {
-          // printf("load %s\n", dst);
-          if (cmd_type == RUN)
-          {
-            void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
-            wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
-            // printf("solve success %p\n", wrap_fun);
-            printf("( %s ) == %d\n", line, wrap_fun());
-            dlclose(dl_handler);
-            unlink(dst);
-            ndst--;
-          }
-          else
-          {
-            dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
-          }
-        }
 
-        wait(&wstatus);
+        if (cmd_type == RUN)
+        {
+          void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
+          wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
+          if (wrap_fun == NULL)
+            continue;
+
+          printf("( %s ) == %d\n", line, wrap_fun());
+          dlclose(dl_handler);
+          unlink(dst);
+          ndst--;
+        }
+        else
+        {
+          dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
+        }
       }
       else
       {
@@ -161,7 +156,6 @@ void compile_libso(char *code)
   fread(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
-  // printf("%s\n", code);
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
   exit(EXIT_FAILURE);
