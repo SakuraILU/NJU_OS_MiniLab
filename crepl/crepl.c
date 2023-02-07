@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
       if (compile_success)
       {
         void *dl_handler = dlopen(dst, RTLD_NOW);
+        printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
