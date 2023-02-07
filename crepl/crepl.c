@@ -7,7 +7,7 @@
 #define PATH_MXSIZE 4096
 
 int src_fd = 0;
-char src[PATH_MXSIZE] = "src_code";
+char src[PATH_MXSIZE] = "/tmp/src_code.XXXXXX";
 char dst[PATH_MXSIZE];
 
 char *compile_cmd[] = {
