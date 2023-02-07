@@ -28,6 +28,8 @@ char *compile_cmd[] = {
     dst,
 };
 
+void compile_libso(char *code);
+
 static __attribute__((constructor)) void constructor()
 {
   src_fd = mkstemp(src);
@@ -52,10 +54,11 @@ int main(int argc, char *argv[])
       break;
     }
     printf("Got %zu chars.\n", strlen(line)); // ??
+    compile_liso(line);
   }
 }
 
-void compile_liso(char *code)
+void compile_libso(char *code)
 {
   lseek(src_fd, 0, SEEK_SET);
   int remain = strlen(code);
