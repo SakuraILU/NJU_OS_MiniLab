@@ -14,6 +14,7 @@
 int src_fd = 0;
 char src[PATH_MXSIZE] = "/tmp/src_code.XXXXXX";
 char dst[PATH_MXSIZE];
+char ndst = 0;
 
 char *compile_cmd[] = {
     "gcc",
@@ -102,7 +103,7 @@ void compile_libso(char *code)
     remain -= cnt;
   }
 
-  strcpy(dst, src);
+  strcpy(dst, atoi(ndst++));
   strcat(dst, ".so");
 
   execvp(compile_cmd[0], compile_cmd);
