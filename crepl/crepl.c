@@ -154,5 +154,6 @@ char *set_dstname(int ndst)
 
 void wrap_cmd(char *cmd)
 {
+  printf("%s", cmd);
   sprintf(cmd, "int wrap_fun(){return %s}", cmd);
 }
