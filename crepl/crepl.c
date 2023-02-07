@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
       break;
     }
     printf("Got %zu chars.\n", strlen(line)); // ??
-    compile_liso(line);
+    compile_libso(line);
   }
 }
 
