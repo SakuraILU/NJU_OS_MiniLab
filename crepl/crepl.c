@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         char err_msg[ERR_MSG_LEN];
         printf("Compile Error:\n");
         read(fd[0], err_msg, ERR_MSG_LEN);
-        printf("%s", err_msg);
+        printf("%s\n", err_msg);
       }
     }
   }
