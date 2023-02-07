@@ -111,9 +111,6 @@ int main(int argc, char *argv[])
     {
       close(fd[1]);
 
-      if (cmd_type == RUN)
-        wrap_cmd(line);
-
       int wstatus = 0;
       wait(&wstatus);
 
