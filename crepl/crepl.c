@@ -30,7 +30,6 @@ char *compile_cmd[] = {
     "-fPIC",
     "-O2",
     "-W",
-    "-xc",
     src,
     "-o",
     dst,
@@ -127,7 +126,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-          dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
+          dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
         }
       }
       else
