@@ -114,6 +114,9 @@ int main(int argc, char *argv[])
 
       parent(cmd, cmd_type);
 
+      if (cmd_type == RUN)
+        ndst--;
+
       close(fd[0]);
     }
 
@@ -157,8 +160,10 @@ void parent(char *cmd, Cmdtype cmd_type)
 
         dlclose(dl_handler);
         unlink(dst);
-        ndst--;
+
+        exit(EXIT_SUCCESS);
       }
+
       wait(&wstatus);
     }
     else
