@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 
 #define CMD_MXSIZE 4096
 #define PATH_MXSIZE 4096
