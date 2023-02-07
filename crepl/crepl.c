@@ -40,7 +40,7 @@ static __attribute__((constructor)) void constructor()
 {
   src_fd = mkstemp(org_tmp_name);
 
-  sprintf(src, "%s\.c", org_tmp_name);
+  sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
 }
 
