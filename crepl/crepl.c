@@ -149,8 +149,6 @@ void parent(char *cmd, Cmdtype cmd_type)
       // 也不需要什么通信
       if (fork() == 0)
       {
-        close(STDERR_FILENO);
-
         void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
         wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
         if (wrap_fun == NULL)
