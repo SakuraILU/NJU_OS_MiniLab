@@ -102,6 +102,9 @@ int main(int argc, char *argv[])
       dup2(fd[1], STDERR_FILENO);
       close(fd[1]);
 
+      if (cmd_type == RUN)
+        wrap_cmd(line);
+
       compile_libso(line);
     }
     else
@@ -154,4 +157,5 @@ char *set_dstname(int ndst)
 
 void wrap_cmd(char *cmd)
 {
+  sprintf(cmd, "int wrap_fun(){return %s}", cmd);
 }
