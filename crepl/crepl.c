@@ -84,8 +84,6 @@ int main(int argc, char *argv[])
     fflush(stdout);
     if (!fgets(line, sizeof(line), stdin))
       break;
-    line[strlen(line) - 1] = 0;
-    // printf("Got %zu chars.\n", strlen(line)); // ??
 
     set_dstname(ndst);
 
@@ -136,6 +134,7 @@ int main(int argc, char *argv[])
           else
           {
             dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
+            printf("ADD: %s", line);
           }
           exit(0);
         }
