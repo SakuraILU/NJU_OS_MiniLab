@@ -146,6 +146,7 @@ int main(int argc, char *argv[])
 void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
+  fread(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
   printf("%s\n", code);
