@@ -1,14 +1,58 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 
-int main(int argc, char *argv[]) {
-  static char line[4096];
-  while (1) {
+#define CMD_MXSIZE 4096
+#define PATH_MXSIZE 4096
+
+int src_fd = 0;
+char src[PATH_MXSIZE];
+char dst[PATH_MXSIZE];
+
+char *compile_cmd[] = {
+    "gcc",
+#ifdef __x86_64__
+    "-m64",
+#else
+    "-m32",
+#endif
+    "--shared",
+    "-fPIC",
+    "-O2",
+    "-W",
+    "-Werror",
+    src,
+    "-o",
+    dst,
+};
+
+static __attribute__((constructor)) void constructor()
+{
+  src_fd = mkstemp(src);
+}
+
+static __attribute__((destructor)) void destructor()
+{
+  unlink(src);
+}
+
+int main(int argc, char *argv[])
+{
+  static char line[CMD_MXSIZE];
+  printf("create tmp file %s", src);
+  while (1)
+  {
     printf("crepl> ");
     fflush(stdout);
-    if (!fgets(line, sizeof(line), stdin)) {
+    if (!fgets(line, sizeof(line), stdin))
+    {
       break;
     }
     printf("Got %zu chars.\n", strlen(line)); // ??
   }
+}
+
+void compile_liso()
+{
 }
