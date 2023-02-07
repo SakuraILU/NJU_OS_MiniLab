@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
       wait(&wstatus);
 
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
+      printf("suc? %d\n", compile_success);
       if (compile_success)
       {
         void *dl_handler = dlopen(dst, RTLD_NOW);
@@ -156,7 +157,6 @@ void set_dstname(int ndst)
 
 void wrap_cmd(char *cmd)
 {
-  printf("%s\n", cmd);
   char tmp[CMD_MXSIZE];
   memset(tmp, 0, CMD_MXSIZE);
   strcpy(tmp, cmd);
