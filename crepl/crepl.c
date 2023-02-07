@@ -137,6 +137,12 @@ int main(int argc, char *argv[])
           {
             dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
           }
+          exit(0);
+        }
+        else
+        {
+          int wstatus = 0;
+          wait(&wstatus);
         }
       }
       else
