@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
 
   while (1)
   {
+    memset(line, 0, CMD_MXSIZE);
+
     printf("crepl> ");
     fflush(stdout);
     if (!fgets(line, sizeof(line), stdin))
