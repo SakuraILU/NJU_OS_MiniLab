@@ -12,6 +12,7 @@
 #define ERR_MSG_LEN 4096
 
 int src_fd = 0;
+char org_tmp_name[PATH_MXSIZE - 38] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE];
 char dst[PATH_MXSIZE];
 char ndst = 0;
@@ -47,15 +48,14 @@ void wrap_cmd(char *cmd);
 
 static __attribute__((constructor)) void constructor()
 {
-  char org_tmp_name[PATH_MXSIZE - 5] = "/tmp/src.XXXXXX";
   src_fd = mkstemp(org_tmp_name);
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
 
-  strcpy(org_tmp_name, "/tmp/wrap_cmd.XXXXXX");
-  cmd_src_fd = mkstemp(org_tmp_name);
-  sprintf(cmd_dst, "%s.so", org_tmp_name);
-  sprintf(cmd_src, "%s.c", org_tmp_name);
+  char cmd_org_tmp_name[] = "/tmp/wrap_cmd.XXXXXX";
+  cmd_src_fd = mkstemp(cmd_org_tmp_name);
+  sprintf(cmd_dst, "%s.so", cmd_org_tmp_name);
+  sprintf(cmd_src, "%s.c", cmd_org_tmp_name);
   rename(org_tmp_name, cmd_src);
 }
 
