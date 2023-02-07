@@ -54,6 +54,7 @@ static __attribute__((destructor)) void destructor()
     set_dstname(i);
     unlink(dst);
   }
+  eixt(SIGINT);
 }
 
 static __attribute__((constructor)) void constructor()
