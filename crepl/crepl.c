@@ -45,6 +45,11 @@ void compile_libso(char *code);
 void set_dstname(int ndst);
 void wrap_cmd(char *cmd);
 
+void functionA()
+{
+  printf("This is functionA\n");
+}
+
 static __attribute__((constructor)) void constructor()
 {
   atexit(functionA);
@@ -64,11 +69,6 @@ static __attribute__((destructor)) void destructor()
     set_dstname(i);
     unlink(dst);
   }
-}
-
-void functionA()
-{
-  printf("This is functionA\n");
 }
 
 int main(int argc, char *argv[])
