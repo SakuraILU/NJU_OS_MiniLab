@@ -40,7 +40,7 @@ static __attribute__((constructor)) void constructor()
 {
   src_fd = mkstemp(org_tmp_name);
 
-  sprintf(src, "%s.c", org_tmp_name);
+  sprintf(src, "%s\.c", org_tmp_name);
   rename(org_tmp_name, src);
 }
 
@@ -112,6 +112,6 @@ void compile_libso(char *code)
 
 char *set_dstname(int ndst)
 {
-  sprintf(dst, "%s_dst_%d\\.so", org_tmp_name, ndst);
+  sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
   return dst;
 }
