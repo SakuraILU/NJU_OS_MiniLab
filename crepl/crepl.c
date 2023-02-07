@@ -7,7 +7,7 @@
 #define PATH_MXSIZE 4096
 
 int src_fd = 0;
-char src[PATH_MXSIZE];
+char src[PATH_MXSIZE] = "src_code";
 char dst[PATH_MXSIZE];
 
 char *compile_cmd[] = {
@@ -34,6 +34,7 @@ static __attribute__((constructor)) void constructor()
 
 static __attribute__((destructor)) void destructor()
 {
+  close(src_fd);
   unlink(src);
 }
 
