@@ -161,7 +161,6 @@ void set_dstname(int ndst)
 void wrap_cmd(char *cmd)
 {
   char tmp[CMD_MXSIZE];
-  memset(tmp, 0, CMD_MXSIZE);
   strcpy(tmp, cmd);
   sprintf(cmd, "int wrap_fun(){%s}", tmp);
 }
