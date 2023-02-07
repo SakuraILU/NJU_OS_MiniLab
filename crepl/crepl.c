@@ -112,6 +112,6 @@ void compile_libso(char *code)
 
 char *set_dstname(int ndst)
 {
-  sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
+  sprintf(dst, "%s_dst_%d\\.so", org_tmp_name, ndst);
   return dst;
 }
