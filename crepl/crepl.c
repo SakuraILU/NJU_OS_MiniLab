@@ -28,7 +28,6 @@ char *compile_cmd[] = {
     "-fPIC",
     "-O2",
     "-W",
-    "-xc",
     src,
     "-o",
     dst,
@@ -108,7 +107,7 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        void *dl_handler = dlopen(dst, RTLD_LAZY);
+        void *dl_handler = dlopen(dst, RTLD_NOW);
         if (cmd_type == RUN)
         {
           int (*wrap_fun)() = dlsym(dl_handler, "wrap_fun");
