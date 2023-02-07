@@ -141,16 +141,20 @@ void parent(char *cmd, Cmdtype cmd_type)
 
     if (cmd_type == RUN)
     {
-      void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
-      wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
-      if (wrap_fun == NULL)
-        return;
+      if (fork() == 0)
+      {
+        void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
+        wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
+        if (wrap_fun == NULL)
+          return;
 
-      printf("( %s ) == %d\n", cmd, wrap_fun());
+        printf("( %s ) == %d\n", cmd, wrap_fun());
 
-      dlclose(dl_handler);
-      unlink(dst);
-      ndst--;
+        dlclose(dl_handler);
+        unlink(dst);
+        ndst--;
+      }
+      wait(&wstatus);
     }
     else
     {
