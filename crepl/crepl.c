@@ -46,15 +46,9 @@ void compile_libso(char *code);
 void set_dstname(int ndst);
 void wrap_cmd(char *cmd);
 
-static __attribute__((destructor)) void destructor()
+void my_function(int sig)
 {
-  unlink(src);
-  for (int i = 0; i < ndst; ++i)
-  {
-    set_dstname(i);
-    unlink(dst);
-  }
-  eixt(SIGINT);
+  exit(EXIT_SUCCESS);
 }
 
 static __attribute__((constructor)) void constructor()
@@ -65,6 +59,16 @@ static __attribute__((constructor)) void constructor()
   close(src_fd);
 
   signal(SIGINT, destructor);
+}
+
+static __attribute__((destructor)) void destructor()
+{
+  unlink(src);
+  for (int i = 0; i < ndst; ++i)
+  {
+    set_dstname(i);
+    unlink(dst);
+  }
 }
 
 int main(int argc, char *argv[])
