@@ -43,6 +43,7 @@ typedef enum cmdtype
 
 void compile_libso(char *code);
 char *set_dstname(int ndst);
+void wrap_cmd(char *cmd);
 
 static __attribute__((constructor)) void constructor()
 {
