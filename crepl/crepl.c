@@ -30,6 +30,7 @@ char *compile_cmd[] = {
     "-fPIC",
     "-O2",
     "-W",
+    "-xc",
     src,
     "-o",
     dst,
