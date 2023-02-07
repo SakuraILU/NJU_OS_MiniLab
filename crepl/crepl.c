@@ -62,7 +62,8 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     printf("Got %zu chars.\n", strlen(line)); // ??
-    char head[32] = 0;
+    char head[32];
+    memset(head, 0, 32);
     sscanf(line, " %5c", head);
     printf("head is %s", head);
 
