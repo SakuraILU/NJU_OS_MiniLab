@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        void *dl_handler = dlopen(dst, RTLD_NOW);
+        void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
         printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
