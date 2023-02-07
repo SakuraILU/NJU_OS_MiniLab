@@ -12,6 +12,8 @@
 #define PATH_MXSIZE 128
 #define ERR_MSG_LEN 4096
 
+typedef int (*wrap_fun_t)();
+
 int src_fd = 0;
 char org_tmp_name[PATH_MXSIZE - 38] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE];
@@ -106,14 +108,14 @@ int main(int argc, char *argv[])
       wait(&wstatus);
 
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
-      printf("suc? %d\n", compile_success);
       if (compile_success)
       {
-        void *dl_handler = dlopen(dst, RTLD_NOW);
+        void *dl_handler = dlopen(dst, RTLD_LAZY);
         if (cmd_type == RUN)
         {
-          int (*wrap_fun)() = dlsym(dl_handler, "wrap_fun");
-          wrap_fun();
+          wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
+          printf("solve success %p\n", wrap_fun);
+          printf("%d\n", wrap_fun());
           dlclose(dl_handler);
           unlink(dst);
           ndst--;
