@@ -156,7 +156,7 @@ void set_dstname(int ndst)
 
 void wrap_cmd(char *cmd)
 {
-  printf("%s", cmd);
+  printf("%s\n", cmd);
   char tmp[CMD_MXSIZE];
   strcpy(tmp, cmd);
   memset(tmp, 0, CMD_MXSIZE);
