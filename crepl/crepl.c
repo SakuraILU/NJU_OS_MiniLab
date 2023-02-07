@@ -103,8 +103,7 @@ void compile_libso(char *code)
     remain -= cnt;
   }
 
-  strcpy(dst, itoa(ndst++));
-  strcat(dst, ".so");
+  sprintf(dst, "%d.so", ndst++);
 
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
