@@ -33,7 +33,10 @@ void compile_libso(char *code);
 static __attribute__((constructor)) void constructor()
 {
   src_fd = mkstemp(src);
+  char old_src[PATH_MXSIZE];
+  strcpy(old_src, src);
   strcat(src, ".c");
+  rename(old_src, src);
 }
 
 static __attribute__((destructor)) void destructor()
