@@ -14,7 +14,7 @@
 
 typedef int (*wrap_fun_t)();
 
-int src_fd = 0;
+FILE *src_f = NULL;
 char org_tmp_name[PATH_MXSIZE - 38] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE];
 char dst[PATH_MXSIZE];
@@ -47,15 +47,16 @@ void wrap_cmd(char *cmd);
 
 static __attribute__((constructor)) void constructor()
 {
-  src_fd = mkstemp(org_tmp_name);
+  int src_fd = mkstemp(org_tmp_name);
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
+
+  close(src_fd);
 }
 
 static __attribute__((destructor)) void destructor()
 {
   unlink(src);
-  close(src_fd);
   for (int i = 0; i < ndst; ++i)
   {
     set_dstname(i);
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
 
   while (1)
   {
-    memset(line, 0, CMD_MXSIZE);
+    src_f = fopen(src, "w+");
 
     printf("crepl> ");
     fflush(stdout);
@@ -133,20 +134,14 @@ int main(int argc, char *argv[])
       }
     }
 
+    fclose(src_f);
     ndst++;
   }
 }
 
 void compile_libso(char *code)
 {
-  lseek(src_fd, 0, SEEK_SET);
-  int remain = strlen(code);
-  while (remain > 0)
-  {
-    int cnt = write(src_fd, code, remain);
-    assert(cnt != -1);
-    remain -= cnt;
-  }
+  fwrite(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
 
