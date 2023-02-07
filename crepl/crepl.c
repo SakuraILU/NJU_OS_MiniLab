@@ -67,7 +67,7 @@ static __attribute__((destructor)) void destructor()
 int main(int argc, char *argv[])
 {
   static char line[CMD_MXSIZE];
-  printf("create tmp file %s", src);
+  // printf("create tmp file %s", src);
 
   while (1)
   {
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     line[strlen(line) - 1] = 0;
-    printf("Got %zu chars.\n", strlen(line)); // ??
+    // printf("Got %zu chars.\n", strlen(line)); // ??
 
     set_dstname(ndst);
 
@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        printf("load %s\n", dst);
+        // printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
           void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
-          printf("solve success %p\n", wrap_fun);
-          printf("res is %d\n", wrap_fun());
+          // printf("solve success %p\n", wrap_fun);
+          // printf("res is %d\n", wrap_fun());
           dlclose(dl_handler);
           unlink(dst);
           ndst--;
@@ -149,7 +149,7 @@ void compile_libso(char *code)
   fread(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
-  printf("%s\n", code);
+  // printf("%s\n", code);
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
   exit(EXIT_FAILURE);
@@ -165,13 +165,4 @@ void wrap_cmd(char *cmd)
   char tmp[CMD_MXSIZE];
   strcpy(tmp, cmd);
   sprintf(cmd, "int wrap_fun(){return %s}", tmp);
-}
-
-int fb(int num)
-{
-  if (num == 1)
-    return 1;
-  else if (num == 2)
-    return 3;
-  return fb(num - 1) + fb(num - 2);
 }
