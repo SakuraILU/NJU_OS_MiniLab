@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     fflush(stdout);
     if (!fgets(cmd, sizeof(cmd), stdin))
       break;
-    // cmd[strlen(cmd) - 1] = 0; // 取出末尾的'\n'
+    cmd[strlen(cmd) - 1] = 0; // 去掉cmd末尾带的'\n'，fgets是会读入\n的
 
     set_dstname(ndst);
 
@@ -147,6 +147,7 @@ void parent(char *cmd, Cmdtype cmd_type)
         return;
 
       printf("( %s ) == %d\n", cmd, wrap_fun());
+
       dlclose(dl_handler);
       unlink(dst);
       ndst--;
