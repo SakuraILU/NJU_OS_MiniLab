@@ -54,6 +54,21 @@ int main(int argc, char *argv[])
   }
 }
 
-void compile_liso()
+void compile_liso(char *code)
 {
+  lseek(src_fd, 0, SEEK_SET);
+  int remain = strlen(code);
+  while (remain > 0)
+  {
+    int cnt = write(src_fd, code, remain);
+    assert(cnt != -1);
+    remain -= cnt;
+  }
+
+  strcpy(dst, src);
+  strcat(dst, ".so");
+
+  execvp(compile_cmd[0], compile_cmd);
+  perror(compile_cmd[0]);
+  exit(EXIT_FAILURE);
 }
