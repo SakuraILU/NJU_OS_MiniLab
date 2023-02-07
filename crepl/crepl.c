@@ -47,6 +47,8 @@ void wrap_cmd(char *cmd);
 
 static __attribute__((constructor)) void constructor()
 {
+  atexit(functionA);
+
   int src_fd = mkstemp(org_tmp_name);
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
@@ -62,6 +64,11 @@ static __attribute__((destructor)) void destructor()
     set_dstname(i);
     unlink(dst);
   }
+}
+
+void functionA()
+{
+  printf("This is functionA\n");
 }
 
 int main(int argc, char *argv[])
