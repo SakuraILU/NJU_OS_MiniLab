@@ -12,11 +12,9 @@
 #define ERR_MSG_LEN 4096
 
 int src_fd = 0;
-char org_tmp_name[PATH_MXSIZE / 2] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE];
 char dst[PATH_MXSIZE];
 char ndst = 0;
-
 char *compile_cmd[] = {
     "gcc",
 #ifdef __x86_64__
@@ -33,21 +31,46 @@ char *compile_cmd[] = {
     dst,
 };
 
+int cmd_src_fd = 0;
+char cmd_src[28] = "/tmp/wrapper_cmd.XXXXXX";
+char cmd_dst[28];
+
+typedef enum cmdtype
+{
+  COMPILE,
+  RUN,
+} Cmdtype;
+
 void compile_libso(char *code);
 char *set_dstname(int ndst);
 
 static __attribute__((constructor)) void constructor()
 {
+  char org_tmp_name[PATH_MXSIZE - 5] = "/tmp/src.XXXXXX";
   src_fd = mkstemp(org_tmp_name);
-
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
+
+  strcpy(org_tmp_name, "/tmp/wrap_cmd.XXXXXX");
+  cmd_src_fd = mkstemp(org_tmp_name);
+  sprintf(cmd_dst, "%s.so", org_tmp_name);
+  sprintf(cmd_src, "%s.c", org_tmp_name);
+  rename(org_tmp_name, cmd_src);
 }
 
 static __attribute__((destructor)) void destructor()
 {
-  int ret = unlink(src);
+  unlink(src);
   close(src_fd);
+  for (int i = 0; i < ndst; ++i)
+  {
+    set_dstname(i);
+    unlink(dst);
+  }
+
+  unlink(cmd_src);
+  close(src_fd);
+  unlink(cmd_dst);
 }
 
 int main(int argc, char *argv[])
@@ -62,10 +85,13 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     printf("Got %zu chars.\n", strlen(line)); // ??
-    char head[32];
-    memset(head, 0, 32);
-    sscanf(line, " %5c", head);
-    printf("head is %s", head);
+    char head[4];
+    memset(head, 0, 4);
+    sscanf(line, " %3c", head);
+
+    Cmdtype cmd_type = COMPILE;
+    if (strcmp(head, "int") != 0)
+      cmd_type = RUN;
 
     int fd[2];
     pipe(fd);
@@ -80,6 +106,9 @@ int main(int argc, char *argv[])
     else
     {
       close(fd[1]);
+
+      if (cmd_type == RUN)
+        wrap_cmd(line);
 
       int wstatus = 0;
       wait(&wstatus);
@@ -120,4 +149,8 @@ char *set_dstname(int ndst)
 {
   sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
   return dst;
+}
+
+void wrap_cmd(char *cmd)
+{
 }
