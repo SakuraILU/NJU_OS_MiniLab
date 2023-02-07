@@ -62,7 +62,9 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     printf("Got %zu chars.\n", strlen(line)); // ??
-    ++ndst;
+    char head[32] = 0;
+    sscanf(line, " %5c", head);
+    printf("head is %s", head);
 
     int fd[2];
     pipe(fd);
@@ -90,6 +92,8 @@ int main(int argc, char *argv[])
         printf("%s\n", err_msg);
       }
     }
+
+    ndst++;
   }
 }
 
