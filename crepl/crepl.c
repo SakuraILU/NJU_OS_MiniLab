@@ -27,7 +27,7 @@ char *compile_cmd[] = {
     "--shared",
     "-fPIC",
     "-O2",
-    "-W",
+    "-w",
     src,
     "-o",
     dst,
