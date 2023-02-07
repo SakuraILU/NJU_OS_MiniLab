@@ -113,16 +113,20 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
         printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
+          void *dl_handler = dlopen(dst, RTLD_LAZY);
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
           printf("solve success %p\n", wrap_fun);
           printf("%d\n", wrap_fun());
           dlclose(dl_handler);
           unlink(dst);
           ndst--;
+        }
+        else
+        {
+          dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
         }
       }
       else
