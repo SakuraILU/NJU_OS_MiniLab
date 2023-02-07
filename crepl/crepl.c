@@ -137,10 +137,7 @@ int main(int argc, char *argv[])
           {
             dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
           }
-          exit(0);
         }
-
-        wait(NULL);
       }
       else
       {
@@ -149,8 +146,6 @@ int main(int argc, char *argv[])
         read(fd[0], err_msg, ERR_MSG_LEN);
         printf("%s\n", err_msg);
       }
-
-      close(fd[0]);
     }
 
     fclose(src_f);
