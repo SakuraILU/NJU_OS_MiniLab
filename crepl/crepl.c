@@ -8,7 +8,7 @@
 #include <assert.h>
 
 #define CMD_MXSIZE 4096
-#define PATH_MXSIZE 4096
+#define PATH_MXSIZE 128
 #define ERR_MSG_LEN 4096
 
 int src_fd = 0;
@@ -154,6 +154,6 @@ char *set_dstname(int ndst)
 
 void wrap_cmd(char *cmd)
 {
-  printf("%s", cmd);
-  sprintf(cmd, "int wrap_fun(){return %s}", cmd);
+  char
+      sprintf(cmd, "int wrap_fun(){return %s}", cmd);
 }
