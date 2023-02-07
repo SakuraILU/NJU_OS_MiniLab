@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <dlfcn.h>
+#include <signal.h>
 #include <assert.h>
 
 #define CMD_MXSIZE 4096
@@ -45,22 +46,6 @@ void compile_libso(char *code);
 void set_dstname(int ndst);
 void wrap_cmd(char *cmd);
 
-void functionA()
-{
-  printf("This is functionA\n");
-}
-
-static __attribute__((constructor)) void constructor()
-{
-  atexit(functionA);
-
-  int src_fd = mkstemp(org_tmp_name);
-  sprintf(src, "%s.c", org_tmp_name);
-  rename(org_tmp_name, src);
-
-  close(src_fd);
-}
-
 static __attribute__((destructor)) void destructor()
 {
   unlink(src);
@@ -69,6 +54,16 @@ static __attribute__((destructor)) void destructor()
     set_dstname(i);
     unlink(dst);
   }
+}
+
+static __attribute__((constructor)) void constructor()
+{
+  int src_fd = mkstemp(org_tmp_name);
+  sprintf(src, "%s.c", org_tmp_name);
+  rename(org_tmp_name, src);
+  close(src_fd);
+
+  signal(SIGINT, destructor);
 }
 
 int main(int argc, char *argv[])
