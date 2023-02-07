@@ -46,7 +46,7 @@ void compile_libso(char *code);
 void set_dstname(int ndst);
 void wrap_cmd(char *cmd);
 
-void my_function(int sig)
+void sig_handler(int sig)
 {
   exit(EXIT_SUCCESS);
 }
@@ -58,7 +58,7 @@ static __attribute__((constructor)) void constructor()
   rename(org_tmp_name, src);
   close(src_fd);
 
-  signal(SIGINT, destructor);
+  signal(SIGINT, sig_handler);
 }
 
 static __attribute__((destructor)) void destructor()
