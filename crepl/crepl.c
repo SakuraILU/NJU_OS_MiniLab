@@ -120,21 +120,27 @@ int main(int argc, char *argv[])
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
       if (compile_success)
       {
-        // printf("load %s\n", dst);
-        if (cmd_type == RUN)
+        if (fork() == 0)
         {
-          void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
-          wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
-          // printf("solve success %p\n", wrap_fun);
-          printf("( %s ) == %d\n", line, wrap_fun());
-          dlclose(dl_handler);
-          unlink(dst);
-          ndst--;
+          // printf("load %s\n", dst);
+          if (cmd_type == RUN)
+          {
+            void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
+            wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
+            // printf("solve success %p\n", wrap_fun);
+            printf("( %s ) == %d\n", line, wrap_fun());
+            dlclose(dl_handler);
+            unlink(dst);
+            ndst--;
+          }
+          else
+          {
+            dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
+          }
         }
-        else
-        {
-          dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
-        }
+
+        int wstatus = 0;
+        wait(&wstatus);
       }
       else
       {
