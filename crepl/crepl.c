@@ -141,8 +141,13 @@ void parent(char *cmd, Cmdtype cmd_type)
 
     if (cmd_type == RUN)
     {
+      // 有点离谱的是dlsym解析符号失败后会直接退出程序然后扔一个error: [undefined symbol:xxx]
+      // 为了容忍输入失误，把符号解析和运行的任务扔给一个子进程去做好了，而且这部分和父进程之间
+      // 也不需要什么通信
       if (fork() == 0)
       {
+        close(STDERR_FILENO);
+
         void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
         wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
         if (wrap_fun == NULL)
