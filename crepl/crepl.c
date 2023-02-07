@@ -56,7 +56,7 @@ static __attribute__((constructor)) void constructor()
   cmd_src_fd = mkstemp(cmd_org_tmp_name);
   sprintf(cmd_dst, "%s.so", cmd_org_tmp_name);
   sprintf(cmd_src, "%s.c", cmd_org_tmp_name);
-  rename(org_tmp_name, cmd_src);
+  rename(cmd_org_tmp_name, cmd_src);
 }
 
 static __attribute__((destructor)) void destructor()
