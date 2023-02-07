@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <dlfcn.h>
 #include <assert.h>
 
 #define CMD_MXSIZE 4096
@@ -32,10 +33,6 @@ char *compile_cmd[] = {
     dst,
 };
 
-int cmd_src_fd = 0;
-char cmd_src[28] = "/tmp/wrapper_cmd.XXXXXX";
-char cmd_dst[28];
-
 typedef enum cmdtype
 {
   COMPILE,
@@ -43,7 +40,7 @@ typedef enum cmdtype
 } Cmdtype;
 
 void compile_libso(char *code);
-char *set_dstname(int ndst);
+void set_dstname(int ndst);
 void wrap_cmd(char *cmd);
 
 static __attribute__((constructor)) void constructor()
@@ -51,12 +48,6 @@ static __attribute__((constructor)) void constructor()
   src_fd = mkstemp(org_tmp_name);
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
-
-  char cmd_org_tmp_name[] = "/tmp/wrap_cmd.XXXXXX";
-  cmd_src_fd = mkstemp(cmd_org_tmp_name);
-  sprintf(cmd_dst, "%s.so", cmd_org_tmp_name);
-  sprintf(cmd_src, "%s.c", cmd_org_tmp_name);
-  rename(cmd_org_tmp_name, cmd_src);
 }
 
 static __attribute__((destructor)) void destructor()
@@ -68,10 +59,6 @@ static __attribute__((destructor)) void destructor()
     set_dstname(i);
     unlink(dst);
   }
-
-  unlink(cmd_src);
-  close(src_fd);
-  unlink(cmd_dst);
 }
 
 int main(int argc, char *argv[])
@@ -86,6 +73,9 @@ int main(int argc, char *argv[])
     if (!fgets(line, sizeof(line), stdin))
       break;
     printf("Got %zu chars.\n", strlen(line)); // ??
+
+    set_dstname(ndst);
+
     char head[4];
     memset(head, 0, 4);
     sscanf(line, " %3c", head);
@@ -115,7 +105,19 @@ int main(int argc, char *argv[])
       wait(&wstatus);
 
       bool compile_success = WIFEXITED(wstatus) && (WEXITSTATUS(wstatus) == 0);
-      if (!compile_success)
+      if (compile_success)
+      {
+        void *dl_handler = dlopen(dst, RTLD_LAZY);
+        if (cmd_type == RUN)
+        {
+          int (*wrap_fun)() = dlsym(dl_handler, "wrap_fun");
+          wrap_fun();
+          dlclose(dl_handler);
+          unlink(dst);
+          ndst--;
+        }
+      }
+      else
       {
         char err_msg[ERR_MSG_LEN];
         printf("Compile Error:\n");
@@ -146,10 +148,9 @@ void compile_libso(char *code)
   exit(EXIT_FAILURE);
 }
 
-char *set_dstname(int ndst)
+void set_dstname(int ndst)
 {
   sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
-  return dst;
 }
 
 void wrap_cmd(char *cmd)
