@@ -47,6 +47,7 @@ typedef enum cmdtype
 int fd[2];
 
 void child(char *cmd, Cmdtype cmd_type);
+void parent(char *cmd, Cmdtype cmd_type);
 void compile_libso(char *code);
 void wrap_code(char *cmd);
 void set_dstname(int ndst);
