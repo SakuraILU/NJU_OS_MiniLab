@@ -139,11 +139,8 @@ int main(int argc, char *argv[])
           }
           exit(0);
         }
-        else
-        {
-          int wstatus = 0;
-          wait(&wstatus);
-        }
+
+        wait(NULL);
       }
       else
       {
