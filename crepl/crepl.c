@@ -34,7 +34,6 @@ static __attribute__((constructor)) void constructor()
 
 static __attribute__((destructor)) void destructor()
 {
-  close(src_fd);
   int ret = unlink(src);
   printf("ret :%d\n", ret);
 }
