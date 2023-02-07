@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
         printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
-          void *dl_handler = dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
+          void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
           printf("solve success %p\n", wrap_fun);
           printf("%d\n", wrap_fun());
@@ -148,7 +148,7 @@ void compile_libso(char *code)
   fwrite(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
-
+  printf("%s\n", code);
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
   exit(EXIT_FAILURE);
@@ -164,5 +164,4 @@ void wrap_cmd(char *cmd)
   char tmp[CMD_MXSIZE];
   strcpy(tmp, cmd);
   sprintf(cmd, "int wrap_fun(){return %s}", tmp);
-  printf("%s\n", cmd);
 }
