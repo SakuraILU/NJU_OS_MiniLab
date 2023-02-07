@@ -12,7 +12,7 @@
 #define ERR_MSG_LEN 4096
 
 int src_fd = 0;
-char org_tmp_name[PATH_MXSIZE] = "/tmp/src.XXXXXX";
+char org_tmp_name[PATH_MXSIZE / 2] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE];
 char dst[PATH_MXSIZE];
 char ndst = 0;
