@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
         printf("load %s\n", dst);
         if (cmd_type == RUN)
         {
-          void *dl_handler = dlopen(dst, RTLD_NOW);
+          void *dl_handler = dlopen(dst, RTLD_NOW | RTLD_GLOBAL);
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
           printf("solve success %p\n", wrap_fun);
           printf("%d\n", wrap_fun());
