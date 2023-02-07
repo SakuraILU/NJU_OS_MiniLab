@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
           void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
           wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
           // printf("solve success %p\n", wrap_fun);
-          printf("(%s) == %d\n", line, wrap_fun());
+          printf("(%f) %d\n", line, wrap_fun());
           dlclose(dl_handler);
           unlink(dst);
           ndst--;
@@ -164,5 +164,5 @@ void wrap_cmd(char *cmd)
 {
   char tmp[CMD_MXSIZE];
   strcpy(tmp, cmd);
-  sprintf(cmd, "int wrap_fun(){return %s}", tmp);
+  sprintf(cmd, "int wrap_fun(){ return %s; }", tmp);
 }
