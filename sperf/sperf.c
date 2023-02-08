@@ -5,6 +5,8 @@
 #include <string.h>
 #include <regex.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <assert.h>
 
 #define SYSNAME_MSIZE 24
