@@ -146,7 +146,6 @@ void parent(char *cmd, Cmdtype cmd_type)
       // 也不需要什么通信
       if (fork() == 0)
       {
-        atexit(NULL);
         // 运行一次之后就不用了，所以用RTLD_LOCAL方式加载
         void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_LOCAL);
         wrap_fun_t wrap_fun = dlsym(dl_handler, "wrap_fun");
@@ -157,7 +156,7 @@ void parent(char *cmd, Cmdtype cmd_type)
 
         dlclose(dl_handler);
 
-        exit(EXIT_SUCCESS);
+        _exit(EXIT_SUCCESS);
       }
       wait(&wstatus);
 
