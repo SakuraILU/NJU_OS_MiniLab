@@ -137,7 +137,7 @@ void my_execvp(char *cmd, char *argv[])
     char real_path[PATH_MSIZE];
     sprintf(real_path, "%s/%s", path, cmd);
     execve(real_path, argv, environ);
-    path = strtok(NULL, NULL);
+    path = strtok(NULL, ":");
   }
   assert(false);
 }
@@ -157,7 +157,7 @@ void my_execvp(char *cmd, char *argv[])
 static void child(int argc, char *exec_argv[])
 {
   char *argv[2 + argc + 1];
-  argv[0] = "strace";
+  argv[0] = "/usr/bin/strace";
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
   {
