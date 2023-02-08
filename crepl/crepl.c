@@ -193,8 +193,11 @@ void parent(char *cmd, Cmdtype cmd_type)
 void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
-  fflush(src_f);
-  // fread(code, 1, strlen(code), src_f);
+  char code_read[CMD_MXSIZE];
+  fread(code, 1, strlen(code), src_f);
+  assert(strcmp(code_read, code) == 0);
+  // IMPORTANT: 之前为了debug写了个
+  // fflush(src_f);
 
   set_dstname(ndst);
   execvp(compile_cmd[0], compile_cmd);
