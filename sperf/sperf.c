@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
   }
 }
 
-static void my_execvp(char *cmd, char *argv)
+static void my_execvp(char *cmd, char *argv[])
 {
   char *paths = getenv("PATH");
   printf("%s\n", paths);
