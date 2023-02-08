@@ -138,6 +138,7 @@ void my_execvp(char *cmd, char *argv[])
     sprintf(real_path, "%s/%s", path, cmd);
     printf("%s\n", real_path);
     execve(real_path, argv, environ);
+    printf("%s\n", real_path);
     path = strtok(NULL, ":");
   }
   assert(false);
