@@ -48,7 +48,7 @@ static __attribute__((destructor)) void destuctor()
 
 static void add_sysinfo(char *sys_name, float sys_time)
 {
-  // printf("add sys %s time %f \n", sys_name, sys_time);
+  printf("add sys %s time %f \n", sys_name, sys_time);
   sys_total_time += sys_time;
   Sysinfo *itr = dummy->next;
   while (itr != NULL)
@@ -196,7 +196,7 @@ void parse_sysinfo()
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    printf("%s", sysinfo);
+    // printf("%s", sysinfo);
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
       // 如果没匹配上
