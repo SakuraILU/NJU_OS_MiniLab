@@ -69,7 +69,7 @@ static void add_sysinfo(char *sys_name, float sys_time)
 
 static void print_sysinfo()
 {
-  eprintf("===SYSCALL USAGE PERCENT===\n");
+  printf("===SYSCALL USAGE PERCENT===\n");
   printf("TIME: %d\n", INTERVAL);
   Sysinfo *itr = dummy->next;
   while (itr != NULL)
