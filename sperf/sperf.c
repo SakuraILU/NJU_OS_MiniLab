@@ -138,7 +138,6 @@ void my_execvp(char *cmd, char *argv[])
     sprintf(real_path, "%s/%s", path, cmd);
     printf("%s\n", real_path);
     execve(real_path, argv, environ);
-    printf("%s\n", real_path);
     path = strtok(NULL, ":");
   }
   assert(false);
@@ -197,7 +196,7 @@ void parse_sysinfo()
     const size_t nmatch = 1; // 定义匹配结果最大允许数
     regmatch_t pmatch[1];    // 定义匹配结果在待匹配串中的下标范围
 
-    // printf("%s", sysinfo);
+    printf("%s", sysinfo);
     int status = regexec(&name_reg, sysinfo, nmatch, pmatch, 0); // 匹配他
     if (status == REG_NOMATCH)
       // 如果没匹配上
