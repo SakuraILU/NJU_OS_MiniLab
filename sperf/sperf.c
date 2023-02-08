@@ -132,6 +132,7 @@ void my_execvp(char *cmd, char *argv[])
   char paths[strlen(paths_org) + 1]; // one more for '\0'
   strcpy(paths, paths_org);
   char *path = strtok(paths, ":");
+  printf("%s\n", getenv("PATH"));
   while (path != NULL)
   {
     char real_path[PATH_MSIZE];
