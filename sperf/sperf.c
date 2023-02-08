@@ -9,6 +9,7 @@
 
 #define SYSNAME_MSIZE 24
 #define SYSTIME_MSIZE 24
+#define PATH_MSIZE 128
 #define INTERVAL 2
 
 #define eprintf(...) fprintf(stderr, ##__VA_ARGS__)
@@ -88,11 +89,6 @@ bool sperf_over = false;
 
 int main(int argc, char *argv[])
 {
-  char *path = getenv("PATH");
-  printf("%s\n", path);
-  while (true)
-  {
-  }
   pipe(fd);
 
   int ret = fork();
@@ -125,6 +121,22 @@ int main(int argc, char *argv[])
   }
 }
 
+static void my_execvp(char *cmd, char *argv)
+{
+  char *paths = getenv("PATH");
+  printf("%s\n", paths);
+  char *path = strtok(paths, ":");
+  while (true)
+  {
+    char real_path[PATH_MSIZE];
+    strcat(real_path, path);
+    strcat(real_path, "/");
+    strcat(real_path, cmd);
+    strcpy(argv[0], real_path);
+    execve(real_path, argv, environ);
+  }
+}
+
 // 很离谱的是-O1优化时，编译器会把argv初始化或者赋NULL值都给删掉，
 // 可能是因为在这段函数里没有使用arg[argc+2]？但是argv[0,1..]也没
 // 使用过却没有被优化...有点无语。
@@ -148,7 +160,7 @@ static void child(int argc, char *exec_argv[])
   }
   argv[argc + 2] = NULL;
 
-  execve("/usr/bin/strace", argv, environ);
+  my_execvp("strace", argv);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
