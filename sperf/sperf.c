@@ -88,6 +88,11 @@ bool sperf_over = false;
 
 int main(int argc, char *argv[])
 {
+  char *path = getenv("PATH");
+  printf("%s\n", path);
+  while (true)
+  {
+  }
   pipe(fd);
 
   int ret = fork();
