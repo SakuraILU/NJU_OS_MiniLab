@@ -133,11 +133,11 @@ void my_execvp(char *cmd, char *argv[])
   char *path = strtok(paths, ":");
   while (path != NULL)
   {
+    printf("%s \n", paths);
     char real_path[PATH_MSIZE];
     memset(real_path, 0, PATH_MSIZE);
     sprintf(real_path, "%s/%s", path, cmd);
-    sprintf(cmd, "%s/%s", path, real_path);
-    execve(cmd, argv, environ);
+    execve(real_path, argv, environ);
     // printf("%s\n", real_path);
     path = strtok(NULL, ":");
   }
@@ -166,20 +166,7 @@ static void child(int argc, char *exec_argv[])
     argv[i + 1] = exec_argv[i];
   }
   argv[argc + 2] = NULL;
-
-  char *paths = getenv("PATH");
-  // printf("path= %s\n", paths);
-  char *path = strtok(paths, ":");
-  while (path != NULL)
-  {
-    char real_path[PATH_MSIZE];
-    memset(real_path, 0, PATH_MSIZE);
-    sprintf(real_path, "%s/%s", path, argv[0]);
-    execve("/usr/bin/strace", argv, environ);
-    // printf("%s\n", real_path);
-    path = strtok(NULL, ":");
-  }
-
+  my_execvp("strace", argv);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
