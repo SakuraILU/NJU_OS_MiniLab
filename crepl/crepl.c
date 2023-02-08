@@ -12,16 +12,16 @@
 #define PATH_MXSIZE 128
 #define CMD_MXSIZE 4096
 #define ERR_MSG_LEN 4096
-#define NLIBSO (1e+9 - 1)
+#define NLIBSO (-1)
 
 typedef int (*wrap_fun_t)();
 
 FILE *src_f = NULL;
-// 24 stands for 24 digits num and 8 stands for "_dst_.so" in the end
+// num %d taks 11 char in str at most and 8 stands for "_dst_.so" in the end
 char org_tmp_name[PATH_MXSIZE - 11 - 8] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE]; // append ".c" behind org_tmp_name
 char dst[PATH_MXSIZE]; // append "_dst_%d.so" beind org_tmp_name, %d is ndst
-char ndst = 0;         // the num of dst (libso)
+uint ndst = 0;         // the num of dst (libso)
 char *compile_cmd[] = {
     "gcc",
 #ifdef __x86_64__
