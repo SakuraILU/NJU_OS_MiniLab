@@ -7,12 +7,13 @@
 #include <sys/wait.h>
 #include <dlfcn.h>
 #include <signal.h>
+#include <limits.h>
 #include <assert.h>
 
 #define PATH_MXSIZE 128
 #define CMD_MXSIZE 4096
 #define ERR_MSG_LEN 4096
-#define NLIBSO (-1)
+#define NLIBSO UINT_MAX
 
 typedef int (*wrap_fun_t)();
 
@@ -21,7 +22,7 @@ FILE *src_f = NULL;
 char org_tmp_name[PATH_MXSIZE - 11 - 8] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE]; // append ".c" behind org_tmp_name
 char dst[PATH_MXSIZE]; // append "_dst_%d.so" beind org_tmp_name, %d is ndst
-uint ndst = 0;         // the num of dst (libso)
+char ndst = 0;         // the num of dst (libso)
 char *compile_cmd[] = {
     "gcc",
 #ifdef __x86_64__
