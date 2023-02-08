@@ -12,16 +12,16 @@
 #define CMD_MXSIZE 4096
 #define PATH_MXSIZE 128
 #define ERR_MSG_LEN 4096
-#define NFUN (1e+25 - 1)
+#define NLIBSO (1e+25 - 1)
 
 typedef int (*wrap_fun_t)();
 
 FILE *src_f = NULL;
 // 24 stands for 24 digits num and 8 stands for "_dst_.so" in the end
 char org_tmp_name[PATH_MXSIZE - 24 - 8] = "/tmp/src.XXXXXX";
-char src[PATH_MXSIZE];
-char dst[PATH_MXSIZE];
-char ndst = 0;
+char src[PATH_MXSIZE]; // append ".c" behind org_tmp_name
+char dst[PATH_MXSIZE]; // append "_dst_%d.so" beind org_tmp_name, %d is ndst
+char ndst = 0;         // the num of dst (libso)
 char *compile_cmd[] = {
     "gcc",
 #ifdef __x86_64__
@@ -44,7 +44,7 @@ typedef enum cmdtype
   RUN,
 } Cmdtype;
 
-int fd[2];
+int fd[2]; // file desriptors of pipe
 
 void child(char *cmd, Cmdtype cmd_type);
 void parent(char *cmd, Cmdtype cmd_type);
@@ -199,7 +199,7 @@ void wrap_code(char *cmd)
 
 void set_dstname(int ndst)
 {
-  assert(ndst < NFUN);
+  assert(ndst < NLIBSO);
   sprintf(dst, "%s_dst_%d.so", org_tmp_name, ndst);
 }
 
