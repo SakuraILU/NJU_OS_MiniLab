@@ -193,11 +193,8 @@ void parent(char *cmd, Cmdtype cmd_type)
 void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
+  fflush(src_f);
   // fread(code, 1, strlen(code), src_f);
-  while (true)
-  {
-    /* code */
-  }
 
   set_dstname(ndst);
   execvp(compile_cmd[0], compile_cmd);
