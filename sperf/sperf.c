@@ -128,14 +128,13 @@ int main(int argc, char *argv[])
 
 void my_execvp(char *cmd, char *argv[])
 {
-  char *paths = getenv("PATH");
-  printf("path= %s\n", getenv("PATH"));
+  char *paths_org = getenv("PATH");
+  char paths[strlen(paths_org) + 1]; // one more for '\0'
+  strcpy(paths, paths_org);
   char *path = strtok(paths, ":");
-  printf("%s \n", getenv("PATH"));
   while (path != NULL)
   {
     char real_path[PATH_MSIZE];
-    memset(real_path, 0, PATH_MSIZE);
     sprintf(real_path, "%s/%s", path, cmd);
     execve(real_path, argv, environ);
     // printf("%s\n", real_path);
