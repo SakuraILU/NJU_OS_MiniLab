@@ -194,7 +194,7 @@ void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
   char code_read[CMD_MXSIZE];
-  fread(code, 1, strlen(code), src_f);
+  fread(code_read, 1, strlen(code), src_f);
   assert(strcmp(code_read, code) == 0);
   // IMPORTANT: 之前为了debug写了个
   // fflush(src_f);
