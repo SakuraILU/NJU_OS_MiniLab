@@ -193,11 +193,15 @@ void parent(char *cmd, Cmdtype cmd_type)
 void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
-  char code_read[CMD_MXSIZE];
-  fread(code_read, 1, strlen(code), src_f);
-  assert(strcmp(code_read, code) == 0);
-  // IMPORTANT: 之前为了debug写了个
-  // fflush(src_f);
+  // fread(code, 1, strlen(code), src_f);
+  // IMPORTANT: 之前为了debug写了个fread....,把这个删掉之后运行命令时居然啥反应都没有，输出为空
+  // 在这里加了个死循环检查临时文件，发现啥都没写入，但是加了fread就成功写入了，晕
+  // 思考后联想到了printf的缓冲区机制，prinf无非就是写入File* stdout罢了
+  // 文件标准库里File结构体是带缓冲区的，遇到'\n'才写入，在main中是把\n
+  // 去除掉了的T^T，所以此处code还在缓冲区里，之后execvp直接把进程覆盖掉
+  // 了，缓冲区的内容也无了，自然是没法输出到文件里咯，最后编译出一个空文件
+
+  fflush(src_f); // flush掉src file的缓冲区，强制写入文件中
 
   set_dstname(ndst);
   execvp(compile_cmd[0], compile_cmd);
