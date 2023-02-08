@@ -48,7 +48,6 @@ static __attribute__((destructor)) void destuctor()
 
 static void add_sysinfo(char *sys_name, float sys_time)
 {
-  printf("add sys %s time %f \n", sys_name, sys_time);
   sys_total_time += sys_time;
   Sysinfo *itr = dummy->next;
   while (itr != NULL)
