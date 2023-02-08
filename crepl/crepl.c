@@ -173,7 +173,6 @@ void parent(char *cmd, Cmdtype cmd_type)
 
       // 运行一次之后就不用了，删掉该动态库
       unlink(dst);
-      ndst--;
     }
     else
     {
