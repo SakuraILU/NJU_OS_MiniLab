@@ -126,9 +126,9 @@ static void my_execvp(char *cmd, char *argv[])
   char *paths = getenv("PATH");
   printf("%s\n", paths);
   char *path = strtok(paths, ":");
+  printf("%s\n", path);
   while (true)
   {
-    printf("%s\n", path);
     char real_path[PATH_MSIZE];
     strcat(real_path, path);
     strcat(real_path, "/");
