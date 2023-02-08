@@ -162,6 +162,7 @@ static void child(int argc, char *exec_argv[])
   argv[1] = "--syscall-time";
   for (int i = 1; i < argc; ++i)
   {
+    printf("%d: %s", i + 1, exec_argv[i]);
     argv[i + 1] = exec_argv[i];
   }
   argv[argc + 2] = NULL;
