@@ -48,7 +48,7 @@ static __attribute__((destructor)) void destuctor()
 
 static void add_sysinfo(char *sys_name, float sys_time)
 {
-  printf("add sys %s time %f \n", sys_name, sys_time);
+  // printf("add sys %s time %f \n", sys_name, sys_time);
   sys_total_time += sys_time;
   Sysinfo *itr = dummy->next;
   while (itr != NULL)
@@ -134,7 +134,7 @@ void my_execvp(char *cmd, char *argv[])
   while (path != NULL)
   {
     char real_path[PATH_MSIZE];
-    memset(real_path, 0, PATH_MSIZE);
+    // memset(real_path, 0, PATH_MSIZE);
     sprintf(real_path, "%s/%s", path, cmd);
     execve(real_path, argv, environ);
     // printf("%s\n", real_path);
