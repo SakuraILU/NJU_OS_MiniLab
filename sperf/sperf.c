@@ -125,8 +125,18 @@ int main(int argc, char *argv[])
   wait(&status);
 }
 
-void my_execvp(char *cmd, char *argv[])
+// M3 禁止使用execvp，所以基于execve包装了一个execvp
+static void my_execvp(char *cmd, char *argv[])
 {
+  // IMPORTANT BUG:
+  // strtok是直接在原字符串上做改动，strok(str, delim)似乎会将delim直接清成\0
+  // str0 \0... str1 \0... str2 \0...
+  // 这样就构成了一个内存连续的字符串数组，每次strok(NULL, delim)就返回下一个
+  // 字符串，即char *cur_str = strlen(cur_str)+strlen(delim)
+  //
+  // 所以，这样的话strtok会直接改变PATH环境变量！！因为getenv返回的是PATH环境变量字符串的
+  // 地址！！！这样的话execve子进程时尽管传入了environ，但是environ里的PATH环境是错的！
+  // 因此在strtok只能作用到PATH字符串的临时副本上去:D
   char *paths_org = getenv("PATH");
   char paths[strlen(paths_org) + 1]; // one more for '\0'
   strcpy(paths, paths_org);
