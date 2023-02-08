@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 void my_execvp(char *cmd, char *argv[])
 {
   char *paths = getenv("PATH");
-  printf("%s\n", paths);
+  printf("path= %s\n", paths);
   char *path = strtok(paths, ":");
   printf("%s\n", path);
   while (true)
