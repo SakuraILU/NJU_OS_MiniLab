@@ -18,7 +18,7 @@ typedef int (*wrap_fun_t)();
 
 FILE *src_f = NULL;
 // 24 stands for 24 digits num and 8 stands for "_dst_.so" in the end
-char org_tmp_name[PATH_MXSIZE - 9 - 8] = "/tmp/src.XXXXXX";
+char org_tmp_name[PATH_MXSIZE - 10 - 8] = "/tmp/src.XXXXXX";
 char src[PATH_MXSIZE]; // append ".c" behind org_tmp_name
 char dst[PATH_MXSIZE]; // append "_dst_%d.so" beind org_tmp_name, %d is ndst
 char ndst = 0;         // the num of dst (libso)
