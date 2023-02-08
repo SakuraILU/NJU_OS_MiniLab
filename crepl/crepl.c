@@ -9,8 +9,8 @@
 #include <signal.h>
 #include <assert.h>
 
-#define CMD_MXSIZE 4096
 #define PATH_MXSIZE 128
+#define CMD_MXSIZE 4096
 #define ERR_MSG_LEN 4096
 #define NLIBSO (1e+25 - 1)
 
@@ -63,6 +63,7 @@ void sig_handler(int sig)
 
 static __attribute__((constructor)) void constructor()
 {
+
   int src_fd = mkstemp(org_tmp_name);
   sprintf(src, "%s.c", org_tmp_name);
   rename(org_tmp_name, src);
@@ -87,6 +88,9 @@ int main(int argc, char *argv[])
 
   while (1)
   {
+    // 用"w"或者"w+"打开会Truncate  file  to zero length or create text file for writing.
+    // 如果直接用write的话，上一次写入的内容不会清空，所以多次写入src.c的话会让代码变成乱七八糟
+    // 的。。。无法编译，所以每次写入前必须清空文件！
     src_f = fopen(src, "w+");
 
     printf("crepl> ");
@@ -156,6 +160,13 @@ void parent(char *cmd, Cmdtype cmd_type)
 
         dlclose(dl_handler);
 
+        // 该子进程没有被execve()覆盖，exit()的话会调用destructor...提前删除掉文件
+        // 可能会出现bug，例如删除掉了src.xxxxxx.c之后，mkstemp又可以分配一个同名的
+        // src.xxxxxx咯，要是哪儿个进程被分配到生成的这个temp文件，还恰好rename了个
+        // 后缀.c，可能就会有些问题，当然最好只是rename失败hhhh，而不是相互覆写
+        //
+        // 而采用_exit()的话，不会执行用户层面注册的一些析构函数(ateixt()注册或者__attribute__((destructor))等等 )，
+        // 直接进内核让OS终止进程。其实相当与exit()就是对_exit()包装了一下，先执行一些用户的析构函数
         _exit(EXIT_SUCCESS);
       }
       wait(&wstatus);
@@ -165,10 +176,12 @@ void parent(char *cmd, Cmdtype cmd_type)
       ndst--;
     }
     else
+    {
       // flag RTLD_GLOBAL 非常重要，必须GLOBAL才能被其他动态库解析到
       // 也就是动态加载器只会解析当前动态库以及其他用RTLD_GLOBAL方式加载的动态库
       // 如果不标记GLOBAL的话，后面的int wrap_fun()将无法解析之前加载进来的动态库了
-      dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
+      void *dl_handler = dlopen(dst, RTLD_LAZY | RTLD_GLOBAL);
+    }
   }
   else
   {
@@ -182,12 +195,11 @@ void parent(char *cmd, Cmdtype cmd_type)
 void compile_libso(char *code)
 {
   fwrite(code, 1, strlen(code), src_f);
-  fread(code, 1, strlen(code), src_f);
 
   set_dstname(ndst);
   execvp(compile_cmd[0], compile_cmd);
   perror(compile_cmd[0]);
-  exit(EXIT_FAILURE);
+  _exit(EXIT_FAILURE);
 }
 
 void wrap_code(char *cmd)
