@@ -131,7 +131,7 @@ void my_execvp(char *cmd, char *argv[])
   char *paths = getenv("PATH");
   printf("path= %s\n", paths);
   char *path = strtok(paths, ":");
-  while (true)
+  while (path != NULL)
   {
     char real_path[PATH_MSIZE];
     memset(real_path, 0, PATH_MSIZE);
@@ -140,6 +140,7 @@ void my_execvp(char *cmd, char *argv[])
     execve(real_path, argv, environ);
     path = strtok(NULL, ":");
   }
+  assert(false);
 }
 
 // 很离谱的是-O1优化时，编译器会把argv初始化或者赋NULL值都给删掉，
