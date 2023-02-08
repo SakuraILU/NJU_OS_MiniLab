@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
   }
 }
 
-static void my_execvp(char *cmd, char *argv[])
+void my_execvp(char *cmd, char *argv[])
 {
   char *paths = getenv("PATH");
   printf("%s\n", paths);
@@ -161,8 +161,7 @@ static void child(int argc, char *exec_argv[])
     argv[i + 1] = exec_argv[i];
   }
   argv[argc + 2] = NULL;
-  printf("here\n");
-  my_execvp("strace", argv);
+  execve("strace", argv, environ);
   perror(argv[0]);
   exit(EXIT_FAILURE);
 }
