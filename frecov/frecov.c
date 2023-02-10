@@ -296,7 +296,7 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
         name[cur++] = ldir[i].DIR_Name3[j];
     }
 
-    *fst_cluse = dir[len].DIR_FstClusHI;
+    *fst_cluse = (dir[len].DIR_FstClusHI << 16) | dir[len].DIR_FstClusLO;
     *filesize = dir[len].DIR_FileSize;
 
     return len + 1;
