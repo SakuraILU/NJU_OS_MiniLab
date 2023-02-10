@@ -197,6 +197,7 @@ bool is_dir(Fat32shortDent *dir)
 
     if (dir[i].DIR_Attr == ATTR_LONG_NAME)
     {
+      printf("check a long name\n");
       Fat32longDent *ldir = (Fat32longDent *)dir;
       if (ldir->DIR_Attr != ATTR_LONG_NAME)
         return false;
@@ -236,17 +237,10 @@ bool is_dir(Fat32shortDent *dir)
     {
       printf("check a short name\n");
       if (dir[i].DIR_NTRes != 0)
-      {
-        printf("false\n");
         return false;
-      }
 
       if (dir[i].DIR_CrtTimeTenth >= 200)
-      {
-        printf("false\n");
-
         return false;
-      }
 
       switch (dir[i].DIR_Attr)
       {
