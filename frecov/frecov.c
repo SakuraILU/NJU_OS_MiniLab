@@ -37,7 +37,8 @@ typedef struct fat32hdr
   u32 BPB_FATSz32; // This field is the FAT32 32-bit count of sectors occupiedby one FAT.
   u16 BPB_ExtFlags;
   u16 BPB_FSVer;
-  u32 BPB_RootClus; // This is set to the cluster number of the first cluster of the root directory. This value should be 2 or the first usable(not bad) cluster available thereafter.u16 BPB_FSInfo;
+  u32 BPB_RootClus; // This is set to the cluster number of the first cluster of the root directory. This value should be 2 or the first usable(not bad) cluster available thereafter.
+  u16 BPB_FSInfo;
   u16 BPB_BkBootSec;
   u8 BPB_Reserved[12];
   u8 BS_DrvNum;
