@@ -203,13 +203,13 @@ bool is_dir(Fat32shortDent *dir)
         return false;
       if (ldir->DIR_FstClusLO != 0)
         return false;
-      printf("here %x\n", ldir->DIR_Attr);
 
       if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
       {
         i += ldir->DIR_Ord;
         continue;
       }
+      printf("here %x\n", ldir->DIR_Attr);
 
       bool is_valid = false;
       int j = i + 1;
