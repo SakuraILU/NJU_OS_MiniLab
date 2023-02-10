@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -61,6 +62,20 @@ typedef struct fat32shortDent
   u16 DIR_FstClusLO;
   u32 DIR_FileSize;
 } __attribute__((packed)) Fat32shortDent;
+
+#define ATTR_READ_ONLY 0x01
+#define ATTR_HIDDEN 0x02
+#define ATTR_SYSTEM 0x04
+#define ATTR_VOLUME_ID 0x08
+#define ATTR_DIRECTORY 0x10
+#define ATTR_ARCHIVE 0x20
+
+#define LAST_LONG_ENTRY 0x40 // last long name entry bit indicator,
+                             // ldir.Ord == LAST_LONG_ENTRY >> this is the last long name entry
+
+#define DIR_CUR_FOLLOW_FREE 0x0 // the current and all the following directory entry is free (available)
+#define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
+#define DIR_INVALID 0x20        // names cannot start with a space character
 
 typedef struct fat32longDent
 {
@@ -151,14 +166,31 @@ release:
 void *cluster_to_addr(int n)
 {
   // RTFM: Sec 3.5 and 4 (TRICKY)
-  // Don't copy code. Write your own.
   assert(n >= hdr->BPB_RootClus);
   u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
   DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
 }
 
+bool is_dir(Fat32shortDent *dir)
+{
+  if (dir->DIR_Name[0] == 0)
+    return 0;
+}
+
 void scan()
 {
-  // printf("root clus %d, %p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
+  u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
+  printf("root clus %d, %x\n", hdr->BPB_RootClus, byte_per_clus);
+  // char *itr = cluster_to_addr(hdr->BPB_RootClus);
+  // char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
+  // for (; itr < itr_end; itr += byte_per_clus)
+  // {
+  //   Fat32shortDent *dir = (Fat32shortDent *)itr;
+
+  //   if (is_dir(dir))
+  //   {
+
+  //   }
+  // }
 }
