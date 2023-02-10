@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   struct fat32hdr *hdr = map_disk(argv[1]);
 
   // TODO: frecov
-  scan();
+  scan(hdr);
 
   // file system traversal
   munmap(hdr, hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec);
