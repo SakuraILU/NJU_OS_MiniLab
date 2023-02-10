@@ -337,8 +337,8 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
   strcat(recov_path, name);
   FILE *f = fopen(recov_path, "w+");
 
-  void *bmp = (char *)bmp_hdr + bmp_hdr->BMP_MapOffset;
-  fwrite(bmp, 1, bmp_hdr->BMP_Size, f);
+  // void *bmp = (char *)bmp_hdr + bmp_hdr->BMP_MapOffset;
+  fwrite(bmp_hdr, 1, filesz, f);
   fclose(f);
 
   char cmd[PATH_MXSIZE + 8];
