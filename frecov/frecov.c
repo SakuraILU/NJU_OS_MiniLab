@@ -12,6 +12,8 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 
+#define PATH_MXSIZE 256
+
 // Copied from the manual
 typedef struct fat32hdr
 {
@@ -260,19 +262,61 @@ bool is_dir(Fat32shortDent *dir)
   return true;
 }
 
+int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, u32 *filesize)
+{
+  if (dir->DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
+    return 0;
+
+  if (dir->DIR_Name[0] == DIR_CUR_FREE)
+    return 1;
+
+  if (dir->DIR_Attr == ATTR_LONG_NAME)
+  {
+    Fat32longDent *ldir = (Fat32longDent *)dir;
+    u8 len = ldir->DIR_Ord & (~LAST_LONG_ENTRY);
+
+    if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
+      return len + 1;
+    if (dir[len].DIR_Attr == ATTR_DIRECTORY)
+      return len + 1;
+
+    int cur = 0;
+    for (int i = len - 1; i >= 0; --i)
+    {
+      assert(cur < PATH_MXSIZE);
+
+      for (int j = 0; j < 10; j += 2)
+        name[cur++] = ldir[i].DIR_Name1[j];
+      for (int j = 0; j < 12; j += 2)
+        name[cur++] = ldir[i].DIR_Nmae2[j];
+      for (int j = 0; j < 4; j += 2)
+        name[cur++] = ldir[i].DIR_Name3[j];
+    }
+
+    *fst_cluse = dir[len].DIR_FstClusHI;
+    *filesize = dir[len].DIR_FileSize;
+
+    return len + 1;
+  }
+  else
+  {
+    if (dir->DIR_Attr == ATTR_DIRECTORY)
+      return dir + 1;
+    strcpy(name, dir->DIR_Name);
+    *fst_cluse = dir->DIR_FstClusHI;
+    *filesize = dir->DIR_FileSize;
+
+    return 1;
+  }
+}
+
 void scan()
 {
-  // printf("%p\n", (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
-  // printf("%p\n", (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
   char *itr = cluster_to_addr(hdr->BPB_RootClus);
   char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
   u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
-  // int cnt = 0;
   for (; itr < itr_end; itr += byte_per_clus)
   {
-    // if (cnt >= 3)
-    // break;
-    // printf("check %p\n", itr);
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
     if (is_dir(dir))
