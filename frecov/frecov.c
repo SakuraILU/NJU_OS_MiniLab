@@ -208,12 +208,6 @@ bool is_dir(Fat32shortDent *dir)
       if (ldir[i].DIR_FstClusLO != 0)
         return false;
 
-      if ((ldir[i].DIR_Ord & LAST_LONG_ENTRY) == 0)
-      {
-        i += ldir[i].DIR_Ord;
-        continue;
-      }
-
       int j = i;
       for (; j < ndent; j++)
       {
