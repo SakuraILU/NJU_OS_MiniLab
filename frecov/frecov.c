@@ -209,7 +209,6 @@ bool is_dir(Fat32shortDent *dir)
         i += ldir->DIR_Ord;
         continue;
       }
-      printf("here %x\n", ldir->DIR_Attr);
 
       bool is_valid = false;
       int j = i + 1;
@@ -230,6 +229,7 @@ bool is_dir(Fat32shortDent *dir)
           break;
         }
       }
+      printf("here %x\n", ldir->DIR_Attr);
 
       if (is_valid)
         continue;
