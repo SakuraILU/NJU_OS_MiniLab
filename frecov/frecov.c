@@ -270,11 +270,12 @@ void scan()
   {
     if (cnt >= 3)
       break;
+    printf("check %p\n", itr);
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
     if (is_dir(dir))
     {
-      printf("%p is a dir\n", dir);
+      printf("  is a dir\n", dir);
     }
   }
 }
