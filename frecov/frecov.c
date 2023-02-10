@@ -348,7 +348,7 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
     return;
 
   char recov_path[PATH_MXSIZE];
-  sprintf(recov_path, "%s", recov_dir);
+  sprintf(recov_path, "%s/", recov_dir);
   strcat(recov_path, filename);
   FILE *f = fopen(recov_path, "w+");
 
