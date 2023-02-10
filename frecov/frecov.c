@@ -92,7 +92,7 @@ typedef struct fat32longDent
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
 #define DIR_INVALID 0x20        // names cannot start with a space character
 
-static void *ptr_offset(void *ptr);
+void *ptr_offset(void *ptr);
 
 void scan();
 void *map_disk(const char *fname);
@@ -281,7 +281,7 @@ void scan()
   }
 }
 
-static void *ptr_offset(void *ptr)
+void *ptr_offset(void *ptr)
 {
   return (void *)((uintptr_t)ptr - (uintptr_t)hdr);
 }
