@@ -400,7 +400,7 @@ void recover_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
 
   // do sha1sum check
   char cmd[PATH_MXSIZE + 8]; // 8 stands for "sha1sum "
-  sprintf(cmd, "shasum %s", recov_path);
+  sprintf(cmd, "shsum %s", recov_path);
   FILE *pf = popen(cmd, "r");
   if (pf == NULL)
   {
