@@ -274,7 +274,7 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
 
     if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
       return len + 1;
-    if (dir[len].DIR_Attr == ATTR_DIRECTORY)
+    if (dir[len].DIR_Attr == ATTR_DIRECTORY || dir[len].DIR_Attr == ATTR_HIDDEN)
       return len + 1;
 
     int cur = 0;
@@ -297,7 +297,7 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
   }
   else
   {
-    if (dir->DIR_Attr == ATTR_DIRECTORY)
+    if (dir->DIR_Attr == ATTR_DIRECTORY || dir->DIR_Attr == ATTR_HIDDEN)
       return 1;
 
     strcpy(name, (char *)dir->DIR_Name);
@@ -331,12 +331,14 @@ void scan()
         int pace = parse_dir(dir, remain_dent, name, &fst_cluse, &filesz);
         if (pace == 0)
           break;
+
+        if (name[0] != 0 && fst_cluse != 0 && filesz != 0))
+          {
+            printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
+          }
+
         dir += pace;
         remain_dent -= pace;
-
-        if (name[0] == 0 && fst_cluse == 0 && filesz == 0)
-          continue;
-        printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
       }
     }
   }
