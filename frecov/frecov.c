@@ -277,6 +277,7 @@ void scan()
 
     if (is_dir(dir))
     {
+      printf("%p is a dir\n", ptr_offset(dir));
     }
   }
 }
