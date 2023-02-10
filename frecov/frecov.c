@@ -389,28 +389,27 @@ void recover_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
   if (!is_bmp(bmp_hdr))
     return;
 
+  // write the bmp file to "recovery_path/filename"
   char recov_path[PATH_MXSIZE];
   sprintf(recov_path, "%s", recov_dir);
   strcat(recov_path, "/");
   strcat(recov_path, filename);
-  FILE *f = fopen(recov_path, "w+");
 
+  FILE *f = fopen(recov_path, "w+");
   fwrite(bmp_hdr, 1, filesz, f);
   fclose(f);
 
   // do sha1sum check
   char cmd[PATH_MXSIZE + 8]; // 8 stands for "sha1sum "
-  sprintf(cmd, "shsum %s", recov_path);
+  sprintf(cmd, "sha1sum %s", recov_path);
   FILE *pf = popen(cmd, "r");
   if (pf == NULL)
-  {
-    perror("sha1sum");
     assert(false);
-  }
 
   char sha1sum_res[SHA1SUM_SIZE];
   fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
   printf("%s\n", sha1sum_res);
+
   pclose(pf);
 }
 
