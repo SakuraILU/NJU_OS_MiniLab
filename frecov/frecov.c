@@ -179,7 +179,6 @@ bool is_dir(Fat32shortDent *dir)
 
   for (int i = 0; i < ndent; ++i)
   {
-    printf("check...\n");
     if (dir[i].DIR_Name[0] == DIR_INVALID)
       return false;
 
@@ -264,8 +263,11 @@ void scan()
   char *itr = cluster_to_addr(hdr->BPB_RootClus);
   char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
   u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
-  for (; itr < itr_end; itr += byte_per_clus)
+  int cnt = 0;
+  for (; itr < itr_end; itr += byte_per_clus, cnt++)
   {
+    if (cnt >= 2)
+      break;
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
     if (is_dir(dir))
