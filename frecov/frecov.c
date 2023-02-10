@@ -53,12 +53,13 @@ typedef struct fat32shortDent
   u8 DIR_Attr;         // related macro: ATTR_xxxx
   u8 DIR_NTRes;        // Reserved. Must be set to 0.
   u8 DIR_CrtTimeTenth; // Component of the file creation time. Count of tenths of a second. Valid range is: 0 <= DIR_CrtTimeTenth <= 199 u16 DIR_CrtTime;
-  u16 DIR_CrtDate[2];
-  u16 DIR_LastAccDate[2];
-  u16 DIR_FstClusHI[2]; // High word of first data cluster number for file / directory described by this entry.u16 DIR_WrtTime;
-  u16 DIR_WrtDate[2];
-  u16 DIR_FstClusLO[2]; // Low word of first data cluster number for file / directory described by this entry
-  u32 DIR_FileSize[4];  // 32-bit quantity containing size in bytes of file / directory described by this entry.
+  u16 DIR_CrtDate;
+  u16 DIR_LastAccDate;
+  u16 DIR_FstClusHI; // High word of first data cluster number for file / directory described by this entry.u16 DIR_WrtTime;
+  u16 DIR_WrtTime;
+  u16 DIR_WrtDate;
+  u16 DIR_FstClusLO; // Low word of first data cluster number for file / directory described by this entry
+  u32 DIR_FileSize;  // 32-bit quantity containing size in bytes of file / directory described by this entry.
 } __attribute__((packed)) Fat32shortDent;
 
 #define ATTR_READ_ONLY 0x01
