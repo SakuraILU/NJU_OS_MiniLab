@@ -341,15 +341,15 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
   fwrite(bmp, 1, bmp_hdr->BMP_Size, f);
   fclose(f);
 
-  char cmd[PATH_MXSIZE + 8];
-  sprintf(cmd, "sha1sum %s", recov_path);
-  FILE *pf = popen(cmd, "r");
-  if (pf == NULL)
-    assert(false);
+  // char cmd[PATH_MXSIZE + 8];
+  // sprintf(cmd, "sha1sum %s", recov_path);
+  // FILE *pf = popen(cmd, "r");
+  // if (pf == NULL)
+  //   assert(false);
 
-  char sha1sum_res[SHA1SUM_SIZE];
-  fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
-  printf("%s\n", sha1sum_res);
+  // char sha1sum_res[SHA1SUM_SIZE];
+  // fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
+  // printf("%s\n", sha1sum_res);
 }
 
 void scan()
