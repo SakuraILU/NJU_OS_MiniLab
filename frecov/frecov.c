@@ -236,10 +236,17 @@ bool is_dir(Fat32shortDent *dir)
     {
       printf("check a short name\n");
       if (dir[i].DIR_NTRes != 0)
+      {
+        printf("false\n");
         return false;
+      }
 
       if (dir[i].DIR_CrtTimeTenth >= 200)
+      {
+        printf("false\n");
+
         return false;
+      }
 
       switch (dir[i].DIR_Attr)
       {
