@@ -302,7 +302,7 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
   {
     if (dir->DIR_Attr == ATTR_DIRECTORY)
       return dir + 1;
-    strcpy(name, dir->DIR_Name);
+    strcpy(name, (char *)dir->DIR_Name);
     *fst_cluse = dir->DIR_FstClusHI;
     *filesize = dir->DIR_FileSize;
 
