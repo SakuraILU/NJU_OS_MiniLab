@@ -173,7 +173,10 @@ void *cluster_to_addr(int n)
 bool is_dir(Fat32shortDent *dir)
 {
   if (dir->DIR_Name[0] == 0)
+  {
+    printf("%p is all empty\n", dir);
     return false;
+  }
 
   int ndent = hdr->BPB_BytsPerSec * hdr->BPB_SecPerClus / sizeof(Fat32shortDent);
 
@@ -270,9 +273,9 @@ void scan()
       break;
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
-    printf("%p is a dir\n", dir);
     if (is_dir(dir))
     {
+      printf("%p is a dir\n", dir);
     }
   }
 }
