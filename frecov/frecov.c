@@ -210,14 +210,13 @@ bool is_dir(Fat32shortDent *dir)
         continue;
       }
 
-      bool is_valid = false;
       int j = i;
       for (; j < ndent; j++)
       {
         if (ldir[j].DIR_Attr != ATTR_LONG_NAME)
           return false;
 
-        u8 ord = ldir[j].DIR_Ord ^ LAST_LONG_ENTRY;
+        u8 ord = ldir[j].DIR_Ord & (~LAST_LONG_ENTRY);
         if (ord == 1)
         {
           if (j + 1 < ndent && dir[j + 1].DIR_Attr == ATTR_LONG_NAME)
