@@ -176,6 +176,7 @@ bool is_dir(Fat32shortDent *dir)
 {
   if (dir->DIR_Name[0] == 0)
     return false;
+  return true;
 }
 
 void scan()
