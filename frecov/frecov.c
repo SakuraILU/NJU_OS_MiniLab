@@ -267,9 +267,9 @@ void scan()
   {
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
+    printf("%p is a dir\n", dir);
     if (is_dir(dir))
     {
-      printf("%p is a dir\n", dir);
     }
   }
 }
