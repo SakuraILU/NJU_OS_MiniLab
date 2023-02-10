@@ -225,7 +225,7 @@ bool is_dir(Fat32shortDent *dir)
           break;
         }
 
-        if (ord <= ldir[j + 1].DIR_Ord)
+        if (j + 1 < ndent && ord <= ldir[j + 1].DIR_Ord)
           return false;
       }
       i = j;
