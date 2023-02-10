@@ -265,11 +265,11 @@ void scan()
   char *itr = cluster_to_addr(hdr->BPB_RootClus);
   char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
   u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
-  int cnt = 0;
-  for (; itr < itr_end; itr += byte_per_clus, cnt++)
+  // int cnt = 0;
+  for (; itr < itr_end; itr += byte_per_clus)
   {
-    if (cnt >= 3)
-      break;
+    // if (cnt >= 3)
+    // break;
     printf("check %p\n", itr);
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
