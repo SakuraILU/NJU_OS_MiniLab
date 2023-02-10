@@ -44,8 +44,9 @@ typedef struct fat32hdr
   u8 __padding_1[420];
   u16 Signature_word;
 } __attribute__((packed)) Fat32hdr;
+Fat32hdr *hdr = NULL;
 
-void scan(Fat32hdr *hdr);
+void scan();
 void *map_disk(const char *fname);
 
 int main(int argc, char *argv[])
@@ -87,7 +88,7 @@ void *map_disk(const char *fname)
     goto release;
   }
 
-  struct fat32hdr *hdr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+  hdr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
   if (hdr == (void *)-1)
   {
     goto release;
@@ -111,7 +112,16 @@ release:
   exit(1);
 }
 
-void scan(Fat32hdr *hdr)
+void *cluster_to_addr(int n)
 {
-  printf("root clus %d\n", hdr->BPB_RootClus);
+  // RTFM: Sec 3.5 and 4 (TRICKY)
+  // Don't copy code. Write your own.
+  u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
+  DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
+  return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
+}
+
+void scan()
+{
+  printf("root clus %d, %p\n", hdr->BPB_RootClus, cluster_to_addr(hdr->BPB_RootClus));
 }
