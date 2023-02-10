@@ -189,7 +189,6 @@ bool is_dir(Fat32shortDent *dir)
 
     if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
     {
-      printf("here\n");
       for (int j = i; j < ndent; ++j)
         if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
           return false;
@@ -235,6 +234,7 @@ bool is_dir(Fat32shortDent *dir)
     }
     else
     {
+      printf("check a short name\n");
       if (dir[i].DIR_NTRes != 0)
         return false;
 
