@@ -13,6 +13,7 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 
 #define PATH_MXSIZE 256
+#define SHA1SUM_SIZE 64
 
 // Copied from the manual
 typedef struct fat32hdr
@@ -45,7 +46,7 @@ typedef struct fat32hdr
   u8 BS_VolLab[11];
   u8 BS_FilSysType[8];
   u8 __padding_1[420];
-  u16 Signature_word;
+  u16 Signature_word; // 0xaa55
 } __attribute__((packed)) Fat32hdr;
 Fat32hdr *hdr = NULL;
 
@@ -80,6 +81,15 @@ typedef struct fat32longDent
   u8 DIR_Name3[4];
 } __attribute__((packed)) Fat32longDent;
 
+typedef struct bitmapHdr
+{
+  u16 Signature_word; // 0x4d42
+  u32 BMP_Size;
+  u16 BMP_Reserved1;
+  u16 BMP_Reserved2;
+  u32 BMP_MapOffset;
+} __attribute__((packed)) BitmapHdr;
+
 #define ATTR_READ_ONLY 0x01
 #define ATTR_HIDDEN 0x02
 #define ATTR_SYSTEM 0x04
@@ -95,7 +105,6 @@ typedef struct fat32longDent
 #define DIR_INVALID 0x20        // names cannot start with a space character
 
 void *ptr_offset(void *ptr);
-
 void scan();
 void *map_disk(const char *fname);
 
@@ -308,6 +317,39 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
   }
 }
 
+bool is_bmp(BitmapHdr *bmp_hdr)
+{
+  if (bmp_hdr->Signature_word != 0x4d42)
+    return;
+
+  if (bmp_hdr->BMP_Reserved1 != 0 || bmp_hdr->BMP_Reserved2 != 0)
+    return;
+}
+
+void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
+{
+  if (!is_bmp(bmp_hdr))
+    return;
+
+  char recov_path[PATH_MXSIZE] = "./recovery";
+  strcat(recov_path, name);
+  FILE *f = fopen(name, "w+");
+
+  void *bmp = (char *)bmp_hdr + bmp_hdr->BMP_MapOffset;
+  fwrite(bmp, 1, bmp_hdr->BMP_Size, f);
+  fclose(f);
+
+  char cmd[PATH_MXSIZE + 8];
+  sprintf(cmd, "sha1sum %s", recov_path);
+  FILE *pf = popen(cmd, "r");
+  if (pf == NULL)
+    assert(false);
+
+  char sha1sum_res[SHA1SUM_SIZE];
+  fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
+  printf("%s\n", sha1sum_res);
+}
+
 void scan()
 {
   char *itr = cluster_to_addr(hdr->BPB_RootClus);
@@ -334,7 +376,9 @@ void scan()
 
         if (name[0] != 0 && fst_cluse != 0 && filesz != 0)
         {
-          printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
+          void *bmp_addr = cluster_to_addr(fst_cluse);
+          parse_bmp(bmp_addr, filesz, name);
+          // printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
         }
 
         dir += pace;
