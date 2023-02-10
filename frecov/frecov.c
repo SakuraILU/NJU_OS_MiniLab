@@ -394,7 +394,7 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
 
   char sha1sum_res[SHA1SUM_SIZE];
   fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
-  fclose(pf);
+  pclose(pf);
   printf("%s\n", sha1sum_res);
 }
 
