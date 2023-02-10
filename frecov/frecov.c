@@ -199,12 +199,12 @@ bool is_dir(Fat32shortDent *dir)
     {
       Fat32longDent *ldir = (Fat32longDent *)dir;
       printf("check a long name %s\n", ldir->DIR_Name1);
-      printf("here\n");
       if (ldir->DIR_Attr != ATTR_LONG_NAME)
         return false;
       if (ldir->DIR_FstClusLO != 0)
         return false;
 
+      printf("here %d\n", ldir->DIR_Attr);
       if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
       {
         i += ldir->DIR_Ord;
