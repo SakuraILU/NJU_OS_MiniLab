@@ -169,6 +169,9 @@ void *cluster_to_addr(int n)
   assert(n >= hdr->BPB_RootClus);
   u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
   DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
+  printf("%p\n", hdr->BPB_RsvdSecCnt * hdr->BPB_BytsPerSec);
+  printf("%p\n", (hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32) * hdr->BPB_BytsPerSec);
+
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
 }
 
@@ -181,8 +184,8 @@ bool is_dir(Fat32shortDent *dir)
 
 void scan()
 {
-  printf("root clus %d, %p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
-  printf("root clus %d, %p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
+  printf("%p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
+  printf("%p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
   // char *itr = cluster_to_addr(hdr->BPB_RootClus);
   // char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
   // u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
