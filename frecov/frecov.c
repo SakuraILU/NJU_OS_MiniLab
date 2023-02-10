@@ -53,6 +53,7 @@ typedef struct fat32shortDent
   u8 DIR_Attr;         // related macro: ATTR_xxxx
   u8 DIR_NTRes;        // Reserved. Must be set to 0.
   u8 DIR_CrtTimeTenth; // Component of the file creation time. Count of tenths of a second. Valid range is: 0 <= DIR_CrtTimeTenth <= 199 u16 DIR_CrtTime;
+  u16 DIR_CrtTime;
   u16 DIR_CrtDate;
   u16 DIR_LastAccDate;
   u16 DIR_FstClusHI; // High word of first data cluster number for file / directory described by this entry.u16 DIR_WrtTime;
@@ -83,12 +84,12 @@ typedef struct fat32longDent
               // 2. The LDIR_Ord value for each subsequent entry must contain a monotonically increasing value.
               // 3. The Nth (last) member of the set must contain a value of (N | LAST_LONG_ENTRY)
   u8 DIR_Name1[10];
-  u8 Dir_Attr; // Must be set to ATTR_LONG_NAME
-  u8 Dir_Type; // Must be set to 0.
-  u8 Dir_Chksum;
-  u8 Dir_Nmae2[12];
-  u16 Dir_FstClusLO[2]; // Must be set to 0.
-  u8 Dir_Name3[4];
+  u8 DIR_Attr; // Must be set to ATTR_LONG_NAME
+  u8 DIR_Type; // Must be set to 0.
+  u8 DIR_Chksum;
+  u8 DIR_Nmae2[12];
+  u16 DIR_FstClusLO[2]; // Must be set to 0.
+  u8 DIR_Name3[4];
 } __attribute__((packed)) Fat32longDent;
 
 void scan();
