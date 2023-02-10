@@ -46,6 +46,40 @@ typedef struct fat32hdr
 } __attribute__((packed)) Fat32hdr;
 Fat32hdr *hdr = NULL;
 
+typedef struct fat32shortDent
+{
+  u8 DIR_Name[11];
+  u8 DIR_Attr;
+  u8 DIR_NTRes;
+  u8 DIR_CrtTimeTenth;
+  u16 DIR_CrtTime;
+  u16 DIR_CrtDate;
+  u16 DIR_LastAccDate;
+  u16 DIR_FstClusHI;
+  u16 DIR_WrtTime;
+  u16 DIR_WrtDate;
+  u16 DIR_FstClusLO;
+  u32 DIR_FileSize;
+} __attribute__((packed)) Fat32shortDent;
+
+typedef struct fat32longDent
+{
+  u8 DIR_Ord;
+  u8 DIR_Name1[10];
+  u8 Dir_Attr;
+  u8 Dir_Type; // Must be set to 0.
+  u8 Dir_Chksum;
+  u8 Dir_Nmae2[12];
+  u16 Dir_FstClusLO; // Must be set to 0.
+  u8 Dir_Name3[4];
+} __attribute__((packed)) Fat32longDent;
+
+typedef union fat32dent
+{
+  Fat32shortDent sdir;
+  Fat32longDent ldir;
+} Fat32dent;
+
 void scan();
 void *map_disk(const char *fname);
 
@@ -59,7 +93,9 @@ int main(int argc, char *argv[])
 
   setbuf(stdout, NULL);
 
-  assert(sizeof(struct fat32hdr) == 512); // defensive
+  assert(sizeof(Fat32hdr) == 512);      // defensive
+  assert(sizeof(Fat32shortDent) == 32); // defensive
+  assert(sizeof(Fat32longDent) == 32);  // defensive
 
   // map disk image to memory
   struct fat32hdr *hdr = map_disk(argv[1]);
@@ -116,6 +152,7 @@ void *cluster_to_addr(int n)
 {
   // RTFM: Sec 3.5 and 4 (TRICKY)
   // Don't copy code. Write your own.
+  assert(n >= hdr->BPB_RootClus);
   u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
   DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
@@ -123,5 +160,5 @@ void *cluster_to_addr(int n)
 
 void scan()
 {
-  printf("root clus %d, %p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
+  // printf("root clus %d, %p\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
 }
