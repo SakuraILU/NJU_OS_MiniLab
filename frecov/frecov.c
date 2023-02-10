@@ -169,8 +169,8 @@ void *cluster_to_addr(int n)
   assert(n >= hdr->BPB_RootClus);
   u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
   DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
-  printf("%p\n", hdr->BPB_RsvdSecCnt * hdr->BPB_BytsPerSec);
-  printf("%p\n", (hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32) * hdr->BPB_BytsPerSec);
+  printf("%x\n", hdr->BPB_RsvdSecCnt * hdr->BPB_BytsPerSec);
+  printf("%x\n", (hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32) * hdr->BPB_BytsPerSec);
 
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
 }
