@@ -211,7 +211,8 @@ bool is_dir(Fat32shortDent *dir)
       }
 
       bool is_valid = false;
-      for (int j = i + 1; j < ndent; j++)
+      int j = i + 1;
+      for (; j < ndent; j++)
       {
         if (ldir[j].DIR_Attr != ATTR_LONG_NAME)
           return false;
@@ -223,11 +224,10 @@ bool is_dir(Fat32shortDent *dir)
         {
           if (j + 1 < ndent && dir[j + 1].DIR_Attr == ATTR_LONG_NAME)
             return false;
-
-          i = j;
           break;
         }
       }
+      i = j;
       printf("here %x\n", ldir->DIR_Attr);
     }
     else
