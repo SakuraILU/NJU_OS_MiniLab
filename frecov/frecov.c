@@ -179,6 +179,7 @@ bool is_dir(Fat32shortDent *dir)
 
   for (int i = 0; i < ndent; ++i)
   {
+    printf("check...\n");
     if (dir[i].DIR_Name[0] == DIR_INVALID)
       return false;
 
