@@ -333,7 +333,7 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
   if (!is_bmp(bmp_hdr))
     return;
 
-  char recov_path[PATH_MXSIZE] = "./recovery";
+  char recov_path[PATH_MXSIZE] = "./recovery/";
   strcat(recov_path, name);
   FILE *f = fopen(name, "w+");
 
