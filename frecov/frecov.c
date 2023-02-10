@@ -181,10 +181,11 @@ bool is_dir(Fat32shortDent *dir)
 
 void scan()
 {
-  u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
-  printf("root clus %d, %d\n", hdr->BPB_RootClus, byte_per_clus);
+  printf("root clus %d, %x\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
+  printf("root clus %d, %x\n", hdr->BPB_RootClus, (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
   // char *itr = cluster_to_addr(hdr->BPB_RootClus);
   // char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
+  // u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
   // for (; itr < itr_end; itr += byte_per_clus)
   // {
   //   Fat32shortDent *dir = (Fat32shortDent *)itr;
