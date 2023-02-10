@@ -45,6 +45,7 @@ typedef struct fat32hdr
   u16 Signature_word;
 } __attribute__((packed)) Fat32hdr;
 
+void scan(Fat32hdr *hdr);
 void *map_disk(const char *fname);
 
 int main(int argc, char *argv[])
