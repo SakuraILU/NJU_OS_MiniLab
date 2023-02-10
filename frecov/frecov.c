@@ -92,6 +92,8 @@ typedef struct fat32longDent
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
 #define DIR_INVALID 0x20        // names cannot start with a space character
 
+static void *ptr_offset(void *ptr);
+
 void scan();
 void *map_disk(const char *fname);
 
@@ -181,20 +183,6 @@ bool is_dir(Fat32shortDent *dir)
 
   for (int i = 0; i < ndent; ++i)
   {
-    if (dir[i].DIR_Name[0] == DIR_INVALID)
-      return false;
-
-    if (dir[i].DIR_Name[0] == DIR_CUR_FREE)
-      continue;
-
-    if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
-    {
-      for (int j = i; j < ndent; ++j)
-        if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
-          return false;
-      return true;
-    }
-
     if (dir[i].DIR_Attr == ATTR_LONG_NAME)
     {
       Fat32longDent *ldir = (Fat32longDent *)dir;
@@ -233,6 +221,20 @@ bool is_dir(Fat32shortDent *dir)
     }
     else
     {
+      if (dir[i].DIR_Name[0] == DIR_INVALID)
+        return false;
+
+      if (dir[i].DIR_Name[0] == DIR_CUR_FREE)
+        continue;
+
+      if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
+      {
+        for (int j = i; j < ndent; ++j)
+          if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
+            return false;
+        return true;
+      }
+
       // printf("check a short name %s\n", dir[i].DIR_Name);
       if (dir[i].DIR_NTRes != 0)
         return false;
@@ -275,7 +277,11 @@ void scan()
 
     if (is_dir(dir))
     {
-      printf("%p is a dir\n", (void *)((uintptr_t)dir - (uintptr_t)hdr));
     }
   }
+}
+
+static void *ptr_offset(void *ptr)
+{
+  return (void *)((uintptr_t)ptr - (uintptr_t)hdr);
 }
