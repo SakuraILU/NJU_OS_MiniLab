@@ -275,7 +275,7 @@ void scan()
 
     if (is_dir(dir))
     {
-      printf("%ld is a dir\n", (char *)dir - (char *)hdr);
+      printf("%p is a dir\n", (void *)((uintptr_t)dir - (uintptr_t)hdr));
     }
   }
 }
