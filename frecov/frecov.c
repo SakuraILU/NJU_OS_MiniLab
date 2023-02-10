@@ -183,6 +183,20 @@ bool is_dir(Fat32shortDent *dir)
 
   for (int i = 0; i < ndent; ++i)
   {
+    if (dir[i].DIR_Name[0] == DIR_INVALID)
+      return false;
+
+    if (dir[i].DIR_Name[0] == DIR_CUR_FREE)
+      continue;
+
+    if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
+    {
+      for (int j = i; j < ndent; ++j)
+        if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
+          return false;
+      return true;
+    }
+
     if (dir[i].DIR_Attr == ATTR_LONG_NAME)
     {
       Fat32longDent *ldir = (Fat32longDent *)dir;
@@ -221,20 +235,6 @@ bool is_dir(Fat32shortDent *dir)
     }
     else
     {
-      if (dir[i].DIR_Name[0] == DIR_INVALID)
-        return false;
-
-      if (dir[i].DIR_Name[0] == DIR_CUR_FREE)
-        continue;
-
-      if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
-      {
-        for (int j = i; j < ndent; ++j)
-          if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
-            return false;
-        return true;
-      }
-
       // printf("check a short name %s\n", dir[i].DIR_Name);
       if (dir[i].DIR_NTRes != 0)
         return false;
