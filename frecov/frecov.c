@@ -363,7 +363,7 @@ void scan()
 
     if (is_dir(dir))
     {
-      printf("%p is a dir\n", ptr_offset(dir));
+      // printf("%p is a dir\n", ptr_offset(dir));
       int remain_dent = byte_per_clus / sizeof(Fat32shortDent);
       char name[PATH_MXSIZE];
       u32 fst_cluse;
