@@ -195,9 +195,9 @@ bool is_dir(Fat32shortDent *dir)
     if (dir[i].DIR_Attr == ATTR_LONG_NAME)
     {
       Fat32longDent *ldir = (Fat32longDent *)dir;
-      if (ldir->Dir_Attr != ATTR_LONG_NAME)
+      if (ldir->DIR_Attr != ATTR_LONG_NAME)
         return false;
-      if (ldir->Dir_FstClusLO != 0)
+      if (ldir->DIR_FstClusLO != 0)
         return false;
 
       // if (ldir->DIR_Ord != 1)
@@ -207,7 +207,7 @@ bool is_dir(Fat32shortDent *dir)
       int j = i + 1;
       for (; j < ndent; j++)
       {
-        if (ldir[j].Dir_Attr != ATTR_LONG_NAME)
+        if (ldir[j].DIR_Attr != ATTR_LONG_NAME)
           return false;
 
         if (ldir[j].DIR_Ord <= ldir[j - 1].DIR_Ord)
