@@ -174,11 +174,11 @@ bool is_dir(Fat32shortDent *dir)
 {
   if (dir->DIR_Name[0] == 0)
   {
-    printf("%p is all empty\n", dir);
     return false;
   }
 
   int ndent = hdr->BPB_BytsPerSec * hdr->BPB_SecPerClus / sizeof(Fat32shortDent);
+  printf("check %d\n", ndent);
 
   for (int i = 0; i < ndent; ++i)
   {
