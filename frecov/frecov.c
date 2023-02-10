@@ -106,7 +106,7 @@ typedef struct bitmapHdr
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
 #define DIR_INVALID 0x20        // names cannot start with a space character
 
-char dst_dir[PATH_MXSIZE];
+char recov_dir[PATH_MXSIZE];
 
 void *ptr_offset(void *ptr);
 void scan();
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 {
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s fs-image directory\n", argv[0]);
+    fprintf(stderr, "Usage: %s fs-image dst_directory\n", argv[0]);
     exit(1);
   }
 
@@ -133,10 +133,11 @@ int main(int argc, char *argv[])
   DIR *dir = opendir(argv[2]);
   if (dir == NULL)
   {
-    fprintf(stderr, "Dirctory is not exist");
+    fprintf(stderr, "Erro: dirctory is not exist.\n");
     exit(1);
   }
-  strcpy(dst_dir, argv[2]);
+  closedir(dir);
+  strcpy(recov_dir, argv[2]);
 
   // TODO: frecov
   scan(hdr);
@@ -341,13 +342,13 @@ bool is_bmp(BitmapHdr *bmp_hdr)
   return true;
 }
 
-void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
+void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
 {
   if (!is_bmp(bmp_hdr))
     return;
 
-  char recov_path[PATH_MXSIZE] = "./recovery/";
-  strcat(recov_path, name);
+  char recov_path[PATH_MXSIZE];
+  sprintf(recov_path, "%s/%s", recov_dir, filename);
   FILE *f = fopen(recov_path, "w+");
 
   // void *bmp = (char *)bmp_hdr + bmp_hdr->BMP_MapOffset;
