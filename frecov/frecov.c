@@ -175,7 +175,7 @@ void *cluster_to_addr(int n)
 bool is_dir(Fat32shortDent *dir)
 {
   if (dir->DIR_Name[0] == 0)
-    return 0;
+    return false;
 }
 
 void scan()
