@@ -275,6 +275,9 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
     Fat32longDent *ldir = (Fat32longDent *)dir;
     u8 len = ldir->DIR_Ord & (~LAST_LONG_ENTRY);
 
+    if (len >= remain_dent)
+      return 0;
+
     if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
       return len + 1;
     if (dir[len].DIR_Attr == ATTR_DIRECTORY)
@@ -301,7 +304,8 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
   else
   {
     if (dir->DIR_Attr == ATTR_DIRECTORY)
-      return dir + 1;
+      return 1;
+
     strcpy(name, (char *)dir->DIR_Name);
     *fst_cluse = dir->DIR_FstClusHI;
     *filesize = dir->DIR_FileSize;
@@ -322,6 +326,22 @@ void scan()
     if (is_dir(dir))
     {
       printf("%p is a dir\n", ptr_offset(dir));
+      int remain_dent = byte_per_clus / sizeof(Fat32shortDent);
+      char name[PATH_MXSIZE];
+      u32 fst_cluse;
+      u32 filesz;
+      while (remain_dent > 0)
+      {
+        memset(name, 0, PATH_MXSIZE);
+        fst_cluse = filesz = 0;
+        int pace = parse_dir(dir, remain_dent, name, &fst_cluse, &filesz);
+        if (pace == 0)
+          break;
+        printf("get name %s\n", name);
+
+        dir += pace;
+        remain_dent -= pace;
+      }
     }
   }
 }
