@@ -178,7 +178,6 @@ bool is_dir(Fat32shortDent *dir)
   }
 
   int ndent = hdr->BPB_BytsPerSec * hdr->BPB_SecPerClus / sizeof(Fat32shortDent);
-  printf("check %d\n", ndent);
 
   for (int i = 0; i < ndent; ++i)
   {
@@ -190,6 +189,7 @@ bool is_dir(Fat32shortDent *dir)
 
     if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
     {
+      printf("here\n");
       for (int j = i; j < ndent; ++j)
         if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
           return false;
