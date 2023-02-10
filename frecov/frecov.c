@@ -49,18 +49,16 @@ Fat32hdr *hdr = NULL;
 
 typedef struct fat32shortDent
 {
-  u8 DIR_Name[11];
-  u8 DIR_Attr;
-  u8 DIR_NTRes;
-  u8 DIR_CrtTimeTenth;
-  u16 DIR_CrtTime;
+  u8 DIR_Name[11];     // related macro of Name[0]: DIR_CUR_FOLLOW_FREE, DIR_CUR_FREE, DIR_INVALID
+  u8 DIR_Attr;         // related macro: ATTR_xxxx
+  u8 DIR_NTRes;        // Reserved. Must be set to 0.
+  u8 DIR_CrtTimeTenth; // Component of the file creation time. Count of tenths of a second. Valid range is: 0 <= DIR_CrtTimeTenth <= 199 u16 DIR_CrtTime;
   u16 DIR_CrtDate;
   u16 DIR_LastAccDate;
-  u16 DIR_FstClusHI;
-  u16 DIR_WrtTime;
+  u16 DIR_FstClusHI; // High word of first data cluster number for file / directory described by this entry.u16 DIR_WrtTime;
   u16 DIR_WrtDate;
-  u16 DIR_FstClusLO;
-  u32 DIR_FileSize;
+  u16 DIR_FstClusLO; // Low word of first data cluster number for file / directory described by this entry
+  u32 DIR_FileSize;  // 32-bit quantity containing size in bytes of file / directory described by this entry.
 } __attribute__((packed)) Fat32shortDent;
 
 #define ATTR_READ_ONLY 0x01
@@ -69,9 +67,9 @@ typedef struct fat32shortDent
 #define ATTR_VOLUME_ID 0x08
 #define ATTR_DIRECTORY 0x10
 #define ATTR_ARCHIVE 0x20
+#define ATTR_LONG_NAME (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID)
 
-#define LAST_LONG_ENTRY 0x40 // last long name entry bit indicator,
-                             // ldir.Ord == LAST_LONG_ENTRY >> this is the last long name entry
+#define LAST_LONG_ENTRY 0x40 // last long name entry bit indicator
 
 #define DIR_CUR_FOLLOW_FREE 0x0 // the current and all the following directory entry is free (available)
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
@@ -79,21 +77,18 @@ typedef struct fat32shortDent
 
 typedef struct fat32longDent
 {
-  u8 DIR_Ord;
+  u8 DIR_Ord; // The order of this entry in the sequence of long name directory entries (each containing components of the long file name)
+              // 1. The first member of a set has an LDIR_Ord value of 1.
+              // 2. The LDIR_Ord value for each subsequent entry must contain a monotonically increasing value.
+              // 3. The Nth (last) member of the set must contain a value of (N | LAST_LONG_ENTRY)
   u8 DIR_Name1[10];
-  u8 Dir_Attr;
+  u8 Dir_Attr; // Must be set to ATTR_LONG_NAME
   u8 Dir_Type; // Must be set to 0.
   u8 Dir_Chksum;
   u8 Dir_Nmae2[12];
   u16 Dir_FstClusLO; // Must be set to 0.
   u8 Dir_Name3[4];
 } __attribute__((packed)) Fat32longDent;
-
-typedef union fat32dent
-{
-  Fat32shortDent sdir;
-  Fat32longDent ldir;
-} Fat32dent;
 
 void scan();
 void *map_disk(const char *fname);
@@ -179,23 +174,98 @@ bool is_dir(Fat32shortDent *dir)
 {
   if (dir->DIR_Name[0] == 0)
     return false;
+
+  int ndent = hdr->BPB_BytsPerSec * hdr->BPB_SecPerClus / sizeof(Fat32shortDent);
+
+  for (int i = 0; i < ndent; ++i)
+  {
+    if (dir[i].DIR_Name[0] == DIR_INVALID)
+      return false;
+
+    if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
+    {
+      for (int j = i; j < ndent; ++j)
+        if (dir[j].DIR_Name[0] != DIR_CUR_FOLLOW_FREE)
+          return false;
+      return true;
+    }
+
+    if (dir[i].DIR_Attr == ATTR_LONG_NAME)
+    {
+      Fat32longDent *ldir = (Fat32longDent *)dir;
+      if (ldir->Dir_Attr != ATTR_LONG_NAME)
+        return false;
+      if (ldir->Dir_FstClusLO != 0)
+        return false;
+
+      // if (ldir->DIR_Ord != 1)
+      //   return false;
+
+      bool is_valid = false;
+      int j = i + 1;
+      for (; j < ndent; j++)
+      {
+        if (ldir[j].Dir_Attr != ATTR_LONG_NAME)
+          return false;
+
+        if (ldir[j].DIR_Ord <= ldir[j - 1].DIR_Ord)
+          return false;
+
+        if (ldir[j].DIR_Ord & LAST_LONG_ENTRY)
+        {
+          i = j;
+          is_valid = true;
+          break;
+        }
+      }
+
+      if (j == ndent)
+        return true;
+
+      if (is_valid)
+        continue;
+      else
+        return false;
+    }
+    else
+    {
+      if (dir[i].DIR_NTRes != 0)
+        return false;
+
+      if (dir[i].DIR_CrtTimeTenth >= 200)
+        return false;
+
+      switch (dir[i].DIR_Attr)
+      {
+      case ATTR_READ_ONLY:
+      case ATTR_HIDDEN:
+      case ATTR_SYSTEM:
+      case ATTR_VOLUME_ID:
+      case ATTR_DIRECTORY:
+      case ATTR_ARCHIVE:
+        break;
+
+      default:
+        return false;
+      }
+    }
+  }
   return true;
 }
 
 void scan()
 {
-  printf("%p\n", (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
-  printf("%p\n", (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
-  // char *itr = cluster_to_addr(hdr->BPB_RootClus);
-  // char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
-  // u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
-  // for (; itr < itr_end; itr += byte_per_clus)
-  // {
-  //   Fat32shortDent *dir = (Fat32shortDent *)itr;
+  // printf("%p\n", (void *)((uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr));
+  // printf("%p\n", (void *)((uintptr_t)cluster_to_addr(3) - (uintptr_t)hdr));
+  char *itr = cluster_to_addr(hdr->BPB_RootClus);
+  char *itr_end = (char *)hdr + hdr->BPB_TotSec32 * hdr->BPB_BytsPerSec;
+  u32 byte_per_clus = hdr->BPB_SecPerClus * hdr->BPB_BytsPerSec;
+  for (; itr < itr_end; itr += byte_per_clus)
+  {
+    Fat32shortDent *dir = (Fat32shortDent *)itr;
 
-  //   if (is_dir(dir))
-  //   {
-
-  //   }
-  // }
+    if (is_dir(dir))
+    {
+    }
+  }
 }
