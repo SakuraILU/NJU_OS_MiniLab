@@ -86,10 +86,10 @@ typedef struct fat32longDent
 typedef struct bitmapHdr
 {
   u16 Signature_word; // 0x4d42
-  u32 BMP_Size;
-  u16 BMP_Reserved1;
-  u16 BMP_Reserved2;
-  u32 BMP_MapOffset;
+  u32 BMP_Size;       // the size of BMP picture
+  u16 BMP_Reserved1;  // Must be set to 0.
+  u16 BMP_Reserved2;  // Must be set to 0.
+  u32 BMP_MapOffset;  // the offset of BMP picture
 } __attribute__((packed)) BitmapHdr;
 
 #define ATTR_READ_ONLY 0x01
@@ -213,6 +213,12 @@ void *cluster_to_addr(int n)
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
 }
 
+/**
+ * @brief determine whether a cluster is part of a direcotry (contains directory entries)
+ *
+ * @param dir the adress of the cluster
+ * @return false or true
+ */
 bool is_dir(Fat32shortDent *dir)
 {
   // RTFM: sec6 and sec7
@@ -301,14 +307,14 @@ bool is_dir(Fat32shortDent *dir)
 }
 
 /**
- * @brief parse a directory entry
+ * @brief fully parse a directory entry in a cluster, extract the name, fstcluse and filesz if this entry is a file
  *
- * @param dir
- * @param remain_dent
- * @param name
- * @param fst_cluse
- * @param filesize
- * @return int
+ * @param dir the adress of the dir entry
+ * @param remain_dent the number of unparsed dir entries in the cluster
+ * @param name file name
+ * @param fst_cluse first cluster of the file
+ * @param filesize file size
+ * @return the number of entries parsed (if the entry is a long_name_entry, fully parse this directory entry will need to parse many long_name_entries and a short name entry)
  */
 int parse_dir_entry(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, u32 *filesize)
 {
@@ -321,18 +327,23 @@ int parse_dir_entry(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_c
   if (dir->DIR_Attr == ATTR_LONG_NAME)
   {
     Fat32longDent *ldir = (Fat32longDent *)dir;
-    u8 len = ldir->DIR_Ord & (~LAST_LONG_ENTRY);
+    u8 nldent = ldir->DIR_Ord & (~LAST_LONG_ENTRY); // the num of long_name_entries that the dir entry contains
 
-    if (len >= remain_dent)
+    // this entry crossed a cluster (at end), give up its recovery
+    if (nldent >= remain_dent)
       return 0;
-
+    // the first long_name_entry's order is (N | LAST_LONG_ENTRY),
+    // if (ldir->DIR_Ord & LAST_LONG_ENTRY) == 0, it is must be a incomplete entry at beginining
+    // this entry crossed a cluster (at begining), give up its recovery
     if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
-      return len + 1;
-    if (dir[len].DIR_Attr == ATTR_DIRECTORY || dir[len].DIR_Attr == ATTR_HIDDEN)
-      return len + 1;
+      return nldent + 1;
 
+    if (dir[nldent].DIR_Attr == ATTR_DIRECTORY || dir[nldent].DIR_Attr == ATTR_HIDDEN)
+      return nldent + 1;
+
+    // extract the long name, RTFM 7.3
     int cur = 0;
-    for (int i = len - 1; i >= 0; --i)
+    for (int i = nldent - 1; i >= 0; --i)
     {
       assert(cur < PATH_MXSIZE);
 
@@ -344,10 +355,10 @@ int parse_dir_entry(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_c
         name[cur++] = ldir[i].DIR_Name3[j];
     }
 
-    *fst_cluse = (dir[len].DIR_FstClusHI << 16) | dir[len].DIR_FstClusLO;
-    *filesize = dir[len].DIR_FileSize;
+    *fst_cluse = (dir[nldent].DIR_FstClusHI << 16) | dir[nldent].DIR_FstClusLO;
+    *filesize = dir[nldent].DIR_FileSize;
 
-    return len + 1;
+    return nldent + 1;
   }
   else
   {
@@ -373,7 +384,7 @@ bool is_bmp(BitmapHdr *bmp_hdr)
   return true;
 }
 
-void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
+void recover_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
 {
   if (!is_bmp(bmp_hdr))
     return;
@@ -387,16 +398,20 @@ void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *filename)
   fwrite(bmp_hdr, 1, filesz, f);
   fclose(f);
 
-  char cmd[PATH_MXSIZE + 8];
-  sprintf(cmd, "sha1sum %s", recov_path);
+  // do sha1sum check
+  char cmd[PATH_MXSIZE + 8]; // 8 stands for "sha1sum "
+  sprintf(cmd, "shasum %s", recov_path);
   FILE *pf = popen(cmd, "r");
   if (pf == NULL)
+  {
+    perror("sha1sum");
     assert(false);
+  }
 
   char sha1sum_res[SHA1SUM_SIZE];
   fread(sha1sum_res, 1, SHA1SUM_SIZE, pf);
-  pclose(pf);
   printf("%s\n", sha1sum_res);
+  pclose(pf);
 }
 
 void scan()
@@ -427,7 +442,7 @@ void scan()
         {
           // printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
           void *bmp_addr = cluster_to_addr(fst_cluse);
-          parse_bmp(bmp_addr, filesz, name);
+          recover_bmp(bmp_addr, filesz, name);
         }
 
         dir += pace;
