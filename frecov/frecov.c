@@ -123,5 +123,5 @@ void *cluster_to_addr(int n)
 
 void scan()
 {
-  printf("root clus %d, %p\n", hdr->BPB_RootClus, (uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr);
+  printf("root clus %d, %ld\n", hdr->BPB_RootClus, (uintptr_t)cluster_to_addr(hdr->BPB_RootClus) - (uintptr_t)hdr);
 }
