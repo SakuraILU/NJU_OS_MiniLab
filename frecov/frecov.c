@@ -268,7 +268,7 @@ void scan()
   int cnt = 0;
   for (; itr < itr_end; itr += byte_per_clus, cnt++)
   {
-    if (cnt >= 3)
+    if (cnt >= 2)
       break;
     Fat32shortDent *dir = (Fat32shortDent *)itr;
 
