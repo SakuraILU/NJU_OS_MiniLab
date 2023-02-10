@@ -63,6 +63,21 @@ typedef struct fat32shortDent
   u32 DIR_FileSize;  // 32-bit quantity containing size in bytes of file / directory described by this entry.
 } __attribute__((packed)) Fat32shortDent;
 
+typedef struct fat32longDent
+{
+  u8 DIR_Ord; // The order of this entry in the sequence of long name directory entries (each containing components of the long file name)
+              // 1. The first member of a set has an LDIR_Ord value of 1.
+              // 2. The LDIR_Ord value for each subsequent entry must contain a monotonically increasing value.
+              // 3. The Nth (last) member of the set must contain a value of (N | LAST_LONG_ENTRY)
+  u8 DIR_Name1[10];
+  u8 DIR_Attr; // Must be set to ATTR_LONG_NAME
+  u8 DIR_Type; // Must be set to 0.
+  u8 DIR_Chksum;
+  u8 DIR_Nmae2[12];
+  u16 DIR_FstClusLO; // Must be set to 0.
+  u8 DIR_Name3[4];
+} __attribute__((packed)) Fat32longDent;
+
 #define ATTR_READ_ONLY 0x01
 #define ATTR_HIDDEN 0x02
 #define ATTR_SYSTEM 0x04
@@ -76,21 +91,6 @@ typedef struct fat32shortDent
 #define DIR_CUR_FOLLOW_FREE 0x0 // the current and all the following directory entry is free (available)
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
 #define DIR_INVALID 0x20        // names cannot start with a space character
-
-typedef struct fat32longDent
-{
-  u8 DIR_Ord; // The order of this entry in the sequence of long name directory entries (each containing components of the long file name)
-              // 1. The first member of a set has an LDIR_Ord value of 1.
-              // 2. The LDIR_Ord value for each subsequent entry must contain a monotonically increasing value.
-              // 3. The Nth (last) member of the set must contain a value of (N | LAST_LONG_ENTRY)
-  u8 DIR_Name1[10];
-  u8 DIR_Attr; // Must be set to ATTR_LONG_NAME
-  u8 DIR_Type; // Must be set to 0.
-  u8 DIR_Chksum;
-  u8 DIR_Nmae2[12];
-  u16 DIR_FstClusLO[2]; // Must be set to 0.
-  u8 DIR_Name3[4];
-} __attribute__((packed)) Fat32longDent;
 
 void scan();
 void *map_disk(const char *fname);
