@@ -166,8 +166,6 @@ void *cluster_to_addr(int n)
   assert(n >= hdr->BPB_RootClus);
   u32 DataSec = hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32;
   DataSec += (n - hdr->BPB_RootClus) * hdr->BPB_SecPerClus;
-  printf("%x\n", hdr->BPB_RsvdSecCnt * hdr->BPB_BytsPerSec);
-  printf("%x\n", (hdr->BPB_RsvdSecCnt + hdr->BPB_NumFATs * hdr->BPB_FATSz32) * hdr->BPB_BytsPerSec);
 
   return ((char *)hdr) + DataSec * hdr->BPB_BytsPerSec;
 }
@@ -183,6 +181,9 @@ bool is_dir(Fat32shortDent *dir)
   {
     if (dir[i].DIR_Name[0] == DIR_INVALID)
       return false;
+
+    if (dir[i].DIR_Name[0] == DIR_CUR_FREE)
+      continue;
 
     if (dir[i].DIR_Name[0] == DIR_CUR_FOLLOW_FREE)
     {
@@ -268,6 +269,7 @@ void scan()
 
     if (is_dir(dir))
     {
+      printf("%p is a dir\n", dir);
     }
   }
 }
