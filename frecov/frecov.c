@@ -204,8 +204,11 @@ bool is_dir(Fat32shortDent *dir)
       if (ldir->DIR_FstClusLO != 0)
         return false;
 
-      // if (ldir->DIR_Ord != 1)
-      //   return false;
+      if ((ldir->DIR_Ord & LAST_LONG_ENTRY) == 0)
+      {
+        i += ldir->DIR_Ord;
+        continue;
+      }
 
       bool is_valid = false;
       int j = i + 1;
@@ -214,19 +217,18 @@ bool is_dir(Fat32shortDent *dir)
         if (ldir[j].DIR_Attr != ATTR_LONG_NAME)
           return false;
 
-        if (ldir[j].DIR_Ord <= ldir[j - 1].DIR_Ord)
+        if (ldir[j].DIR_Ord >= ldir[j - 1].DIR_Ord)
           return false;
 
-        if (ldir[j].DIR_Ord & LAST_LONG_ENTRY)
+        if (ldir[j].DIR_Ord == 1)
         {
           i = j;
+          if ((j == ndent) || (j + 1 < ndent && dir[j + 1].DIR_Attr == ATTR_LONG_NAME))
+            return false;
           is_valid = true;
           break;
         }
       }
-
-      if (j == ndent)
-        return true;
 
       if (is_valid)
         continue;
