@@ -337,12 +337,12 @@ void scan()
         int pace = parse_dir(dir, remain_dent, name, &fst_cluse, &filesz);
         if (pace == 0)
           break;
+        dir += pace;
+        remain_dent -= pace;
+
         if (name[0] == 0 && fst_cluse == 0 && filesz == 0)
           continue;
         printf("get name %s, fst cluse %d, filesz %d\n", name, fst_cluse, filesz);
-
-        dir += pace;
-        remain_dent -= pace;
       }
     }
   }
