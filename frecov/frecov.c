@@ -217,6 +217,7 @@ bool is_dir(Fat32shortDent *dir)
           return false;
 
         u8 ord = ldir[j].DIR_Ord & (~LAST_LONG_ENTRY);
+        printf("ord is %d\n", ord);
         if (ord == 1)
         {
           if (j + 1 < ndent && dir[j + 1].DIR_Attr == ATTR_LONG_NAME)
