@@ -320,10 +320,12 @@ int parse_dir(Fat32shortDent *dir, int remain_dent, char *name, u32 *fst_cluse, 
 bool is_bmp(BitmapHdr *bmp_hdr)
 {
   if (bmp_hdr->Signature_word != 0x4d42)
-    return;
+    return false;
 
   if (bmp_hdr->BMP_Reserved1 != 0 || bmp_hdr->BMP_Reserved2 != 0)
-    return;
+    return false;
+
+  return true;
 }
 
 void parse_bmp(BitmapHdr *bmp_hdr, u32 filesz, char *name)
