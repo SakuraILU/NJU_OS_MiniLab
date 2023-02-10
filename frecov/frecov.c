@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -104,6 +106,8 @@ typedef struct bitmapHdr
 #define DIR_CUR_FREE 0xe5       // the current directory entry is free (available)
 #define DIR_INVALID 0x20        // names cannot start with a space character
 
+char dst_dir[PATH_MXSIZE];
+
 void *ptr_offset(void *ptr);
 void scan();
 void *map_disk(const char *fname);
@@ -112,7 +116,7 @@ int main(int argc, char *argv[])
 {
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s fs-image\n", argv[0]);
+    fprintf(stderr, "Usage: %s fs-image directory\n", argv[0]);
     exit(1);
   }
 
@@ -124,6 +128,15 @@ int main(int argc, char *argv[])
 
   // map disk image to memory
   struct fat32hdr *hdr = map_disk(argv[1]);
+
+  // check directory
+  DIR *dir = opendir(argv[2]);
+  if (dir == NULL)
+  {
+    fprintf(stderr, "Dirctory is not exist");
+    exit(1);
+  }
+  strcpy(dst_dir, argv[2]);
 
   // TODO: frecov
   scan(hdr);
