@@ -170,12 +170,12 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 {
   asm volatile(
 #if __x86_64__
-      "mov %0, %%rsp"
+      "movq %0, %%rsp"
       :
       : "g"((uintptr_t)sp)
       : "memory"
 #else
-      "mov %0, %%esp"
+      "movl %0, %%esp"
       :
       : "g"((uintptr_t)sp)
       : "memory"
