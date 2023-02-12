@@ -182,5 +182,8 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #endif
   );
 
-  co_wrapper(entry, arg);
+  entry((void *)arg);
+
+  current->status = CO_DEAD;
+  co_yield ();
 }
