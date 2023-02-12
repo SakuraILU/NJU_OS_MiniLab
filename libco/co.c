@@ -181,4 +181,6 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
       : "memory"
 #endif
   );
+
+  co_wrapper(entry, arg);
 }
