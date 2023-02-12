@@ -158,6 +158,16 @@ void co_yield ()
   }
 }
 
+/**
+ * @brief the wrapper function of coroutine,
+ *        which mainly mark this coroutine CO_DEAD and yield to other function after the coroutine returns.
+ *        through this way, after coroutine returns, sp register is still in its stack,
+ *        we can do some exit work normally rather than restore stack to its caller.
+ *        CO STACK: | co_wrapper | coroutine  | co_yield  |
+ *
+ * @param entry entry of the coroutine
+ * @param arg argument of the coroutine
+ */
 void co_wrapper(void entry(void *), uintptr_t arg)
 {
   entry((void *)arg);
