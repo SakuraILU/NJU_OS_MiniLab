@@ -160,7 +160,7 @@ void co_yield ()
 
 void co_wrapper(void entry(void *), uintptr_t arg)
 {
-  entry(arg);
+  entry((void *)arg);
 
   current->status = CO_DEAD;
   co_yield ();
