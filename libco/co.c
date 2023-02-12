@@ -177,7 +177,7 @@ static inline void stack_switch_call(void *sp, void entry(void *), uintptr_t arg
 #else
       "movl %0, %%esp; movl %2, %%edi; jmp %1"
       :
-      : "g"((uintptr_t)sp)
+      : "g"((uintptr_t)sp), "d"((void *)entry), "a"((uintptr_t)arg)
       : "memory"
 #endif
   );
