@@ -1,6 +1,6 @@
 # OSlab_NJU
 
-这是南京大学 <a href="https://jyywiki.cn/OS/2022">2022 年的 OSLab</a>。该实验没有为校外同学提供本地测试，所以目前主要完成了五个 minilab 实验。五个 minilab 实验设计得很好，包括了文件读写、进程创建和交流、协程、文件系统(<a href="https://jyywiki.cn/pages/OS/manuals/MSFAT-spec.pdf">Fat32</a>)、RTFM、 C 语言的一些小 tricky…
+这是南京大学 <a href="https://jyywiki.cn/OS/2022">2022 年的 OSLab</a>。该实验没有为校外同学提供本地测试，所以目前主要完成了五个 minilab 实验。五个 minilab 实验设计得很好，包括了文件读写、进程创建和交流、协程、动态链接、文件系统(<a href="https://jyywiki.cn/pages/OS/manuals/MSFAT-spec.pdf">Fat32</a>)、RTFM、 C 语言的一些小 tricky…
 
 1. <a href="https://jyywiki.cn/OS/2022/labs/M1">pstree</a>: linux 的命令行工具 pstree 的基础版
 2. <a href="https://jyywiki.cn/OS/2022/labs/M2">libco</a>: 一个精巧的协程库。完成后可结合<a href="https://www.bilibili.com/video/BV1cS4y1r7gw/?spm_id_from=333.788&vd_source=1a02f96a02d1fcf42776d7bde7447dd4">第七次课程</a>中间的 go 语言部分一起食用
