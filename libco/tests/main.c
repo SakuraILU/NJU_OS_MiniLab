@@ -9,6 +9,7 @@ int g_count = 0;
 static void add_count()
 {
     g_count++;
+    co_yield ();
 }
 
 static int get_count()
